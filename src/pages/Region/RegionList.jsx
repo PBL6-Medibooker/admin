@@ -123,7 +123,7 @@ const RegionList = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }} // Fade-in animation
+                    transition={{ duration: 0.5 }}
         >
 
             <div className="flex justify-between items-center">
@@ -161,15 +161,15 @@ const RegionList = () => {
             </div>
 
             <motion.table
-                className="border border-gray-200 w-full mt-5 text-left text-gray-800 border-collapse rounded-lg shadow-md"
+                className="border border-gray-200 w-full mt-5 text-left text-white border-collapse rounded-lg shadow-md"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                <thead className="bg-gray-500 text-white ">
+                <thead className="bg-gray-700 text-white ">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
-                        <th className="p-3 text-gray-600 border-b border-gray-300">
+                        <th className="p-3 border-b border-gray-300">
                             <input
                                 type="checkbox"
                                 checked={
@@ -200,12 +200,14 @@ const RegionList = () => {
                     </tr>
                 ))}
                 </thead>
-                <tbody className='bg-white'>
+                <tbody>
                 {table?.getRowModel()?.rows?.length ? (
                     table.getRowModel().rows.map((row, i) => (
                         <motion.tr
                             key={row.id}
-                            className="hover:bg-gray-200"
+                            className={`${
+                                i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'
+                            }`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -223,7 +225,7 @@ const RegionList = () => {
                             {row.getVisibleCells().map((cell) => (
                                 <td
                                     key={cell.id}
-                                    className="p-3 text-gray-800 cursor-pointer "
+                                    className="p-3 cursor-pointer "
                                     onClick={() => openUpdateModal(row.original._id)}
                                 >
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -4,7 +4,6 @@ import {AdminContext} from "../../context/AdminContext";
 import * as accountService from "../../service/AccountService"
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
-import AddInsuranceByAppointmentId from "../Appointment/AddInsuranceByAppointmentId";
 
 
 const AccountDetails = () => {
@@ -16,8 +15,6 @@ const AccountDetails = () => {
     const [accountRole, setAccountRole] = useState('')
     const navigate = useNavigate();
 
-
-    const [clientModal, setClientModal] = useState(false);
 
     const [userId, setUserId] = useState('');
     const [userName, setUserName] = useState('');
@@ -43,7 +40,7 @@ const AccountDetails = () => {
     };
     const changeAccountRole = async () =>{
         try {
-            const data = accountService.changeAccountRole(account.email, accountRole, aToken)
+            await accountService.changeAccountRole(account.email, accountRole, aToken)
         } catch (e) {
             console.log(e)
         }
@@ -94,10 +91,6 @@ const AccountDetails = () => {
         }
     }
 
-
-    const onLoad = async () => {
-        setClientModal(false)
-    }
 
     useEffect(() => {
 
@@ -158,7 +151,7 @@ const AccountDetails = () => {
                             />
                         </div>
 
-                        {/* Phone Field */}
+
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium">Customer Phone</label>
                             <input
@@ -171,7 +164,7 @@ const AccountDetails = () => {
                             />
                         </div>
 
-                        {/* Underlying Condition Field */}
+
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium">Customer Underlying Condition</label>
                             <input
@@ -238,6 +231,7 @@ const AccountDetails = () => {
                             <select
                                 onChange={(e) => setAccountRole(e.target.value)}
                                 value={accountRole}
+                                disabled={accountRole === 'admin'}
                                 className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                             >
                                 <option value="" disabled className="text-gray-400">Change user role</option>
@@ -267,11 +261,8 @@ const AccountDetails = () => {
                 </div>
             </div>
             </form>
-
-
         </div>
-    )
-        ;
+    );
 };
 
 export default AccountDetails;

@@ -10,6 +10,7 @@ const UpdateSpeciality = () => {
     const { aToken, backendUrl } = useContext(AdminContext);
     const { id } = useParams();
     const navigate = useNavigate();
+    const [specialities, setSpecialities] = useState([]);
 
     const [image, setImage] = useState(null);
     const [specData, setSpecData] = useState({
@@ -19,11 +20,17 @@ const UpdateSpeciality = () => {
     });
 
 
+
     const loadSpecData = async () => {
         try {
             const { data } = await axios.get(backendUrl + `/special/get-speciality/${id}`, { headers: { aToken } });
             if (data.success) {
-                setSpecData(data.specData);
+                console.log(data.specData)
+                setSpecData({
+                    name: data.specData.name,
+                    description: data.specData.description,
+                    speciality_image: data.specData.speciality_image
+                });
             } else {
                 toast.error(data.message);
             }
@@ -33,17 +40,11 @@ const UpdateSpeciality = () => {
         }
     };
 
-    useEffect(() => {
-        if (aToken) {
-            loadSpecData();
-        } else {
-            setSpecData({
-                name: '',
-                description: '',
-                speciality_image: null
-            });
-        }
-    }, [aToken]);
+
+    const findAllSpecialities = async () => {
+        const result = await specialityService.findAll(false, aToken)
+        setSpecialities(result);
+    }
 
     const updateSpecialityData = async (e) => {
         e.preventDefault();
@@ -52,17 +53,26 @@ const UpdateSpeciality = () => {
             const formData = new FormData();
             formData.append('name', specData.name);
             formData.append('description', specData.description);
-            if (image) formData.append('speciality_image', image);
+            if (image) {
+                formData.append('speciality_image', image);
+            }
+            // if (image) {
+            //     formData.append('speciality_image', image);
+            // } else {
+            //     formData.append('speciality_image', specData.speciality_image);
+            // }
 
             const data = await specialityService.updateSpec(formData, id, aToken);
             if (data) {
                 toast.success(data.message);
-                navigate('/speciality');
+                navigate('/speciality', { state: { imageUpdated: true } });
+
             } else {
                 toast.error(data.error);
             }
+            await findAllSpecialities()
             navigate('/speciality');
-            toast.success('Updated Speciality');
+            toast.success('Updated PostSpeciality');
 
             // formData.forEach((value, key) => {
             //     console.log(`${key}:${value}`);
@@ -73,6 +83,15 @@ const UpdateSpeciality = () => {
         }
     };
 
+
+    useEffect(() => {
+        if (aToken) {
+            loadSpecData();
+        }
+    }, [aToken]);
+
+
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file);
@@ -81,28 +100,28 @@ const UpdateSpeciality = () => {
     return (
         <div>
             <form onSubmit={updateSpecialityData} className='m-5 w-[50vw] h-[90vh]'>
-                <p className='mb-3 text-lg font-medium'>Update Speciality</p>
+                <p className='mb-3 text-primary text-lg lg:text-2xl font-medium'>Update Speciality</p>
                 <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
                     <div className='flex items-center gap-4 mb-8 text-gray-500'>
                         <label htmlFor='doc-img'>
                             <img className='w-16 bg-gray-100 rounded-full cursor-pointer'
-                                 src={image ? URL.createObjectURL(image) : specData.speciality_image || assets.patients_icon}
+                                 src={image ? URL.createObjectURL(image) : specData.speciality_image}
                                  alt='Upload Area' />
                         </label>
                         <input onChange={handleImageChange} type='file' id='doc-img' hidden />
-                        <p>Upload Speciality <br /> picture</p>
+                        <p>Upload PostSpeciality <br /> picture</p>
                     </div>
 
                     <div className='flex flex-col lg:flex-row items-start gap-10 text-gray-600'>
                         <div className='w-full lg:flex-1 flex flex-col gap-4'>
                             <div className='flex flex-1 flex-col gap-1'>
-                                <p>Speciality</p>
+                                <p>PostSpeciality</p>
                                 <input
                                     onChange={(e) => setSpecData(prev => ({ ...prev, name: e.target.value }))}
                                     value={specData.name}
                                     className='border rounded px-3 py-2'
                                     type='text'
-                                    placeholder='Speciality Name'
+                                    placeholder='PostSpeciality Name'
                                     required
                                     autoFocus
                                 />

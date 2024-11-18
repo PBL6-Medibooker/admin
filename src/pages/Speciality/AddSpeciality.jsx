@@ -30,7 +30,7 @@ const AddSpeciality = () => {
         if (data !== null) {
             navigate('/speciality')
             console.log("Showing success toast");
-            toast.success('Add Speciality Success');
+            toast.success('Add PostSpeciality Success');
         } else {
             console.log("Showing error toast");
             toast.error('Error');
@@ -46,7 +46,7 @@ const AddSpeciality = () => {
     return (
         <div>
             <form onSubmit={onSubmitHandler} className='m-5 w-[50vw] h-[90vh]'>
-                <p className='mb-3 text-lg font-medium'>Add Speciality</p>
+                <p className='mb-3 text-lg text-primary lg:text-2xl font-medium'>Add Speciality</p>
 
 
                 <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
@@ -57,16 +57,16 @@ const AddSpeciality = () => {
                                  src={specImg ? URL.createObjectURL(specImg) : assets.upload_area} alt='Upload Area'/>
                         </label>
                         <input onChange={(e) => setSpecImg(e.target.files[0])} type='file' id='doc-img' hidden/>
-                        <p>Upload Speciality <br/> picture</p>
+                        <p>Upload PostSpeciality <br/> picture</p>
                     </div>
 
                     <div className='flex flex-col lg:flex-row items-start gap-10 text-gray-600'>
                         <div className='w-full lg:flex-1 flex flex-col gap-4'>
                             <div className='flex flex-1 flex-col gap-1'>
-                                <p>Speciality</p>
+                                <p>PostSpeciality</p>
                                 <input onChange={(e) => setName(e.target.value)}
                                        value={name}
-                                       className='border rounded px-3 py-2' type='text' placeholder='Speciality Name'
+                                       className='border rounded px-3 py-2' type='text' placeholder='PostSpeciality Name'
                                        required autoFocus/>
                             </div>
 
@@ -91,7 +91,7 @@ const AddSpeciality = () => {
                         </button>
 
                         <button type='submit' className='bg-primary px-10 py-3 mt-4 text-white rounded-full'>Add
-                            Speciality
+                            PostSpeciality
                         </button>
 
                     </div>

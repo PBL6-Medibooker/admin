@@ -206,3 +206,25 @@ export const getAdminProfile = async (authorization) => {
         console.error(e);
     }
 };
+
+export const getDoctorProfile = async (authorization) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/get-doctor-profile', {
+            headers: {
+                Authorization: `Bearer ${authorization}`
+            }
+        });
+        return result.data;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+export const getTopDoctors = async ( aToken) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/top-doctor', {headers: {aToken}});
+        return result.data;
+    } catch (e) {
+        console.error(e);
+    }
+};

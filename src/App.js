@@ -37,6 +37,13 @@ import CreateArticle from "./pages/Article/CreateArticle";
 import UpdateArticle from "./pages/Article/UpdateArticle";
 import RestoreArticle from "./pages/Article/RestoreArticle";
 import AddInsuranceByAppointmentId from "./pages/Appointment/AddInsuranceByAppointmentId";
+import ForumDashboard from "./pages/Forum/ForumDashboard";
+import PostListByForum from "./pages/Forum/PostListByForum";
+import PostSpeciality from "./pages/Forum/PostSpeciality";
+import PostDetails from "./pages/Forum/PostDetails";
+import DoctorProfile from "./pages/Doctor/DoctorProfile";
+import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
+import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
 
 
 function App() {
@@ -90,10 +97,15 @@ function App() {
                     <Route path='/restore-article' element={<RestoreArticle/>} />
 
 
-                    <Route path='/forum-dashboard' element={<ArticleDashboard/>} />
+                    <Route path='/forum-dashboard' element={<ForumDashboard/>} />
+                    <Route path='/speciality-forum' element={<PostSpeciality/>} />
+                    <Route path='/post-list-by-speciality' element={<PostListByForum/>} />
+                    <Route path='/update-post/:id' element={<PostDetails/>} />
 
 
-
+                    <Route path='/doctor-profile' element={<DoctorProfile/>} />
+                    <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
+                    <Route path='/doctor-appointments' element={<DoctorAppointments/>} />
 
                 </Routes>
             </div>

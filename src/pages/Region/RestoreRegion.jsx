@@ -101,7 +101,7 @@ const RestoreRegion = () => {
         try {
             const response = await regionService.restoreRegion(selectedRegionIds, aToken);
             if (response.message !== '') {
-                getDeletedRegionList();
+                await getDeletedRegionList();
                 toast.success(response.message);
                 setSelectedRegionIds([]);
                 setOpen(false);
@@ -124,7 +124,7 @@ const RestoreRegion = () => {
         <div className='m-5 max-h-[90vh] w-[90vw] overflow-y-scroll'>
 
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg font-medium'>All Deleted Region </h1>
+                <h1 className='text-lg text-primary lg:text-2xl font-medium'>All Deleted Region </h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreRegion}

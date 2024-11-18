@@ -141,3 +141,13 @@ export const restoreDeletedAppointment = async (id, aToken) => {
         console.log(e)
     }
 }
+
+export const getAppointmentByDoctor = async (is_deleted, id, dToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + `/get-appointment-by-doctor/${id}`
+            , {is_deleted},{headers: {dToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

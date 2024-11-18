@@ -1,5 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
+import * as specialityService from "../../service/SpecialityService";
+import {AdminContext} from "../../context/AdminContext";
+import {useNavigate} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
+import * as forumService from "../../service/ForumService";
 import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal";
 import {
@@ -9,45 +13,54 @@ import {
     getFilteredRowModel, getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import {useNavigate} from "react-router-dom";
-import {AdminContext} from "../../context/AdminContext";
-import {assets} from "../../assets/assets";
+import {useLocation} from 'react-router-dom';
 import * as accountService from "../../service/AccountService";
 import {toast} from "react-toastify";
 
-const VerifyDoctorList = () => {
 
+const PostListByForum = () => {
+
+    const {aToken} = useContext(AdminContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {name} = location.state || {};
     const columnHelper = createColumnHelper();
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
-    const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
     const [isUser, setIsUser] = useState(false);
     const [isVerify, setIsVerify] = useState(true);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const { aToken } = useContext(AdminContext);
 
+    const [data, setData] = useState([]);
+
+
+    const getAllPostBySpeciality = async () => {
+        const result = await forumService.getAllPostBySpeciality(name, aToken)
+        setData(result)
+    }
+
+    const openDetailPage = async (id, value) => {
+        navigate(`/update-post/${id}`, {state: {name: value}})
+    }
 
     const columns = [
-        columnHelper.accessor("_id", { id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No" }),
-        columnHelper.accessor("profile_image", {
-            cell: (info) => <img className="rounded-full w-10 h-10 object-cover" src={info?.getValue() || assets.user_icon} alt="..." />,
-            header: "Picture"
+        columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
+        columnHelper.accessor("post_title", {cell: (info) => <span>{info?.getValue()}</span>, header: "Title"}),
+        columnHelper.accessor("speciality_id.name", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: "Speciality"
         }),
-        columnHelper.accessor("username", { cell: (info) => <span>{info?.getValue()}</span>, header: "UserName" }),
-        columnHelper.accessor("role", { cell: (info) => <span>{info?.getValue()}</span>, header: "Role" }),
-        columnHelper.accessor("email", { cell: (info) => <span>{info?.getValue()}</span>, header: "Email" }),
-        columnHelper.accessor("phone", { cell: (info) => <span>{info?.getValue()}</span>, header: "Phone" })
+        columnHelper.accessor("user_id.email", { cell: (info) => <span>{info?.getValue()}</span>, header: "User" }),
     ];
-    const [data, setData] = useState([]);
     const table = useReactTable({
         data: data || [],
         columns,
-        state: { globalFilter },
+        state: {globalFilter},
         getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        initialState: { pagination: { pageSize: 7 } }
+        initialState: {pagination: {pageSize: 7}}
     });
 
     const toggleAccountSelection = (id) => {
@@ -67,7 +80,7 @@ const VerifyDoctorList = () => {
 
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No account selected for deletion');
+            toast.warn('No post selected for deletion');
         } else {
             setOpen(true);
         }
@@ -75,7 +88,7 @@ const VerifyDoctorList = () => {
 
     const softDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No account selected for deletion');
+            toast.warn('No post selected for deletion');
             return;
         }
         try {
@@ -86,21 +99,26 @@ const VerifyDoctorList = () => {
             setOpen(false);
         } catch (error) {
             console.error(error.message);
-            alert("Error deleting accounts: " + error.message);
+            alert("Error deleting posts: " + error.message);
         }
     };
-
     useEffect(() => {
         if (aToken) {
-            getAccountList();
+            getAllPostBySpeciality()
         }
-    }, [aToken, hiddenState]);
-
+    }, [aToken]);
     return (
-        <motion.div className="m-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
-                    animate={{opacity: 1}} exit={{opacity: 0}}>
+        <div className='className="mb-5 ml-5 mr-5 mt-1 w-[100vw] h-[100vh]'>
+
+            <motion.div
+                className="m-5 max-h-[90vh] overflow-y-scroll"
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+                >
+
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">Verified Doctor Accounts</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-medium">Speciality: {name}</h1>
                 <div className="flex gap-1">
 
                     <button onClick={openDeleteModal}
@@ -116,9 +134,8 @@ const VerifyDoctorList = () => {
 
             <div className="mt-5">
                 <input
-
                     type="text"
-                    placeholder="Search accounts..."
+                    placeholder="Search posts..."
                     value={globalFilter || ""}
                     onChange={(e) => setGlobalFilter(e.target.value)}
                     className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
@@ -188,7 +205,7 @@ const VerifyDoctorList = () => {
                                 </td>
                                 {row.getVisibleCells().map((cell) => (
                                     <td key={cell.id} className="p-2"
-                                        onClick={() => navigate(`/update-doc-account/${row.original._id}`)}>
+                                        onClick={() => openDetailPage(row.original._id, row.original.name)}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
@@ -197,54 +214,16 @@ const VerifyDoctorList = () => {
                     ) : (
                         <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
                                    animate={{opacity: 1}}>
-                            <td colSpan={12}>No Doctor Account Found!</td>
+                            <td colSpan={12}>No Post Found!</td>
                         </motion.tr>
                     )}
                 </AnimatePresence>
                 </tbody>
-
-
             </motion.table>
-
-            {/* Pagination */}
-            <div className="flex items-center justify-end gap-2 mt-4">
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {"<"}
-                </button>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {">"}
-                </button>
-
-                <div className="flex items-center gap-1">
-                    <span>Page</span>
-                    <strong>
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </strong>
-                </div>
-
-                <div className="flex items-center gap-1">
-                    | Go to page:
-                    <input
-                        type="number"
-                        defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            table.setPageIndex(page);
-                        }}
-                        className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
-                    />
-                </div>
-            </div>
         </motion.div>
-    );
+</div>
+)
+    ;
 };
 
-export default VerifyDoctorList;
+export default PostListByForum;

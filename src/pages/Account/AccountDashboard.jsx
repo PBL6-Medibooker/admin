@@ -5,6 +5,7 @@ import {User, BadgeCheck, UserRoundSearch} from "lucide-react";
 import * as accountService from "../../service/AccountService";
 import {useNavigate} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
+import TopDoctorChart from "../../components/Chart/TopDoctorChart";
 
 const AccountDashboard = () => {
     const {aToken} = useContext(AdminContext);
@@ -90,6 +91,8 @@ const AccountDashboard = () => {
                 {/* CHARTS */}
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+
+                    <TopDoctorChart />
 
 
                 </div>

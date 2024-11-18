@@ -94,7 +94,7 @@ const RestoreSpeciality = () => {
 
 
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg font-medium'>All Deleted Specialities</h1>
+                <h1 className='text-lg text-primary lg:text-2xl font-medium'>All Deleted Specialities</h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreSpeciality}

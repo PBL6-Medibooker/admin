@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { assets } from "../../assets/assets";
-import AddInsuranceByAppointmentId from "./AddInsuranceByAppointmentId";
 import { useNavigate } from "react-router-dom";
 import * as accountService from "../../service/AccountService";
 import * as appointmentService from "../../service/AppointmentService";
@@ -249,7 +248,7 @@ const AddAppointment = () => {
                     >
                         <div className="mb-6">
                             {/*<label htmlFor="user-select" className="block text-lg font-medium text-gray-700 mb-2">*/}
-                            {/*    Select Speciality*/}
+                            {/*    Select PostSpeciality*/}
                             {/*</label>*/}
                             <select
                                 id="user-select"

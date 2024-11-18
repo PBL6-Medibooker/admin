@@ -173,12 +173,14 @@ const UpdateDocInfoAcc = () => {
                     >
                         Reset Password
                     </button>
-                    <button
-                        className="bg-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-secondary-dark transition"
-                        onClick={() => setListModal(true)}
-                    >
-                        Active Hour List
-                    </button>
+                    {
+                        isVerify && <button
+                            className="bg-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-secondary-dark transition"
+                            onClick={() => setListModal(true)}
+                        >
+                            Active Hour List
+                        </button>
+                    }
                 </div>
             </motion.div>
 
@@ -190,9 +192,7 @@ const UpdateDocInfoAcc = () => {
                 animate={{opacity: 1}}
                 transition={{duration: 0.7}}
             >
-                {/* Form Fields */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Speciality Field */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium mb-2">Doctor Speciality</label>
                         <select
@@ -210,7 +210,6 @@ const UpdateDocInfoAcc = () => {
                         </select>
                     </div>
 
-                    {/* Region Field */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium mb-2">Region</label>
                         <select
@@ -228,13 +227,13 @@ const UpdateDocInfoAcc = () => {
                         </select>
                     </div>
 
-                    {/* Upload Proof */}
+
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-2">Upload Doctor Degree</label>
+                        <label className="text-sm font-medium mb-2" hidden>Upload Doctor Degree</label>
                         {proof ? (
                             <span className="text-green-600 font-medium">Proof Uploaded</span>
                         ) : (
-                            <input
+                            <input hidden
                                 type="file"
                                 accept="application/pdf"
                                 className="border rounded-lg px-4 py-3 text-gray-700"
@@ -243,21 +242,21 @@ const UpdateDocInfoAcc = () => {
                         )}
                     </div>
 
-                    {/* Verify Checkbox */}
+
                     <div className="flex items-center gap-3 mt-6 lg:mt-0">
-                        <input
+                        <input hidden={isVerify}
                             type="checkbox"
                             id="verify-checkbox"
                             checked={isVerify}
                             onChange={() => setIsVerify((prev) => !prev)}
                             className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"
+                               disabled={!(docData.region && docData.speciality && proof)}
                         />
-                        <label htmlFor="verify-checkbox" className="text-sm font-medium">
+                        <label htmlFor="verify-checkbox" className="text-sm font-medium" hidden={isVerify}>
                             Verify Doctor
                         </label>
                     </div>
 
-                    {/* Bio Field */}
                     <div className="lg:col-span-2 flex flex-col">
                         <label className="text-sm font-medium mb-2">Doctor Bio</label>
                         <textarea
@@ -271,7 +270,6 @@ const UpdateDocInfoAcc = () => {
                     </div>
                 </div>
 
-                {/* Buttons */}
                 <div className="flex justify-end gap-4 mt-8">
                     <button
                         type="button"

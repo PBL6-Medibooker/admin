@@ -29,7 +29,7 @@ const Login = () => {
                 // }
                 const result = await axios.post(backendUrl + '/acc/login', {email, password});
 
-                if(result.data.role !== 'user' && result.data.role === 'admin'){
+                if( result.data.role === 'admin'){
                     console.log(result)
                     localStorage.setItem('aToken', result.data.token)
                     setAToken(result.data.token);

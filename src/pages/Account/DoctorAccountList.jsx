@@ -46,7 +46,9 @@ const DoctorAccountList = () => {
         state: { globalFilter },
         getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel()
+        getPaginationRowModel: getPaginationRowModel(),
+        initialState: {pagination: {pageSize: 7}}
+
     });
 
     const toggleAccountSelection = (id) => {
