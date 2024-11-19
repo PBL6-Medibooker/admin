@@ -1,0 +1,29 @@
+{
+  "common": {
+    "button": {
+      "search": "Search",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "save": "Save"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "speciality": "Speciality",
+    "region": "Region",
+    "appointment": "Appointment",
+    "article": "Article",
+    "forum": "Forum",
+    "profile": "Profile"
+  },
+  "adashboard": {
+    "userAccount": "Total Account",
+    "verifiedDoctor": "Verified Doctor",
+    "unverifiedDoctor": "Unverified Doctor",
+    "topDoctors": "Top Doctors",
+    "appointments": "appointments",
+    "unknownDoctor": "Unknown Doctor",
+    "noDataAvailable": "No data available"
+  }
+}

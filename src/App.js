@@ -44,6 +44,10 @@ import PostDetails from "./pages/Forum/PostDetails";
 import DoctorProfile from "./pages/Doctor/DoctorProfile";
 import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
 import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
+import UpdateAppointment from "./pages/Doctor/UpdateAppointment";
+import Test from "./pages/Test";
+import './config-translation'
+import Loading from "./pages/Loading";
 
 
 function App() {
@@ -57,7 +61,9 @@ function App() {
             <div className='flex items-start'>
                 <Sidebar/>
                 <Routes>
-                    <Route path='/' element={<></>} />
+                    {/*<Route path='/' element={<></>} />*/}
+                    {/*<Route path='/' element={<Test />} />*/}
+                    <Route path='/' element={<Loading />} />
                     <Route path='/admin-dashboard' element={<Dashboard/>}/>
                     <Route path='/admin-profile' element={<AdminProfile/>}/>
 
@@ -106,6 +112,8 @@ function App() {
                     <Route path='/doctor-profile' element={<DoctorProfile/>} />
                     <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
                     <Route path='/doctor-appointments' element={<DoctorAppointments/>} />
+                    <Route path='/update-appointment-of-doctor/:id' element={<UpdateAppointment/>} />
+
 
                 </Routes>
             </div>

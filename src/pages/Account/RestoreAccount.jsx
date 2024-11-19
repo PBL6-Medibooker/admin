@@ -12,7 +12,7 @@ import {assets} from "../../assets/assets";
 import * as accountService from "../../service/AccountService";
 import {toast} from "react-toastify";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {FaTrashRestoreAlt} from "react-icons/fa";
 import axios from "axios";
 

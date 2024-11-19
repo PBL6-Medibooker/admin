@@ -13,7 +13,7 @@ import {toast} from "react-toastify";
 import {assets} from "../../assets/assets";
 import {AnimatePresence, motion} from "framer-motion";
 import {FaRegNewspaper, FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import { MdOutlineSettingsBackupRestore } from "react-icons/md";
 
 const RestoreArticle = () => {

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AnimatePresence, motion} from "framer-motion";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {
     createColumnHelper,
     flexRender,

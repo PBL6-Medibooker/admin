@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
 import { assets } from "../../assets/assets";
 import * as accountService from "../../service/AccountService";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { toast } from "react-toastify";

@@ -29,7 +29,7 @@ const PostSpeciality = () => {
     return (
         <div>
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg text-primary lg:text-2xl pl-5 pt-2 font-medium'>Post By PostSpeciality</h1>
+                <h1 className='text-lg text-primary lg:text-2xl pl-5 pt-2 font-medium'>Post By Speciality</h1>
             </div>
             <motion.div
                 className='w-[80vw] m-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-5 pb-5'

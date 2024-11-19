@@ -4,12 +4,14 @@ import StatCard from "../../components/StatCard";
 import {MapPin} from "lucide-react";
 import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
+import {useTranslation} from "react-i18next";
 
 const RegionDashboard = () => {
 
     const {aToken} = useContext(AdminContext);
     const [data, setData] = useState([]);
     const [totalRegion, setTotalRegion] = useState(0)
+    const {t} = useTranslation();
 
 
     const getRegionList = async () => {

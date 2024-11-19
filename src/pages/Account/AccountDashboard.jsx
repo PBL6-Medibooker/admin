@@ -6,14 +6,17 @@ import * as accountService from "../../service/AccountService";
 import {useNavigate} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import TopDoctorChart from "../../components/Chart/TopDoctorChart";
+import {useTranslation} from "react-i18next";
 
 const AccountDashboard = () => {
     const {aToken} = useContext(AdminContext);
 
-    const navigate = useNavigate();
     const [totalUsers, setTotalUser] = useState(0);
     const [totalDoctors, setTotalDoctors] = useState(0);
     const [totalUnDoctors, setTotalUnDoctors] = useState(0);
+
+    const {t} = useTranslation();
+
 
     const getAccountList = async () => {
 
@@ -77,13 +80,16 @@ const AccountDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name='Total User' to={'/account'} icon={User} value={totalUsers}
+                    <StatCard name={t('adashboard.userAccount')}
+                              to={'/account'} icon={User} value={totalUsers}
                               color='#6366F1'/>
 
-                    <StatCard name='Verified Doctor' to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
+                    <StatCard name={t('adashboard.verifiedDoctor')}
+                              to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
                               color='#6366F1'/>
 
-                    <StatCard name='Unverify Doctor' to={'/doc-account'} icon={UserRoundSearch} value={totalUnDoctors}
+                    <StatCard name={t('adashboard.unverifiedDoctor')}
+                              to={'/doc-account'} icon={UserRoundSearch} value={totalUnDoctors}
                               color='#6366F1'/>
 
                 </motion.div>
@@ -92,7 +98,7 @@ const AccountDashboard = () => {
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 
-                    <TopDoctorChart />
+                    <TopDoctorChart/>
 
 
                 </div>

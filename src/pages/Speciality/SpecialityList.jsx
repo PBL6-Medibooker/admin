@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import * as specialityService from "../../service/SpecialityService"
 import {useLocation, useNavigate} from "react-router-dom";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {toast} from "react-toastify";
 import {AdminContext} from "../../context/AdminContext";
 import {AnimatePresence, motion} from "framer-motion";

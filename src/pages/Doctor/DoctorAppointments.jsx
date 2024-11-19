@@ -6,7 +6,7 @@ import * as appointmentService from "../../service/AppointmentService";
 import {useNavigate} from "react-router-dom";
 import {motion} from "framer-motion";
 import MUIDataTable from "mui-datatables";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import {toast} from "react-toastify";
 
@@ -161,7 +161,7 @@ const DoctorAppointments = () => {
         rowsPerPageOptions: [5, 10, 20],
         onRowClick: (rowData, rowMeta) => {
             const appointment = appointments[rowMeta.dataIndex];
-            navigate(`/update-appointment-info/${appointment._id}`)
+            navigate(`/update-appointment-of-doctor/${appointment._id}`)
         },
         download: false,
         print: false,

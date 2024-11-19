@@ -5,12 +5,17 @@ import { NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { assets } from "../assets/assets.js";
 import { Menu } from "lucide-react";
+import {ThemeWrapper, ToggleSwitch, ToggleWrapper} from "./style";
+import {useTranslation} from "react-i18next";
 
 const Sidebar = () => {
     const { aToken } = useContext(AdminContext);
     const { dToken } = useContext(DoctorContext);
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const {t, i18n} = useTranslation();
+    const [currentLanguage, setCurrentLanguage] = useState("vi");
 
     return (
         <div className='bg-white border-r'>
@@ -36,13 +41,14 @@ const Sidebar = () => {
                     {aToken && (
                         <ul className="text-[#515151]">
                             {[
-                                {to: "/admin-dashboard", icon: assets.home_icon, label: "Dashboard"},
-                                {to: "/account-dashboard", icon: assets.user_icon, label: "Account"},
-                                {to: "/speciality-dashboard", icon: assets.speciality_icon, label: "Speciality"},
-                                {to: "/region-dashboard", icon: assets.map_icon, label: "Region"},
-                                {to: "/appointment", icon: assets.appointment_icon, label: "Appointment"},
-                                {to: "/article-dashboard", icon: assets.article, label: "Article"},
-                                {to: "/forum-dashboard", icon: assets.forum, label: "Forum"},
+                                { to: "/admin-dashboard", icon: assets.home_icon, label: t("sidebar.dashboard") },
+                                { to: "/account-dashboard", icon: assets.user_icon, label: t("sidebar.account") },
+                                { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality") },
+                                { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region") },
+                                { to: "/appointment", icon: assets.appointment_icon, label: t("sidebar.appointment") },
+                                { to: "/article-dashboard", icon: assets.article, label: t("sidebar.article") },
+                                { to: "/forum-dashboard", icon: assets.forum, label: t("sidebar.forum") },
+                                { to: "/admin-profile", icon: assets.admin, label: t("sidebar.profile") },
                             ].map((item) => (
                                 <NavLink
                                     key={item.to}
@@ -71,28 +77,17 @@ const Sidebar = () => {
                                 </NavLink>
                             ))}
 
-                            <NavLink to="/admin-profile"
-                                     className={({isActive}) =>
-                                         `flex items-center mt-60 gap-3 px-3 py-3.5 md:px-5 md:min-w-72 cursor-pointer transition-all duration-300 ${
-                                             isActive || location.pathname === 'admin-profile'
-                                                 ? "bg-[#F2F3FF] border-r-4 border-primary text-primary"
-                                                 : "hover:bg-gray-100 text-gray-600"
-                                         }`
-                                     }>
-                                <img className='w-7' src={assets.admin} alt='admin'/>
-                                <AnimatePresence>
-                                    {isSidebarOpen && (
-                                        <motion.p
-                                            className="hidden md:block whitespace-nowrap"
-                                            initial={{opacity: 0, x: -20}}
-                                            animate={{opacity: 1, x: 0}}
-                                            exit={{opacity: 0, x: -20}}
-                                        >
-                                            Admin Profile
-                                        </motion.p>
-                                    )}
-                                </AnimatePresence>
-                            </NavLink>
+                            <ThemeWrapper>
+                                <ToggleWrapper>
+                                    <ToggleSwitch
+                                        onClick={() => {
+                                            setCurrentLanguage(currentLanguage === "vi" ? "en" : "vi");
+                                            i18n.changeLanguage(currentLanguage === "vi" ? "en" : "vi");
+                                        }}
+                                        type="checkbox" role="switch" />
+                                </ToggleWrapper>
+                            </ThemeWrapper>
+
                         </ul>
                     )}
 

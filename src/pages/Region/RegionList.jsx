@@ -10,13 +10,20 @@ import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
 import { FaRegTrashAlt } from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import { toast } from "react-toastify";
 import { LuMapPin } from "react-icons/lu";
 import { LuMapPinOff } from "react-icons/lu";
 import AddRegion from "./AddRegion";
 import UpdateRegion from "./UpdateRegion";
 import { motion } from "framer-motion";
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
 
 const RegionList = () => {
     const { aToken } = useContext(AdminContext);
@@ -32,9 +39,64 @@ const RegionList = () => {
     const [regionId, setRegionId] = useState('');
     const [data, setData] = useState([]);
 
+    // const members = useQuery({
+    //     queryKey: [workSpace],
+    //     queryFn: async () => {
+    //         if (!workSpace.data?.members) return [];
+    //         const members = await Promise.all(workSpace.data.members.map(async (member) => {
+    //             return (await getUserData(member))
+    //         }))
+    //         members.push({
+    //             id: workSpace.data.owner.id,
+    //             name: workSpace.data.owner.name,
+    //             imageUri: workSpace.data.owner.imageUri,
+    //             email: workSpace.data.owner.email,
+    //         })
+    //         return members
+    //     }
+    // })
+    //
+    //
+    // workSpace.data && members.data && (
+    // or members.isLoading
+    //     <ModalEditCard
+    //         open={openModal}
+    //         onClose={() => setOpenModal(false)}
+    //         card={card}
+    //         members={members}
+    //     />
+    // )
+
+    // const { data, isLoading, isError, refetch } = useQuery({
+    //     queryKey: ['regions', hiddenState],
+    //     queryFn: async () => {
+    //         try {
+    //             return await regionService.findAll(hiddenState, aToken);
+    //         } catch (e) {
+    //             console.error(e);
+    //             throw new Error('Failed to load regions');
+    //         }
+    //     }
+    // });
+
+    // const queryClient = useQueryClient();
+
+    // const deleteRegionsMutation = useMutation({
+    //     mutationFn: (ids) => regionService.deleteSoftRegion(ids, aToken),
+    //     onSuccess: () => {
+    //         toast.success('Delete Successful');
+    //         setSelectedRegionIds([]);
+    //         refetch(); // Refetch the region list after successful deletion
+    //     },
+    //     onError: (error) => {
+    //         toast.error(error.message || 'An error occurred while deleting regions');
+    //     }
+    // });
+
+
     const loadData = async () => {
         try {
-            getRegionList();
+            // getRegionList();
             setCreateModal(false);
             setUpdateModal(false);
         } catch (error) {
@@ -93,7 +155,7 @@ const RegionList = () => {
         }
         try {
             await regionService.deleteSoftRegion(selectedRegionIds, aToken);
-            getRegionList();
+            // getRegionList();
             toast.success('Delete Successful');
             setSelectedRegionIds([]);
             setOpen(false);
@@ -173,7 +235,7 @@ const RegionList = () => {
                             <input
                                 type="checkbox"
                                 checked={
-                                    table.getRowModel().rows.length > 0 &&
+                                    table.getRowModel().rows?.length > 0 &&
                                     table.getRowModel().rows.every((row) =>
                                         selectedRegionIds.includes(row.original._id)
                                     )

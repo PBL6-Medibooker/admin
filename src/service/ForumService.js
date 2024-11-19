@@ -39,3 +39,12 @@ export const updatePost = async (data,id,aToken) => {
         console.log(e)
     }
 }
+
+export const createPost = async (data,id,dToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + '/create-post',data,{headers: {dToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

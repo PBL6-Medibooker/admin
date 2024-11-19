@@ -118,7 +118,8 @@ const AdminProfile = () => {
                                 adminData.username
                             )}
                         </p>
-                        <hr className='bg-zinc-400 h-[1px] border-none'/>
+
+                        <hr className='bg-zinc-400 h-[1px] border-none mt-2'/>
                         <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
 
 

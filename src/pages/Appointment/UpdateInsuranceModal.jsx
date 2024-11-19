@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {AdminContext} from "../../context/AdminContext"
-import Modal from '../../components/ModalListInsurance'
-import ModalD from '../../components/Modal'
+import Modal from '../../components/Modal/ModalListInsurance'
+import ModalD from '../../components/Modal/Modal'
 import * as appointmentService from "../../service/AppointmentService"
 import {toast} from "react-toastify"
 import MUIDataTable from "mui-datatables"

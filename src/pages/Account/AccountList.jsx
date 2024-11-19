@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-table";
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import AddInsuranceByAppointmentId from "../Appointment/AddInsuranceByAppointmentId";
 
@@ -233,34 +233,36 @@ const AccountList = () => {
                 </thead>
                 <tbody>
                 {table?.getRowModel()?.rows?.length ? (
-                    table.getRowModel().rows.map((row, i) => (
-                        <motion.tr
-                            key={row.id}
-                            className={`${
-                                i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'
-                            }`}
-                            initial={{opacity: 0}}
-                            animate={{opacity: 1}}
-                            transition={{delay: i * 0.05}}
-                        >
-                            <td className="p-2">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedAccountIds.includes(row.original._id)}
-                                    onChange={() => toggleAccountSelection(row.original._id)}
-                                />
-                            </td>
-                            {row.getVisibleCells().map((cell) => (
-                                <td
-                                    key={cell.id}
-                                    className="p-2 cursor-pointer"
-                                    onClick={() => navigate(`/update-cus-account/${row.original.email}`)}
-                                >
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    table.getRowModel().rows
+                        .filter((row) => row.original.role !== 'admin') // Filter out rows with 'admin' role
+                        .map((row, i) => (
+                            <motion.tr
+                                key={row.id}
+                                className={`${
+                                    i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'
+                                }`}
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                transition={{delay: i * 0.05}}
+                            >
+                                <td className="p-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedAccountIds.includes(row.original._id)}
+                                        onChange={() => toggleAccountSelection(row.original._id)}
+                                    />
                                 </td>
-                            ))}
-                        </motion.tr>
-                    ))
+                                {row.getVisibleCells().map((cell) => (
+                                    <td
+                                        key={cell.id}
+                                        className="p-2 cursor-pointer"
+                                        onClick={() => navigate(`/update-cus-account/${row.original.email}`)}
+                                    >
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </td>
+                                ))}
+                            </motion.tr>
+                        ))
                 ) : (
                     <tr className="text-center h-32 text-blue-400">
                         <td colSpan={12}>No Record Found!</td>

@@ -12,10 +12,12 @@ import {
     Tooltip,
 
 } from "recharts";
+import {useTranslation} from "react-i18next";
 const COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FED766", "#2AB7CA"];
 
 const TopDoctorChart = () => {
     const { aToken } = useContext(AdminContext);
+    const {t} = useTranslation()
 
     const [doctorData, setDoctorData] = useState([]);
 
@@ -25,7 +27,7 @@ const TopDoctorChart = () => {
             if (data) {
                 console.log(data);
                 const formattedData = data.data.map((item) => ({
-                    name: item.doctorDetails?.username || "Unknown Doctor",
+                    name: item.doctorDetails?.username || t("adashboard.unknownDoctor"),
                     appointmentCount: item.appointmentCount,
                 }));
                 setDoctorData(formattedData);
@@ -73,7 +75,7 @@ const TopDoctorChart = () => {
 
                 >
                     <p className="label" style={{ color: "#374151" }}>
-                        {name}: {appointmentCount}&nbsp;appointments
+                        {name}: {appointmentCount}&nbsp;{t("adashboard.appointments")}
 
                     </p>
 
@@ -97,7 +99,7 @@ const TopDoctorChart = () => {
             transition={{delay: 1}}
         >
             <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>Top Doctors</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>{t("adashboard.topDoctors")}</h2>
             </div>
 
             <div className='w-full h-80'>
@@ -125,7 +127,7 @@ const TopDoctorChart = () => {
                             <Legend content={renderLegend}/>
                         </PieChart>
                     ) : (
-                        <p className="text-center text-gray-500">No data available</p>
+                        <p className="text-center text-gray-500">{t("adashboard.noDataAvailable")}</p>
                     )}
                 </ResponsiveContainer>
             </div>

@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import * as specialityService from "../../service/SpecialityService";
 import {toast} from "react-toastify";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import axios from "axios";
 import {assets} from "../../assets/assets";
 

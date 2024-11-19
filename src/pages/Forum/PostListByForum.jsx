@@ -5,7 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
 import * as forumService from "../../service/ForumService";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {
     createColumnHelper,
     flexRender,

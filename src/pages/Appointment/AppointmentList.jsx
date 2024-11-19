@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import {AppContext} from "../../context/AppContext";
 import {assets} from "../../assets/assets";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 
 const AppointmentList = () => {

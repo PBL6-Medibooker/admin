@@ -1,0 +1,30 @@
+{
+  "common": {
+    "button": {
+      "search": "Tìm kiếm",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "save": "Lưu"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Trang chủ",
+    "account": "Tài khoản",
+    "speciality": "Chuyên khoa",
+    "region": "Vùng",
+    "appointment": "Cuộc hẹn",
+    "article": "Bài viết",
+    "forum": "Diễn đàn",
+    "profile": "Hồ sơ"
+  },
+  "adashboard": {
+    "userAccount": "Tài khoản",
+    "verifiedDoctor": "Bác sĩ đã được xác minh",
+    "unverifiedDoctor": "Bác sĩ chưa xác minh",
+    "topDoctors": "Những Bác sĩ hàng đầu",
+    "appointments": "cuộc hẹn",
+    "unknownDoctor": "Không có dữ liệu bác sĩ",
+    "noDataAvailable": "Không có dữ liệu"
+  }
+}
+

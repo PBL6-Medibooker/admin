@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Modal from '../../components/ModalLarge';
+import Modal from '../../components/Modal/ModalLarge';
 import {toast} from "react-toastify";
 import * as accountService from "../../service/AccountService";
 import {AdminContext} from "../../context/AdminContext";

@@ -11,7 +11,7 @@ import {AdminContext} from "../../context/AdminContext";
 import {toast} from "react-toastify";
 import * as regionService from "../../service/RegionService";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal";
+import Modal from "../../components/Modal/Modal";
 import { FaTrashRestoreAlt } from "react-icons/fa";
 import * as accountService from "../../service/AccountService";
 
