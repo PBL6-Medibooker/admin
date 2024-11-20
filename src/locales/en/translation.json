@@ -5,6 +5,11 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "save": "Save"
+    },
+    "header": {
+      "logout": "Logout",
+      "admin": "Admin",
+      "doctor": "Doctor"
     }
   },
   "sidebar": {
@@ -17,13 +22,85 @@
     "forum": "Forum",
     "profile": "Profile"
   },
-  "adashboard": {
-    "userAccount": "Total Account",
-    "verifiedDoctor": "Verified Doctor",
-    "unverifiedDoctor": "Unverified Doctor",
-    "topDoctors": "Top Doctors",
-    "appointments": "appointments",
-    "unknownDoctor": "Unknown Doctor",
-    "noDataAvailable": "No data available"
-  }
+ "account": {
+   "adashboard": {
+     "userAccount": "Total Account",
+     "verifiedDoctor": "Verified Doctor",
+     "unverifiedDoctor": "Unverified Doctor",
+     "topDoctors": "Top Doctors",
+     "appointments": "appointments",
+     "unknownDoctor": "Unknown Doctor",
+     "noDataAvailable": "No data available"
+   },
+   "accountList": {
+     "userAccounts": "User Accounts",
+     "addnewAccount": "Add New Account",
+     "delete": "Delete",
+     "search": "Search accounts...",
+     "profile": "Avatar",
+     "role": "Role",
+     "username": "Username",
+     "phone": "Phone",
+     "page": "Page",
+     "goToPage": "Go to page",
+     "deleteNoti": "No account selected for deletion!",
+     "successDelete": "Account Deleted",
+     "confirmDelete": "Confirm Delete",
+     "pCD": "Are you sure you want to delete?",
+     "cancel": "Cancel",
+     "confirm": "Delete",
+     "nodata": "No Record Found!"
+   },
+   "addNewCustomerAcc": {
+     "success": "Add New Customer Account Successful!",
+     "title": "Add New Customer Account",
+     "phone": "Phone Number",
+     "username": "Username",
+     "password": "Password",
+     "back": "Back",
+     "add": "Add Account"
+   },
+   "restore": {
+     "title": "All Deleted Customer Accounts",
+     "putBack": "Put Back",
+     "deleteP": "Delete Permanently",
+     "p": "permanently",
+     "pCD": "Are you sure you want to delete account",
+     "rNoti": "No account selected for restoration"
+   },
+   "update": {
+     "appointments": "User's Appointments",
+     "reset": "Reset Password",
+     "title": "Update Customer Info",
+     "upload": "Upload Customer Picture",
+     "cupload": "Click to upload an image",
+     "username": "Customer Username",
+     "phone": "Customer Phone",
+     "underlying": "Customer Underlying Condition",
+     "dob": "Date of Birth",
+     "address": "Address",
+     "email": "Customer Email",
+     "role": "Role",
+     "rolec": "Change user role",
+     "back": "Back",
+     "save": "Save",
+     "noti": "Updated Customer Information"
+   },
+   "user": {
+     "confirmDelete": "Confirm Cancel Appointment",
+     "pCD": "Are you sure you want to cancel appointment?",
+     "cancel": "No",
+     "confirm": "Yes",
+     "success": "The Appointment has been cancelled",
+     "title": "Cancel Appointment",
+     "error": "Error While Canceling!",
+     "noti": "An error occurred while cancelling the appointment.",
+     "na": "Appointments",
+     "address": "Address",
+     "dnt": "Date & Time",
+     "cancela": "Cancel Appointment",
+     "completed": "Completed",
+     "cancelled": "Appointment Cancelled"
+   }
+ }
 }

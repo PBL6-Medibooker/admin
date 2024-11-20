@@ -20,9 +20,7 @@ export const findAll = async (user, hidden_state, verified, aToken) => {
 
 export const addAccount = async (formData, aToken) => {
     try {
-        // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
+
         const result = await axios.post(REST_API_BASE_URL + "/signup", formData, {headers: {aToken}})
         return result.data
     } catch (e) {
@@ -223,6 +221,15 @@ export const getDoctorProfile = async (authorization) => {
 export const getTopDoctors = async ( aToken) => {
     try {
         const result = await axios.get(REST_API_BASE_URL + '/top-doctor', {headers: {aToken}});
+        return result.data;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+export const getTopUsers = async ( aToken) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/top-users', {headers: {aToken}});
         return result.data;
     } catch (e) {
         console.error(e);

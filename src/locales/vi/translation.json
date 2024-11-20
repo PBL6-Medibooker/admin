@@ -5,6 +5,11 @@
       "cancel": "Hủy",
       "delete": "Xóa",
       "save": "Lưu"
+    },
+    "header": {
+      "logout": "Đăng xuất",
+      "admin": "Quản lí",
+      "doctor": "Bác sĩ"
     }
   },
   "sidebar": {
@@ -15,16 +20,87 @@
     "appointment": "Cuộc hẹn",
     "article": "Bài viết",
     "forum": "Diễn đàn",
-    "profile": "Hồ sơ"
+    "profile": "Trang cá nhân"
   },
-  "adashboard": {
-    "userAccount": "Tài khoản",
-    "verifiedDoctor": "Bác sĩ đã được xác minh",
-    "unverifiedDoctor": "Bác sĩ chưa xác minh",
-    "topDoctors": "Những Bác sĩ hàng đầu",
-    "appointments": "cuộc hẹn",
-    "unknownDoctor": "Không có dữ liệu bác sĩ",
-    "noDataAvailable": "Không có dữ liệu"
-  }
+ "account": {
+   "adashboard": {
+     "userAccount": "Tài khoản",
+     "verifiedDoctor": "Bác sĩ đã được xác minh",
+     "unverifiedDoctor": "Bác sĩ chưa xác minh",
+     "topDoctors": "Bác sĩ hàng đầu có nhiều lịch khám nhất",
+     "appointments": "cuộc hẹn",
+     "unknownDoctor": "Không có dữ liệu bác sĩ",
+     "noDataAvailable": "Không có dữ liệu"
+   },
+   "accountList": {
+     "userAccounts": "Tài khoản người dùng",
+     "addnewAccount": "Thêm tài khoản",
+     "delete": "Xoá tài khoản",
+     "search": "Tìm kiếm tài khoản...",
+     "profile": "Ảnh",
+     "role": "Vai trò",
+     "username": "Tên người dùng",
+     "phone": "Số điện thoại",
+     "page": "Trang",
+     "goToPage": "Đi tới trang",
+     "deleteNoti": "Chưa chọn tài khoản để xoá!",
+     "successDelete": "Xoá tài khoản thành công!",
+     "confirmDelete": "Xác nhận xoá tài khoản",
+     "pCD": "Bạn có muốn xoá tài khoản đã chọn?",
+     "cancel": "Huỷ",
+     "confirm": "Xoá"
+   },
+   "addNewCustomerAcc": {
+     "success": "Thêm tài khoản thành công!",
+     "title": "Thêm Tài Khoản Khách Hàng",
+     "phone": "Số điện thoại",
+     "username": "Tên người dùng",
+     "password": "Mật khẩu",
+     "back": "Trở về",
+     "add": "Hoàn tất"
+   },
+   "restore": {
+     "title": "Tất Cả Những Tài Khoản Đã Xoá",
+     "putBack": "Kích hoạt",
+     "deleteP": "Xoá vĩnh viễn",
+     "p": "vĩnh viễn",
+     "pCD": "Bạn có muốn xoá tài khoản đã chọn",
+     "rNoti": "Không có tài khoản nào được chọn để kích hoạt lại"
+   },
+   "update": {
+     "appointments": "Danh sách cuộc hẹn",
+     "reset": "Đặt lại mật khẩu",
+     "title": "Cập Nhật Thông Tin Khách Hàng",
+     "upload": "Tải ảnh đại diện",
+     "cupload": "Bấm vào để tải",
+     "username": "Tên Người Dùng",
+     "phone": "Số Điện Thoại",
+     "underlying": "Bệnh nền",
+     "dob": "Ngày tháng năm sinh",
+     "address": "Địa chỉ",
+     "email": "Email",
+     "role": "Vai trò",
+     "rolec": "Thay đổi chức vụ",
+     "back": "Trở về",
+     "save": "Hoàn tất",
+     "noti": "Cập Nhật Thông Tin Khách Hàng Thành Công"
+   },
+   "user": {
+     "confirmDelete": "Xác Nhận Huỷ Lịch Khám",
+     "pCD": "Bạn có muốn huỷ lịch khám không?",
+     "cancel": "Không",
+     "confirm": "Huỷ",
+     "success": "Huỷ lịch khám thành công!",
+     "title": "Huỷ lịch khám",
+     "error": "Lỗi!",
+     "noti": "Lỗi khi huỷ lịch khám.",
+     "na": "",
+     "address": "Địa chỉ",
+     "dnt": "Ngày & Giờ",
+     "cancela": "Huỷ Lịch Khám",
+     "completed": "Hoàn Thành",
+     "cancelled": "Đã Huỷ"
+   }
+ }
 }
 

@@ -27,7 +27,7 @@ const TopDoctorChart = () => {
             if (data) {
                 console.log(data);
                 const formattedData = data.data.map((item) => ({
-                    name: item.doctorDetails?.username || t("adashboard.unknownDoctor"),
+                    name: item.doctorDetails?.username || t("account.adashboard.unknownDoctor"),
                     appointmentCount: item.appointmentCount,
                 }));
                 setDoctorData(formattedData);
@@ -75,7 +75,7 @@ const TopDoctorChart = () => {
 
                 >
                     <p className="label" style={{ color: "#374151" }}>
-                        {name}: {appointmentCount}&nbsp;{t("adashboard.appointments")}
+                        {name}: {appointmentCount}&nbsp;{t("account.adashboard.appointments")}
 
                     </p>
 
@@ -99,7 +99,7 @@ const TopDoctorChart = () => {
             transition={{delay: 1}}
         >
             <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>{t("adashboard.topDoctors")}</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>{t("account.adashboard.topDoctors")}</h2>
             </div>
 
             <div className='w-full h-80'>
@@ -127,7 +127,7 @@ const TopDoctorChart = () => {
                             <Legend content={renderLegend}/>
                         </PieChart>
                     ) : (
-                        <p className="text-center text-gray-500">{t("adashboard.noDataAvailable")}</p>
+                        <p className="text-center text-gray-500">{t("account.adashboard.noDataAvailable")}</p>
                     )}
                 </ResponsiveContainer>
             </div>

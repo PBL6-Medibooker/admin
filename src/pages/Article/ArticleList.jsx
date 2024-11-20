@@ -106,7 +106,7 @@ const ArticleList = () => {
         getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        initialState: {pagination: {pageSize: 7}}
+        initialState: {pagination: {pageSize: 10}}
 
     });
 

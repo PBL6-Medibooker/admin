@@ -15,6 +15,8 @@ import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import {FaTrashRestoreAlt} from "react-icons/fa";
 import axios from "axios";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const RestoreAccount = () => {
     const columnHelper = createColumnHelper();
@@ -29,6 +31,7 @@ const RestoreAccount = () => {
     const [hiddenState, setHiddenState] = useState(true);
 
     const [open, setOpen] = useState(false);
+    const {t} = useTranslation();
 
     const {aToken} = useContext(AdminContext);
 
@@ -42,7 +45,7 @@ const RestoreAccount = () => {
         columnHelper.accessor("profile_image", {
             cell: (info) => (
                 <img className="rounded-full w-10 h-10 object-cover"
-                     src={info?.getValue() ? `data:image/png;base64,${info.getValue()}` : assets.user_icon}
+                     src={info?.getValue() ? info.getValue() : assets.user_icon}
                      alt="..."
                 />
             ),
@@ -91,13 +94,6 @@ const RestoreAccount = () => {
 
     const getDeletedAccountList = async () => {
         try {
-            // const result = await axios.post('http://localhost:4000/acc/acc-list',{
-            //     user: false,
-            //     hidden_state:true,
-            //     verified:false
-            // }, {headers:{aToken}})
-            // console.log(result.data)
-
             const result = await accountService.findAllDeletedAccount(isUser, hiddenState, isVerify, aToken);
             setData(result);
         } catch (e) {
@@ -108,7 +104,11 @@ const RestoreAccount = () => {
 
     const restoreDocAccount = async () => {
         if (selectedAccountIds?.length === 0 && open) {
-            toast.warn('No account selected for restoration')
+            await Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: t("account.accountList.deleteNoti"),
+            });
             return;
         }
 
@@ -130,7 +130,11 @@ const RestoreAccount = () => {
 
     const permanentDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0 ) {
-            toast.warn('No account selected for deletion')
+            await Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: t("account.accountList.deleteNoti"),
+            });
             return;
         }
         try {
@@ -159,7 +163,7 @@ const RestoreAccount = () => {
         <div className='m-5 max-h-[90h] w-[90vw] overflow-y-scroll'>
 
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg font-medium'>All Deleted Doctor Accounts</h1>
+                <h1 className='text-lg lg:text-2xl text-primary font-medium'>All Deleted Doctor Accounts</h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreDocAccount}

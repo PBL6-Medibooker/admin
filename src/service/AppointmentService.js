@@ -151,3 +151,13 @@ export const getAppointmentByDoctor = async (is_deleted, id, dToken) => {
         console.log(e)
     }
 }
+
+export const getAppointmentByUser = async (id, dToken) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + `/get-user-appointments/${id}`
+         ,{headers: {dToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

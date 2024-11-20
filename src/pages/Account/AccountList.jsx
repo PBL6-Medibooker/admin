@@ -14,7 +14,8 @@ import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
 import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
-import AddInsuranceByAppointmentId from "../Appointment/AddInsuranceByAppointmentId";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const AccountList = () => {
@@ -29,6 +30,8 @@ const AccountList = () => {
     const [hiddenState, setHiddenState] = useState(false);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
+    const {t} = useTranslation();
+
 
     const {aToken} = useContext(AdminContext);
 
@@ -45,11 +48,11 @@ const AccountList = () => {
                      alt="..."
                 />
             ),
-            header: "Profile",
+            header: t("account.accountList.profile"),
         }),
         columnHelper.accessor("role", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Role",
+            header: t("account.accountList.role"),
         }),
         columnHelper.accessor("email", {
             cell: (info) => <span>{info?.getValue()}</span>,
@@ -57,11 +60,11 @@ const AccountList = () => {
         }),
         columnHelper.accessor("username", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "UserName",
+            header: t("account.accountList.username"),
         }),
         columnHelper.accessor("phone", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Phone",
+            header: t("account.accountList.phone"),
         })
 
 
@@ -102,24 +105,43 @@ const AccountList = () => {
 
     const softDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No account selected for deletion')
+            // toast.warn('No account selected for deletion')
+
+           await Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: t("account.accountList.deleteNoti"),
+            });
+
             return;
         }
         try {
-            const response = await accountService.deleteSoftAccount(selectedAccountIds, aToken)
+            await accountService.deleteSoftAccount(selectedAccountIds, aToken)
             getAccountList();
-            toast.success(response.message);
-            setSelectedAccountIds([]);
+            // toast.success(response.message);
             setOpen(false);
+            setSelectedAccountIds([]);
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.accountList.successDelete"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             console.error(error.message);
-            alert("Error deleting accounts: " + error.message);
         }
     };
 
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No account selected for deletion')
+            // toast.warn('No account selected for deletion')
+
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: t("account.accountList.deleteNoti"),
+            });
         } else {
             setOpen(true)
         }
@@ -138,14 +160,14 @@ const AccountList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
-                <h1 className="text-lg text-primary lg:text-2xl font-semibold">User Accounts</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-semibold">{t("account.accountList.userAccounts")}</h1>
                 <div className="flex gap-4">
                     <motion.button
                         onClick={() => navigate(`/add-customer-account`)}
                         whileHover={{scale: 1.05}}
                         className="bg-primary px-6 py-2 text-white rounded-full shadow-md hover:bg-primary-dark"
                     >
-                        Add New Account
+                        {t("account.accountList.addnewAccount")}
                     </motion.button>
 
                     <motion.button
@@ -153,7 +175,7 @@ const AccountList = () => {
                         whileHover={{scale: 1.05}}
                         className="flex items-center gap-2 px-6 py-2 text-white bg-red-600 rounded-full shadow-lg shadow-red-500/40"
                     >
-                        <FaRegTrashAlt/> Delete
+                        <FaRegTrashAlt/> {t("account.accountList.delete")}
                     </motion.button>
 
                     <motion.button
@@ -174,26 +196,35 @@ const AccountList = () => {
                         transition={{duration: 0.3}}
                     >
                         <FaRegTrashAlt size={50} className="mx-auto text-red-500 mb-4"/>
-                        <h3 className="text-lg font-semibold">Confirm Delete</h3>
-                        <p className="text-gray-600">Are you sure you want to delete?</p>
+                        <h3 className="text-lg font-semibold">{t("account.accountList.confirmDelete")}</h3>
+                        <p className="text-gray-600">{t("account.accountList.pCD")}</p>
                         <div className="flex justify-around mt-6">
                             <motion.button
                                 onClick={softDeleteAccounts}
                                 whileHover={{scale: 1.05}}
                                 className="text-white bg-red-600 px-6 py-2 rounded-md"
                             >
-                                Delete
+                                {t("account.accountList.confirm")}
                             </motion.button>
                             <motion.button
                                 onClick={() => setOpen(false)}
                                 whileHover={{scale: 1.05}}
                                 className="bg-gray-200 px-6 py-2 rounded-md"
                             >
-                                Cancel
+                                {t("account.accountList.cancel")}
                             </motion.button>
                         </div>
                     </motion.div>
                 </Modal>
+            </div>
+            <div className="mt-5">
+                <input
+                    type="text"
+                    placeholder={t("account.accountList.search")}
+                    value={globalFilter || ""}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                />
             </div>
 
             <motion.table
@@ -234,7 +265,7 @@ const AccountList = () => {
                 <tbody>
                 {table?.getRowModel()?.rows?.length ? (
                     table.getRowModel().rows
-                        .filter((row) => row.original.role !== 'admin') // Filter out rows with 'admin' role
+                        .filter((row) => row.original.role !== 'admin')
                         .map((row, i) => (
                             <motion.tr
                                 key={row.id}
@@ -265,7 +296,7 @@ const AccountList = () => {
                         ))
                 ) : (
                     <tr className="text-center h-32 text-blue-400">
-                        <td colSpan={12}>No Record Found!</td>
+                        <td colSpan={12}>{t("account.accountList.nodata")}</td>
                     </tr>
                 )}
                 </tbody>
@@ -289,14 +320,14 @@ const AccountList = () => {
                 </button>
 
                 <div className="flex items-center gap-1">
-                    <span>Page</span>
+                    <span>{t("account.accountList.page")}</span>
                     <strong>
                         {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
                     </strong>
                 </div>
 
                 <div className="flex items-center gap-1">
-                    | Go to page:
+                    | {t("account.accountList.goToPage")}:
                     <input
                         type="number"
                         defaultValue={table.getState().pagination.pageIndex + 1}

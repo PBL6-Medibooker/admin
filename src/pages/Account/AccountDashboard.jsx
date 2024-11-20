@@ -80,15 +80,15 @@ const AccountDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name={t('adashboard.userAccount')}
+                    <StatCard name={t('account.adashboard.userAccount')}
                               to={'/account'} icon={User} value={totalUsers}
                               color='#6366F1'/>
 
-                    <StatCard name={t('adashboard.verifiedDoctor')}
+                    <StatCard name={t('account.adashboard.verifiedDoctor')}
                               to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
                               color='#6366F1'/>
 
-                    <StatCard name={t('adashboard.unverifiedDoctor')}
+                    <StatCard name={t('account.adashboard.unverifiedDoctor')}
                               to={'/doc-account'} icon={UserRoundSearch} value={totalUnDoctors}
                               color='#6366F1'/>
 

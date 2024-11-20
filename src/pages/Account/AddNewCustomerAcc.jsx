@@ -4,6 +4,8 @@ import {AdminContext} from "../../context/AdminContext";
 import {toast} from "react-toastify";
 import * as accountService from "../../service/AccountService";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import {useTranslation} from "react-i18next";
 
 
 const AddNewCustomerAcc = () => {
@@ -13,6 +15,7 @@ const AddNewCustomerAcc = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [isDoc, setIsDoc] = useState('0');
+    const {t} = useTranslation();
 
     const navigate = useNavigate();
 
@@ -31,12 +34,19 @@ const AddNewCustomerAcc = () => {
         formData.append('profile_image', cusImg);
 
 
-        const data = await accountService.addAccount(formData, aToken);
+        const response = await accountService.addAccount(formData, aToken);
 
-        if (data !== null) {
+        if (response?.success) {
             navigate('/account')
-            console.log("Showing success toast");
-            toast.success('Add New Customer Account Successful');
+            // toast.success('Add New Customer Account Successful');
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.addNewCustomerAcc.success"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } else {
             console.log("Showing error toast");
             toast.error('Error');
@@ -53,7 +63,7 @@ const AddNewCustomerAcc = () => {
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl text-primary lg:text-2xl font-semibold mb-4">
-                    Add New Customer Account
+                    {t("account.addNewCustomerAcc.title")}
                 </p>
             </motion.div>
 
@@ -83,7 +93,7 @@ const AddNewCustomerAcc = () => {
                                 value={email}
                                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 type="email"
-                                placeholder="Email"
+                                placeholder="bevis@gmail.com"
                                 required
                                 autoFocus
                             />
@@ -91,7 +101,7 @@ const AddNewCustomerAcc = () => {
 
                         <div className="flex flex-col w-[30vw] gap-1">
                             <label htmlFor="phone" className="text-lg font-medium text-gray-700 mb-2">
-                                Phone
+                                {t("account.addNewCustomerAcc.phone")}
                             </label>
                             <input
                                 id="phone"
@@ -99,14 +109,14 @@ const AddNewCustomerAcc = () => {
                                 value={phone}
                                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 type="text"
-                                placeholder="Phone"
+                                placeholder="123456789"
                                 required
                             />
                         </div>
 
                         <div className="flex flex-col gap-1 w-[30vw]">
                             <label htmlFor="username" className="text-lg font-medium text-gray-700 mb-2">
-                                Username
+                                {t("account.addNewCustomerAcc.username")}
                             </label>
                             <input
                                 id="username"
@@ -114,14 +124,14 @@ const AddNewCustomerAcc = () => {
                                 value={username}
                                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 type="text"
-                                placeholder="Username"
+                                placeholder="bevis"
                                 required
                             />
                         </div>
 
                         <div className="flex flex-col gap-1 w-[30vw]">
                             <label htmlFor="password" className="text-lg font-medium text-gray-700 mb-2">
-                                Password
+                                {t("account.addNewCustomerAcc.password")}
                             </label>
                             <input
                                 id="password"
@@ -129,7 +139,7 @@ const AddNewCustomerAcc = () => {
                                 value={password}
                                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                 type="password"
-                                placeholder="Password"
+                                placeholder="12345qwert!@#$%QWERT"
                                 required
                             />
                         </div>
@@ -146,14 +156,14 @@ const AddNewCustomerAcc = () => {
                             onClick={() => navigate('/account')}
                             className="bg-red-500 text-white px-6 py-3 text-sm  rounded-full hover:bg-gray-400 transition-all"
                         >
-                            <i className="fas fa-arrow-left mr-2"></i> Back
+                            <i className="fas fa-arrow-left mr-2"></i>  {t("account.addNewCustomerAcc.back")}
                         </button>
 
                         <button
                             type="submit"
                             className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                         >
-                            <i className="fas fa-plus mr-2"></i> Add Account
+                            <i className="fas fa-plus mr-2"></i>  {t("account.addNewCustomerAcc.add")}
                         </button>
                     </motion.div>
                 </form>

@@ -66,12 +66,6 @@ const SpecialityList = () => {
     };
 
     useEffect(() => {
-        // if (location.state?.imageUpdated) {
-        //     findAllSpecialities();
-        // } else {
-        //     findAllSpecialities();
-        // }
-
         if(aToken){
             findAllSpecialities()
         }

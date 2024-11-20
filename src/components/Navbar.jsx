@@ -4,11 +4,13 @@ import { AdminContext } from "../context/AdminContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { DoctorContext } from "../context/DoctorContext";
 import { motion } from "framer-motion";
+import {useTranslation} from "react-i18next";
 
 function Navbar() {
     const { aToken, setAToken } = useContext(AdminContext);
     const { dToken, setDToken } = useContext(DoctorContext);
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const logout = () => {
         navigate("/");
@@ -40,7 +42,7 @@ function Navbar() {
                     className="border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600"
                     whileHover={{ scale: 1.1 }}
                 >
-                    {aToken ? "Admin" : "Doctor"}
+                    {aToken ?  t("common.header.admin") : t("common.header.doctor")}
                 </motion.p>
             </motion.div>
 
@@ -50,7 +52,7 @@ function Navbar() {
                 whileTap={{ scale: 0.95 }}
                 className="bg-primary text-white px-10 py-2 rounded-full text-sm hover:shadow-lg"
             >
-                Logout
+                {t("common.header.logout")}
             </motion.button>
         </motion.div>
     );

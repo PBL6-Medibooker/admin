@@ -10,6 +10,7 @@ export const ThemeWrapper = styled.div`
     right: 0;
     margin-top: 0;
     padding: 5px;  
+    width: 100px;
 `;
 
 export const ToggleWrapper = styled.div`
@@ -59,3 +60,4 @@ export const ToggleSwitch = styled.input`
         content: "EN";
     }
 `;
+

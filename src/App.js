@@ -48,6 +48,7 @@ import UpdateAppointment from "./pages/Doctor/UpdateAppointment";
 import Test from "./pages/Test";
 import './config-translation'
 import Loading from "./pages/Loading";
+import UserAppointments from "./pages/Account/UserAppointments";
 
 
 function App() {
@@ -61,9 +62,9 @@ function App() {
             <div className='flex items-start'>
                 <Sidebar/>
                 <Routes>
-                    {/*<Route path='/' element={<></>} />*/}
+                    <Route path='/' element={<></>} />
                     {/*<Route path='/' element={<Test />} />*/}
-                    <Route path='/' element={<Loading />} />
+                    {/*<Route path='/' element={<Loading />} />*/}
                     <Route path='/admin-dashboard' element={<Dashboard/>}/>
                     <Route path='/admin-profile' element={<AdminProfile/>}/>
 
@@ -94,6 +95,7 @@ function App() {
                     <Route path='/booking-appointment' element={<AddAppointment/>} />
                     <Route path='/update-appointment-info/:id' element={<UpdateAppointmentInfo/>} />
                     <Route path='/add-insurance/:id' element={<AddInsuranceByAppointmentId/>} />
+                    <Route path='/user-appointments/:id' element={<UserAppointments/>} />
 
 
                     <Route path='/article-dashboard' element={<ArticleDashboard/>} />
