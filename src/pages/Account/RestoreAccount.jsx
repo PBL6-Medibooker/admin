@@ -6,7 +6,6 @@ import {
     getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import {useNavigate} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import {assets} from "../../assets/assets";
 import * as accountService from "../../service/AccountService";
@@ -14,24 +13,24 @@ import {toast} from "react-toastify";
 import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import {FaTrashRestoreAlt} from "react-icons/fa";
-import axios from "axios";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import {useLocation} from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
+
 
 const RestoreAccount = () => {
     const columnHelper = createColumnHelper();
 
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
 
-    const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
-
-    const [isUser, setIsUser] = useState(false);
-    const [isVerify, setIsVerify] = useState(false);
-    const [hiddenState, setHiddenState] = useState(true);
 
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
+    const location = useLocation();
+    const {isVerify} = location.state || ""
 
     const {aToken} = useContext(AdminContext);
 
@@ -49,11 +48,11 @@ const RestoreAccount = () => {
                      alt="..."
                 />
             ),
-            header: "Profile",
+            header: t("account.accountList.profile"),
         }),
         columnHelper.accessor("role", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Role",
+            header: t("account.accountList.role"),
         }),
         columnHelper.accessor("email", {
             cell: (info) => <span>{info?.getValue()}</span>,
@@ -61,16 +60,36 @@ const RestoreAccount = () => {
         }),
         columnHelper.accessor("username", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "UserName",
+            header: t("account.accountList.username"),
         }),
         columnHelper.accessor("phone", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Phone",
+            header:  t("account.accountList.phone"),
         })
 
 
     ];
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
+    const { data = [], isLoading, isError, refetch } = useQuery({
+        queryKey: ["accounts", isVerify],
+        queryFn: async () => {
+            try {
+                let result;
+                if (isVerify) {
+                    result = await accountService.findAllDeletedAccount(false, true, true, aToken);
+                } else {
+                    result = await accountService.findAllDeletedAccount(false, true, false, aToken);
+                }
+                console.log("Response:", result);
+                return result;
+            } catch (e) {
+                console.error(e);
+                throw new Error("Failed to load accounts");
+            }
+        }
+
+    });
+
 
     const table = useReactTable({
         data,
@@ -91,16 +110,27 @@ const RestoreAccount = () => {
         );
     };
 
+    //
+    // const getDeletedAccountList = async () => {
+    //     try {
+    //         const result = await accountService.findAllDeletedAccount(false, true, true, aToken);
+    //         console.log(result)
+    //         setData(result);
+    //     } catch (e) {
+    //         console.log(e.error)
+    //     }
+    // }
+    //
+    // const getDeletedUnverifiedAccountList = async () => {
+    //     try {
+    //         const result = await accountService.findAllDeletedAccount(false, true, false, aToken);
+    //         console.log(result)
+    //         setData(result);
+    //     } catch (e) {
+    //         console.log(e.error)
+    //     }
+    // }
 
-    const getDeletedAccountList = async () => {
-        try {
-            const result = await accountService.findAllDeletedAccount(isUser, hiddenState, isVerify, aToken);
-            setData(result);
-        } catch (e) {
-            console.log(e.error)
-        }
-
-    }
 
     const restoreDocAccount = async () => {
         if (selectedAccountIds?.length === 0 && open) {
@@ -115,10 +145,19 @@ const RestoreAccount = () => {
         try {
             const response = await accountService.restoreAccount(selectedAccountIds, aToken);
             if (response.message !== '') {
-                getDeletedAccountList();
-                toast.success(response.message);
+                // getDeletedAccountList();
+                refetch();
+                // toast.success(response.message);
                 setSelectedAccountIds([]);
                 setOpen(false);
+
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.dvd.restore"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 toast.error('Error')
             }
@@ -135,12 +174,14 @@ const RestoreAccount = () => {
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
             });
+            setOpen(false);
             return;
         }
         try {
             const response = await accountService.permanentDeleteAccount(selectedAccountIds, aToken)
             if (response.message !== '') {
-                getDeletedAccountList();
+                // getDeletedAccountList();
+                refetch();
                 toast.success(response.message);
                 setSelectedAccountIds([]);
                 setOpen(false);
@@ -153,28 +194,41 @@ const RestoreAccount = () => {
         }
     };
 
-    useEffect(() => {
-        if (aToken) {
-            getDeletedAccountList();
-        }
-    }, [aToken, hiddenState]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getDeletedAccountList();
+    //     }
+    // }, [aToken, hiddenState]);
+    //
+    // useEffect(() => {
+    //     if(aToken){
+    //         getDeletedUnverifiedAccountList()
+    //     }
+    // }, [aToken]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='m-5 max-h-[90h] w-[90vw] overflow-y-scroll'>
-
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg lg:text-2xl text-primary font-medium'>All Deleted Doctor Accounts</h1>
+                <h1 className='text-lg lg:text-2xl text-primary font-medium'>{isVerify ? t("account.dvd.title"): t("account.dvd.utitle")}</h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreDocAccount}
                         className='flex items-center gap-1 bg-emerald-400 px-10 py-3 mt-4 text-white rounded-full'>
-                        <FaTrashRestoreAlt/> Put Back
+                        <FaTrashRestoreAlt/> {t("account.dvd.putBack")}
                     </button>
 
                     <button
                         className='flex items-center gap-1 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40'
                         onClick={() => setOpen(true)}>
-                        <FaRegTrashAlt/> Delete Permanently
+                        <FaRegTrashAlt/> {t("account.dvd.dp")}
                     </button>
 
 
@@ -184,9 +238,10 @@ const RestoreAccount = () => {
                     <div className="text-center w-72">
                         <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
                         <div className="mx-auto my-4 w-60">
-                            <h3 className="text-lg font-bold text-gray-800">Confirm Delete</h3>
+                            <h3 className="text-lg font-bold text-gray-800">{t("account.accountList.confirmDelete")}</h3>
                             <p className="text-sm text-gray-600">
-                                Are you sure you want to delete these accounts <strong className='text-red-500'>permanently</strong>?
+                                {t("account.restore.pCD")} <strong
+                                className='text-red-500'>{t("account.restore.p")}</strong>?
                             </p>
                         </div>
                         <div className="flex gap-4 mt-6">
@@ -194,13 +249,13 @@ const RestoreAccount = () => {
                                 className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
                                 onClick={permanentDeleteAccounts}
                             >
-                                Delete Permanently
+                                {t("account.restore.deleteP")}
                             </button>
                             <button
                                 className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                                 onClick={() => setOpen(false)}
                             >
-                                Cancel
+                                {t("account.accountList.cancel")}
                             </button>
                         </div>
                     </div>
@@ -264,7 +319,7 @@ const RestoreAccount = () => {
                     ))
                 ) : (
                     <tr className="text-center h-32 text-blue-400">
-                        <td colSpan={12}>No Record Found!</td>
+                        <td colSpan={12}>{t("account.dvd.nodata")}</td>
                     </tr>
                 )}
                 </tbody>

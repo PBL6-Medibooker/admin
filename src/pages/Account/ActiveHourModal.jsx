@@ -3,17 +3,20 @@ import Modal from '../../components/Modal/ModalMedium';
 import {toast} from "react-toastify";
 import * as accountService from "../../service/AccountService";
 import {AdminContext} from "../../context/AdminContext";
+import Swal from "sweetalert2";
+import {useTranslation} from "react-i18next";
 
 
 const ActiveHourModal = ({ open, onClose, id, cancel }) => {
 
     const {aToken} = useContext(AdminContext);
+    const {t} = useTranslation();
 
     const [activeHour, setActiveHour] = useState({
         day: '',
         start_time: '',
         end_time: '',
-        hour_type: 'working',
+        hour_type: 'appointment',
         appointment_limit: ''
     });
 
@@ -38,7 +41,13 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
 
 
             if (endTimeInMinutes <= startTimeInMinutes) {
-                toast.error("End time must be later than start time");
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.aa.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 return;
             }
 
@@ -48,9 +57,23 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                 onClose()
 
                 console.log("Active hour added successfully:", result);
-                toast.success("Active hour added successfully");
+
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.aa.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
-                toast.error("Failed to add active hour.");
+
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.active.emessage"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         } catch (e) {
             console.log("Error adding active hour:", e);
@@ -63,14 +86,14 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h1 className='text-primary font-medium '>Add Active Hour</h1>
+            <h1 className='text-primary font-medium '>{t("account.aa.title")}</h1>
             <form onSubmit={handleSubmit}
                   className="flex flex-col ml-9 justify-center items-center p-6 bg-white rounded max-w-lg w-full">
 
                 <div className="flex flex-col">
                     <div className="flex gap-3">
                         <div>
-                            <label>Day of the Week</label>
+                            <label>{t("account.aa.day")}</label>
                             <select
                                 name="day"
                                 value={activeHour.day}
@@ -90,7 +113,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                         </div>
 
                         <div>
-                            <label>Start Time</label>
+                            <label>{t("account.aa.start")}</label>
                             <input
                                 type="time"
                                 name="start_time"
@@ -102,7 +125,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                         </div>
 
                         <div>
-                            <label>End Time</label>
+                            <label>{t("account.aa.end")}</label>
                             <input
                                 type="time"
                                 name="end_time"
@@ -113,23 +136,23 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                             />
                         </div>
 
-                        <div>
-                            <label>Type</label>
-                            <select
-                                name="hour_type"
-                                value={activeHour.hour_type}
-                                onChange={handleInputChange}
-                                required
-                                className="border p-2 rounded"
-                            >
-                                <option value="working">Working</option>
-                                <option value="appointment">Appointment</option>
-                            </select>
-                        </div>
+                        {/*<div>*/}
+                        {/*    <label>Type</label>*/}
+                        {/*    <select*/}
+                        {/*        name="hour_type"*/}
+                        {/*        value={activeHour.hour_type}*/}
+                        {/*        onChange={handleInputChange}*/}
+                        {/*        required*/}
+                        {/*        className="border p-2 rounded"*/}
+                        {/*    >*/}
+                        {/*        <option value="working">Working</option>*/}
+                        {/*        <option value="appointment">Appointment</option>*/}
+                        {/*    </select>*/}
+                        {/*</div>*/}
 
 
                         <div>
-                            <label>Limit</label>
+                            <label>{t("account.aa.limit")}</label>
                             <input
                                 type="number"
                                 name="appointment_limit"
@@ -149,13 +172,13 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                             onClick={cancel}
                             className="bg-gray-300 p-2 rounded"
                         >
-                            Cancel
+                            {t("account.aa.cancel")}
                         </button>
                         <button
                             type="submit"
                             className="bg-green-500 text-white w-[100px] p-2 rounded"
                         >
-                            Save
+                            {t("account.aa.save")}
                         </button>
                     </div>
                 </div>

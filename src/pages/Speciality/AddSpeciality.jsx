@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
 import * as specialityService from "../../service/SpecialityService"
@@ -10,15 +10,44 @@ const AddSpeciality = () => {
     const [specImg, setSpecImg] = useState(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const {aToken} = useContext(AdminContext);
+    const [specialities, setSpecialities] = useState([]);
+
 
     const navigate = useNavigate();
 
-    const {aToken} = useContext(AdminContext);
+    const findAllSpecialities = async () => {
+        try {
+            const result = await specialityService.findAll(false, aToken);
+            setSpecialities(result);
+        } catch (error) {
+            console.error('Error fetching specialities:', error);
+        }
+    };
+
+    useEffect(() => {
+        findAllSpecialities()
+    }, []);
+
+
+    const check = () => {
+        const exists = specialities.some(speciality => speciality.name.toLowerCase() === name.toLowerCase());
+
+        if (exists) {
+            toast.error('Speciality name already exists');
+            return false;
+        }
+        return true;
+    };
+
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         if (!specImg) {
             return toast.error('Image not selected')
+        }
+        if (!check()) {
+            return;
         }
         const formData = new FormData();
 
@@ -26,20 +55,25 @@ const AddSpeciality = () => {
         formData.append('description', description)
         formData.append('speciality_image', specImg)
 
-        const data = await specialityService.addSpec(formData, aToken);
-        if (data !== null) {
-            navigate('/speciality')
-            console.log("Showing success toast");
-            toast.success('Add PostSpeciality Success');
-        } else {
-            console.log("Showing error toast");
-            toast.error('Error');
-        }
-        // console log data
-        formData.forEach((value, key) => {
-            console.log(`${key}:${value}`)
+       try{
+           const data = await specialityService.addSpec(formData, aToken);
+           if (data !== null) {
+               navigate('/speciality')
+               console.log("Showing success toast");
+               toast.success('Add PostSpeciality Success');
+           } else {
+               console.log("Showing error toast");
+               toast.error('Error');
+           }
 
-        })
+           formData.forEach((value, key) => {
+               console.log(`${key}:${value}`)
+
+           })
+       } catch (error) {
+           const errorMessage = error.response?.data?.error || 'Something went wrong';
+           console.error('Error:', errorMessage);
+       }
 
     };
 
@@ -66,7 +100,7 @@ const AddSpeciality = () => {
                                 <p>PostSpeciality</p>
                                 <input onChange={(e) => setName(e.target.value)}
                                        value={name}
-                                       className='border rounded px-3 py-2' type='text' placeholder='PostSpeciality Name'
+                                       className='border rounded px-3 py-2' type='text' placeholder='Speciality Name'
                                        required autoFocus/>
                             </div>
 

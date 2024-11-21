@@ -3,12 +3,14 @@ import Modal from '../../components/Modal/ModalMedium';
 import {toast} from "react-toastify";
 import * as accountService from "../../service/AccountService";
 import {AdminContext} from "../../context/AdminContext";
+import Swal from "sweetalert2";
+import {useTranslation} from "react-i18next";
 
 
 const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
 
     const {aToken} = useContext(AdminContext);
-
+    const {t} = useTranslation();
 
     const [activeHour, setActiveHour] = useState({
         day: '',
@@ -57,7 +59,6 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
         if (type === "time") {
             formattedValue = formatTime(value);
         }
-
         setActiveHour((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
@@ -88,7 +89,13 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
             const endTimeInMinutes = endHour * 60 + endMinute;
 
             if (endTimeInMinutes <= startTimeInMinutes) {
-                toast.error("End time must be later than start time");
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.aa.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 return;
             }
 
@@ -97,9 +104,22 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
             if (result) {
                 onClose()
                 console.log("Active hour updated successfully:", result);
-                toast.success("Active hour updated successfully");
+                // toast.success("Active hour updated successfully");
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateaa.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
-                toast.error("Failed to update active hour.");
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateaa.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         } catch (e) {
             console.log("Error updating active hour:", e);
@@ -112,14 +132,14 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h1 className='text-primary font-medium '>Update Active Hour</h1>
+            <h1 className='text-primary font-medium '>{t("account.updateaa.title")}</h1>
             <form onSubmit={handleSubmit}
                   className="flex flex-col justify-center items-center p-6 ml-9 bg-white rounded max-w-lg w-full">
 
                 <div className="flex flex-col">
                     <div className="flex gap-3">
                         <div>
-                            <label>Day of the Week</label>
+                            <label>{t("account.updateaa.day")}</label>
                             <select
                                 name="day"
                                 value={activeHour.day}
@@ -139,7 +159,7 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                         </div>
 
                         <div>
-                            <label>Start Time</label>
+                            <label>{t("account.updateaa.start")}</label>
                             <input
                                 type="time"
                                 name="start_time"
@@ -151,7 +171,7 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                         </div>
 
                         <div>
-                            <label>End Time</label>
+                            <label>{t("account.updateaa.end")}</label>
                             <input
                                 type="time"
                                 name="end_time"
@@ -162,23 +182,23 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                             />
                         </div>
 
-                        <div>
-                            <label>Type</label>
-                            <select
-                                name="hour_type"
-                                value={activeHour.hour_type}
-                                onChange={handleInputChange}
-                                required
-                                className="border p-2 rounded"
-                            >
-                                <option value="working">Working</option>
-                                <option value="appointment">Appointment</option>
-                            </select>
-                        </div>
+                        {/*<div>*/}
+                        {/*    <label>Type</label>*/}
+                        {/*    <select*/}
+                        {/*        name="hour_type"*/}
+                        {/*        value={activeHour.hour_type}*/}
+                        {/*        onChange={handleInputChange}*/}
+                        {/*        required*/}
+                        {/*        className="border p-2 rounded"*/}
+                        {/*    >*/}
+                        {/*        <option value="working">Working</option>*/}
+                        {/*        <option value="appointment">Appointment</option>*/}
+                        {/*    </select>*/}
+                        {/*</div>*/}
 
 
                         <div>
-                            <label>Limit</label>
+                            <label>{t("account.updateaa.limit")}</label>
                             <input
                                 type="number"
                                 name="appointment_limit"
@@ -196,13 +216,13 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                             onClick={cancel}
                             className="bg-gray-300 p-2 rounded"
                         >
-                            Cancel
+                            {t("account.updateaa.cancel")}
                         </button>
                         <button
                             type="submit"
                             className="bg-green-500 text-white w-[150px] p-2 rounded"
                         >
-                            Save Update
+                            {t("account.updateaa.update")}
                         </button>
                     </div>
                 </div>

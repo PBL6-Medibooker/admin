@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import * as specialityService from "../../service/SpecialityService"
 import {useLocation, useNavigate} from "react-router-dom";
 import {FaRegTrashAlt} from "react-icons/fa";
-import Modal from "../../components/Modal/Modal";
 import {toast} from "react-toastify";
 import {AdminContext} from "../../context/AdminContext";
 import {AnimatePresence, motion} from "framer-motion";
@@ -27,7 +26,7 @@ const SpecialityList = () => {
 
     const findAllSpecialities = async () => {
         const result = await specialityService.findAll(hiddenState, aToken)
-        setImage(result.speciality_image)
+        // setImage(result.speciality_image)
         setSpecialities(result);
     }
 
@@ -137,7 +136,8 @@ const SpecialityList = () => {
                             className='relative w-56 h-56  bg-indigo-50 group rounded-xl overflow-hidden cursor-pointer'>
                             <img
                                 className="w-full h-full object-cover transition-all duration-500 group-hover:opacity-80"
-                                src={`${item.speciality_image}?t=${new Date().getTime()}`}
+                                // src={`${item.speciality_image}?t=${new Date().getTime()}`}
+                                src={item.speciality_image}
                                 alt="Speciality"
                             />
 
@@ -164,7 +164,6 @@ const SpecialityList = () => {
                 ))}
             </motion.div>
 
-            {/* Delete Modal */}
             <AnimatePresence>
                 {open && (
                     <motion.div

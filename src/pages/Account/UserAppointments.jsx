@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import * as appointmenttService from "../../service/AppointmentService";
 import {AdminContext} from "../../context/AdminContext";
 import {useLocation, useParams} from "react-router-dom";
 import {assets} from "../../assets/assets";
@@ -10,10 +9,10 @@ import Loader from "../../components/Loader";
 import {useReactTable, getCoreRowModel, getPaginationRowModel} from "@tanstack/react-table";
 import {useTranslation} from "react-i18next";
 import * as appointmentService from "../../service/AppointmentService";
-import {toast} from "react-toastify";
 import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import Swal from "sweetalert2";
+import Error from "../../components/Error";
 
 const UserAppointments = () => {
     const {aToken} = useContext(AdminContext);
@@ -46,29 +45,40 @@ const UserAppointments = () => {
     //     },
     // });
 
-    const { data = [], isLoading, refetch } = useQuery({
+    // const { data = [], isLoading, isError, refetch } = useQuery({
+    //     queryKey: ["appointments", id],
+    //     queryFn: async () => {
+    //         try {
+    //             const data = await appointmentService.getAppointmentByUser(id, aToken);
+    //             return data;
+    //         } catch (e) {
+    //             console.error(e);
+    //             throw new Error("Failed to load appointments");
+    //         }
+    //     },
+    //     onSuccess: () => {
+    //         setIsInitialLoading(false);
+    //     }
+    // });
+
+    const { data = [], isLoading, isError, refetch } = useQuery({
         queryKey: ["appointments", id],
         queryFn: async () => {
-            try {
-                const data = await appointmentService.getAppointmentByUser(id, aToken);
-                return data;
-            } catch (e) {
-                console.error(e);
-                throw new Error("Failed to load appointments");
-            }
+            throw new Error("Simulated error");
         },
         onSuccess: () => {
             setIsInitialLoading(false);
         }
     });
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsInitialLoading(false);
-        }, 1000);
 
-        return () => clearTimeout(timer);
-    }, []);
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         setIsInitialLoading(false);
+    //     }, 1000);
+    //
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     const handleCancel = async (appointmentId) => {
         try {
@@ -122,12 +132,19 @@ const UserAppointments = () => {
 
 
 
-    if (isInitialLoading || isLoading) {
+    // if (isInitialLoading || isLoading) {
+    //     return (
+    //         <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+    //             <Loader />
+    //         </div>
+    //     );
+    // }
+    if(isError){
         return (
-            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-                <Loader />
+            <div>
+                <Error />
             </div>
-        );
+        )
     }
 
 

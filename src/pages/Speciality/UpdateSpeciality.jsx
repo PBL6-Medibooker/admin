@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import * as specialityService from "../../service/SpecialityService";
 import axios from "axios";
 import { AdminContext } from "../../context/AdminContext";
-import {assets} from "../../assets/assets";
 
 const UpdateSpeciality = () => {
     const { aToken, backendUrl } = useContext(AdminContext);
@@ -19,11 +18,9 @@ const UpdateSpeciality = () => {
         speciality_image: null
     });
 
-
-
     const loadSpecData = async () => {
         try {
-            const { data } = await axios.get(backendUrl + `/special/get-speciality/${id}`, { headers: { aToken } });
+            const { data } = await axios.get(backendUrl + `/special/get-spec/${id}`, { headers: { aToken } });
             if (data.success) {
                 console.log(data.specData)
                 setSpecData({
@@ -63,12 +60,13 @@ const UpdateSpeciality = () => {
             // }
 
             const data = await specialityService.updateSpec(formData, id, aToken);
+            console.log(data)
             if (data) {
                 toast.success(data.message);
                 navigate('/speciality', { state: { imageUpdated: true } });
 
             } else {
-                toast.error(data.error);
+                // toast.error();
             }
             await findAllSpecialities()
             navigate('/speciality');
@@ -115,7 +113,7 @@ const UpdateSpeciality = () => {
                     <div className='flex flex-col lg:flex-row items-start gap-10 text-gray-600'>
                         <div className='w-full lg:flex-1 flex flex-col gap-4'>
                             <div className='flex flex-1 flex-col gap-1'>
-                                <p>PostSpeciality</p>
+                                <p>Speciality</p>
                                 <input
                                     onChange={(e) => setSpecData(prev => ({ ...prev, name: e.target.value }))}
                                     value={specData.name}

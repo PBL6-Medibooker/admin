@@ -16,7 +16,7 @@
     "dashboard": "Trang chủ",
     "account": "Tài khoản",
     "speciality": "Chuyên khoa",
-    "region": "Vùng",
+    "region": "Thành Phố",
     "appointment": "Cuộc hẹn",
     "article": "Bài viết",
     "forum": "Diễn đàn",
@@ -28,9 +28,13 @@
      "verifiedDoctor": "Bác sĩ đã được xác minh",
      "unverifiedDoctor": "Bác sĩ chưa xác minh",
      "topDoctors": "Bác sĩ hàng đầu có nhiều lịch khám nhất",
+     "topUsers": "Khách hàng đặt nhiều lịch khám nhất",
      "appointments": "cuộc hẹn",
      "unknownDoctor": "Không có dữ liệu bác sĩ",
-     "noDataAvailable": "Không có dữ liệu"
+     "noDataAvailable": "Không có dữ liệu",
+     "loading": "Đang tải dữ liệu",
+     "label": "Lịch khám"
+
    },
    "accountList": {
      "userAccounts": "Tài khoản người dùng",
@@ -100,6 +104,98 @@
      "cancela": "Huỷ Lịch Khám",
      "completed": "Hoàn Thành",
      "cancelled": "Đã Huỷ"
+   },
+   "verified": {
+     "title": "Bác Sĩ Được Xác Minh",
+     "search": "Tìm kiếm tài khoản...",
+     "delete": "Xoá",
+     "restore": "Khôi phục",
+     "profile": "Ảnh",
+     "role": "Vai trò",
+     "username": "Tên người dùng",
+     "phone": "Số điện thoại",
+     "page": "Trang",
+     "goToPage": "Đi tới trang"
+   },
+   "dvd": {
+     "title": "Tài Khoản Bác Sĩ Đã Xoá",
+     "utitle": "Tài Khoản Chưa Xác Minh Đã Xoá",
+     "nodata": "Không Có Dữ Liệu!",
+     "putBack": "Khôi Phục",
+     "dp": "Xoá Vĩnh Viễn",
+     "restore": " Khôi phục tài khoản thành công! "
+   },
+   "unverified": {
+     "title": "Tài Khoản Bác Sĩ Chưa Xác Minh",
+     "add": "Thêm Tài Khoản",
+     "delete": "Xoá",
+     "restore": "Khôi Phục",
+     "nodata": "Không có dữ liệu!"
+   },
+   "updateDocInfo": {
+     "title": "Cập Nhật Thông Tin Tài Khoản",
+     "success": "Cập Nhật Thông Tin Thành Công!",
+     "error": "Có Lỗi Xảy Ra!",
+     "reset": "Đặt Lại Mật Khẩu",
+     "active": "Thời Gian Khám",
+     "spec": "Chuyên khoa bác sĩ",
+     "region": "Thành phố",
+     "select": "Chọn thành phố",
+     "degree": "Tải lên bằng của bác sĩ",
+     "uploaded": "Bằng đã tải lên",
+     "verify": "Xác Minh",
+     "bio": "Bio",
+     "back": "Trở lại",
+     "save": "Hoàn Tất"
+   },
+   "active": {
+     "title": "Lịch Khám",
+     "day": "Thứ",
+     "start": "Bắt Đầu",
+     "end": "Kết Thúc",
+     "action": "Hành Động",
+     "delete": "Xoá",
+     "message": "Thời gian khám đã xoá!",
+     "add": "Thêm Lịch Khám",
+     "confirm": "Xác Nhận Xoá",
+     "p": "Bạn có muốn xoá giờ khám này không?",
+     "bd": " Xoá",
+     "cancel": "Huỷ"
+   },
+   "aa": {
+     "title": "Thêm Lịch Khám",
+     "save": "Lưu",
+     "cancel": "Huỷ",
+     "limit": "Giới Hạn",
+     "day": "Ngày Trong Tuần",
+     "start": "Bắt Đầu Lúc",
+     "end": "Kết Thúc Vào",
+     "success": "Thêm Lịch Khám Thành Công",
+     "error": "Giờ kết thúc phải lớn hơn giờ bắt đầu",
+     "emessage": "Xảy ra lỗi"
+   },
+   "updateaa": {
+     "title": "Cập Nhật Lịch Khám",
+     "update": "Cập Nhật",
+     "success": "Cập Nhật Lịch Khám Thành Công",
+     "cancel": "Huỷ",
+     "limit": "Giới Hạn",
+     "day": "Ngày Trong Tuần",
+     "start": "Bắt Đầu Lúc",
+     "end": "Kết Thúc Vào",
+     "error": "Xảy ra lỗi khi cập nhật."
+   },
+   "addDoctor": {
+     "title": "Thêm Tài Khoản Cho Bác Sĩ",
+     "upload": "Tải bằng của bác sĩ",
+     "username": "Tên người dùng",
+     "password": "Mật khẩu",
+     "phone": "Số điện thoại ",
+     "back": "Trở về",
+     "save": "Thêm tài khoản",
+     "message": "Mâật khẩu không hợp lệ!",
+     "success": "Thêm tài khoản bác sĩ thành công!"
+
    }
  }
 }

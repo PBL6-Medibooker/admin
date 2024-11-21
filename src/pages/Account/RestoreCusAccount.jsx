@@ -107,13 +107,10 @@ const RestoreCusAccount = () => {
                 title: "Oops...",
                 text: t("account.restore.rNoti"),
             });
-
             return;
         }
-
         try {
             const response = await accountService.restoreAccount(selectedAccountIds, aToken);
-
             getDeletedAccountList();
             toast.success(response.message,{
                 autoClose: 1000

@@ -28,9 +28,12 @@
      "verifiedDoctor": "Verified Doctor",
      "unverifiedDoctor": "Unverified Doctor",
      "topDoctors": "Top Doctors",
+     "topUsers": "Top Customers",
      "appointments": "appointments",
      "unknownDoctor": "Unknown Doctor",
-     "noDataAvailable": "No data available"
+     "noDataAvailable": "No data available",
+     "loading": "Loading",
+     "label": "Appointments"
    },
    "accountList": {
      "userAccounts": "User Accounts",
@@ -101,6 +104,97 @@
      "cancela": "Cancel Appointment",
      "completed": "Completed",
      "cancelled": "Appointment Cancelled"
+   },
+   "verified": {
+     "title": "Verified Doctor Accounts",
+     "search": "Search accounts...",
+     "delete": "Delete",
+     "restore": "Restore",
+     "profile": "Avatar",
+     "role": "Role",
+     "username": "Username",
+     "phone": "Phone",
+     "page": "Page",
+     "goToPage": "Go to page"
+   },
+   "dvd": {
+     "title": "All Deleted Doctor Accounts",
+     "utitle": "All Deleted Unverified Doctor Accounts",
+     "nodata": "No Record Found!",
+     "putBack": "Put Back",
+     "dp": "Delete Permanently",
+     "restore": "Restore Account Successful"
+   },
+   "unverified": {
+     "title": "Unverified Doctor Accounts",
+     "add": "Add Account",
+     "delete": "Delete",
+     "restore": "Restore",
+     "nodata": "No Doctor Account Found!"
+   },
+   "updateDocInfo": {
+     "title": "Update Doctor Information",
+     "success": "Updated Account Information",
+     "error": "Error While Updating",
+     "reset": "Reset Password",
+     "active": "Active Hour List",
+     "spec": "Doctor Speciality",
+     "region": "Region",
+     "select": "Choose a city",
+     "degree": "Upload Doctor Degree",
+     "uploaded": "Degree Uploaded",
+     "verify": "Verify Doctor",
+     "bio": "Doctor Bio",
+     "back": "Back",
+     "save": "Save"
+   },
+   "active": {
+     "title": "Active Hour List",
+     "day": "DAY",
+     "start": "Start Time",
+     "end": "End Time",
+     "action": "Action",
+     "delete": "Delete",
+     "message": "Active hour deleted successfully",
+     "add": "Add Active Hour",
+     "confirm": "Confirm Delete",
+     "p": "Are you sure you want to delete this active hour?",
+     "bd": " Delete",
+     "cancel": "Cancel"
+   },
+   "aa": {
+     "title": "Add Active Hour",
+     "save": "Save",
+     "cancel": "Cancel",
+     "limit": "Limit",
+     "day": "Day of the Week",
+     "start": "Start Time",
+     "end": "End Time",
+     "success": "Active hour added successfully",
+     "error": "End time must be later than start time",
+     "emessage": "Eror"
+   },
+   "updateaa": {
+     "title": "Update Active Hour",
+     "update": "Save Edit",
+     "success": "Active hour updated successfully",
+     "cancel": "Cancel",
+     "limit": "Limit",
+     "day": "Day of the Week",
+     "start": "Start Time",
+     "end": "End Time",
+     "error": "Failed to update active hour."
+   },
+   "addDoctor": {
+     "title": "Add New Doctor Account",
+     "upload": "Upload Doctor Degree",
+     "username": "Username",
+     "password": "Password",
+     "phone": "Phone",
+     "back": "Back",
+     "save": "Save",
+     "message": "Password not strong enough!",
+     "success": "Add New Doctor Account Successful"
    }
  }
 }

@@ -106,13 +106,11 @@ const AccountList = () => {
     const softDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0) {
             // toast.warn('No account selected for deletion')
-
            await Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
             });
-
             return;
         }
         try {
@@ -136,7 +134,6 @@ const AccountList = () => {
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
             // toast.warn('No account selected for deletion')
-
             Swal.fire({
                 icon: "error",
                 title: "Oops...",

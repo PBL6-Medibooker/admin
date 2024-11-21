@@ -7,15 +7,15 @@ import * as regionService from "../../service/RegionService";
 import * as specialityService from "../../service/SpecialityService";
 import ActiveHourListModal from "./ActiveHourListModal";
 import { motion } from 'framer-motion';
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const UpdateDocInfoAcc = () => {
     const { id } = useParams();
     const { aToken } = useContext(AdminContext);
     const navigate = useNavigate();
-
-    const [isUser, setIsUser] = useState(false);
+const {t}= useTranslation();
     const [isVerify, setIsVerify] = useState(false);
-    const [previousVerifyStatus, setPreviousVerifyStatus] = useState(isVerify);
     const [hiddenState, setHiddenState] = useState(false);
     const [email, setEmail] = useState('');
     const [proof, setProof] = useState('');
@@ -98,9 +98,22 @@ const UpdateDocInfoAcc = () => {
 
             if (result?.status === 200) {
                 navigate('/verified-doc-account');
-                toast.success('Updated Doctor Info');
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateDocInfo.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 toast.error('Error updating doctor info.');
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateDocInfo.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         } catch (e) {
             console.log(e);
@@ -164,27 +177,26 @@ const UpdateDocInfoAcc = () => {
                 transition={{duration: 1}}
             >
                 <h1 className="text-2xl lg:text-3xl text-primary font-semibold">
-                    Update Doctor Information
+                    {t("account.updateDocInfo.title")}
                 </h1>
                 <div className="flex gap-4">
                     <button
                         className="bg-primary text-white px-4 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
                         onClick={resetPass}
                     >
-                        Reset Password
+                        {t("account.updateDocInfo.reset")}
                     </button>
                     {
                         isVerify && <button
                             className="bg-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-secondary-dark transition"
                             onClick={() => setListModal(true)}
                         >
-                            Active Hour List
+                            {t("account.updateDocInfo.active")}
                         </button>
                     }
                 </div>
             </motion.div>
 
-            {/* Form Section */}
             <motion.form
                 className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-8 border"
                 onSubmit={updateDocInfoAccount}
@@ -194,7 +206,7 @@ const UpdateDocInfoAcc = () => {
             >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-2">Doctor Speciality</label>
+                        <label className="text-sm font-medium mb-2"> {t("account.updateDocInfo.spec")}</label>
                         <select
                             className="border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
                             onChange={(e) => setDocData((prev) => ({...prev, speciality: e.target.value}))}
@@ -211,14 +223,14 @@ const UpdateDocInfoAcc = () => {
                     </div>
 
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-2">Region</label>
+                        <label className="text-sm font-medium mb-2"> {t("account.updateDocInfo.region")}</label>
                         <select
                             className="border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
                             onChange={(e) => setDocData((prev) => ({...prev, region: e.target.value}))}
                             value={docData.region}
                             required
                         >
-                            <option value="" disabled>Select Region</option>
+                            <option value="" disabled> {t("account.updateDocInfo.select")}</option>
                             {provinces?.map((item, index) => (
                                 <option key={index} value={item.name}>
                                     {item.name}
@@ -229,36 +241,40 @@ const UpdateDocInfoAcc = () => {
 
 
                     <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-2" hidden>Upload Doctor Degree</label>
+
                         {proof ? (
-                            <span className="text-green-600 font-medium">Proof Uploaded</span>
+                            <span className="text-green-600 font-medium">{t("account.updateDocInfo.uploaded")}</span>
                         ) : (
-                            <input hidden
-                                type="file"
-                                accept="application/pdf"
-                                className="border rounded-lg px-4 py-3 text-gray-700"
-                                onChange={(e) => setProof(e.target.files[0])}
-                            />
+                            <div>
+                                <label className="text-sm font-medium mb-2"
+                                       >{t("account.updateDocInfo.degree")}</label>
+                                <input
+                                       type="file"
+                                       accept="application/pdf"
+                                       className="border rounded-lg px-4 py-3 text-gray-700"
+                                       onChange={(e) => setProof(e.target.files[0])}
+                                />
+                            </div>
                         )}
                     </div>
 
 
                     <div className="flex items-center gap-3 mt-6 lg:mt-0">
                         <input hidden={isVerify}
-                            type="checkbox"
-                            id="verify-checkbox"
-                            checked={isVerify}
-                            onChange={() => setIsVerify((prev) => !prev)}
-                            className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"
+                               type="checkbox"
+                               id="verify-checkbox"
+                               checked={isVerify}
+                               onChange={() => setIsVerify((prev) => !prev)}
+                               className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"
                                disabled={!(docData.region && docData.speciality && proof)}
                         />
                         <label htmlFor="verify-checkbox" className="text-sm font-medium" hidden={isVerify}>
-                            Verify Doctor
+                            {t("account.updateDocInfo.verify")}
                         </label>
                     </div>
 
                     <div className="lg:col-span-2 flex flex-col">
-                        <label className="text-sm font-medium mb-2">Doctor Bio</label>
+                        <label className="text-sm font-medium mb-2">{t("account.updateDocInfo.bio")}</label>
                         <textarea
                             className="border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
                             rows={5}
@@ -276,13 +292,13 @@ const UpdateDocInfoAcc = () => {
                         onClick={() => navigate('/verified-doc-account')}
                         className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-red-600 transition"
                     >
-                        Back
+                        {t("account.updateDocInfo.back")}
                     </button>
                     <button
                         type="submit"
                         className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
                     >
-                        Save
+                        {t("account.updateDocInfo.save")}
                     </button>
                 </div>
             </motion.form>
