@@ -195,8 +195,57 @@
      "save": "Thêm tài khoản",
      "message": "Mâật khẩu không hợp lệ!",
      "success": "Thêm tài khoản bác sĩ thành công!"
+   },
+   "updateDoctor": {
+     "username": "Tên người dùng",
+     "email": "Email"
 
    }
- }
+ },
+  "speciality": {
+    "dashboard": {
+      "title": "Chuyên Khoa",
+      "tooltip": "bác sĩ",
+      "dis": "Số Lượng Bác Sĩ Của Mỗi Chuyên Khoa "
+    },
+    "list": {
+      "title": "Danh sách các chuyên khoa",
+      "add": "Thêm Chuyên Khoa",
+      "delete": "Xoá",
+      "trash": "Thùng rác",
+      "edit": "Cập nhật",
+      "confirm": "Xác nhận xoá",
+      "p": "Bạn có chắc chắn muốn xoá chuyên khoa không?",
+      "cancel": "Huỷ",
+      "message": "Không có chuyên khoa nào được chọn!",
+      "success": "Đã xoá chuyên khoa!"
+
+    },
+    "add": {
+      "name": "Vui lòng chọn tên chuyên khoa khác",
+      "image": "Ảnh chưa đươợc chọn",
+      "success": "Thêm chuyên khoa thành công!",
+      "error": "Thêm huyên khoa không thành công! ",
+      "title": "Thêm Chuyên Khoa",
+      "upload": "Tải lên ảnh chuyên khoa",
+      "sname": "Tên chuyên khoa",
+      "des": "Mô tả",
+      "back": "Trở về",
+      "save": "Hoàn tất",
+      "desPlaceholder": "Chẩn đoán và điều trị các bệnh về da, tóc, móng tay và màng nhầy",
+      "update": "Cập nhật thông tin chuyên khoa"
+
+    },
+    "restore": {
+      "title": " Chuyên Khoa Đã Xoá",
+      "permanent": "Xoá vĩnh viễn",
+      "rsuccess": "Khôi phục thành công",
+      "rwarn": "Chưa chọn chuyên khoa cần khôi phục",
+      "p": "Đã xoá chuyên khoa"
+
+
+
+    }
+  }
 }
 

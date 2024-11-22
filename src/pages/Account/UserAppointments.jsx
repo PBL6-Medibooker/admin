@@ -45,31 +45,31 @@ const UserAppointments = () => {
     //     },
     // });
 
-    // const { data = [], isLoading, isError, refetch } = useQuery({
-    //     queryKey: ["appointments", id],
-    //     queryFn: async () => {
-    //         try {
-    //             const data = await appointmentService.getAppointmentByUser(id, aToken);
-    //             return data;
-    //         } catch (e) {
-    //             console.error(e);
-    //             throw new Error("Failed to load appointments");
-    //         }
-    //     },
-    //     onSuccess: () => {
-    //         setIsInitialLoading(false);
-    //     }
-    // });
-
     const { data = [], isLoading, isError, refetch } = useQuery({
         queryKey: ["appointments", id],
         queryFn: async () => {
-            throw new Error("Simulated error");
+            try {
+                const data = await appointmentService.getAppointmentByUser(id, aToken);
+                return data;
+            } catch (e) {
+                console.error(e);
+                throw new Error("Failed to load appointments");
+            }
         },
         onSuccess: () => {
             setIsInitialLoading(false);
         }
     });
+
+    // const { data = [], isLoading, isError, refetch } = useQuery({
+    //     queryKey: ["appointments", id],
+    //     queryFn: async () => {
+    //         throw new Error("Simulated error");
+    //     },
+    //     onSuccess: () => {
+    //         setIsInitialLoading(false);
+    //     }
+    // });
 
 
     // useEffect(() => {

@@ -12,16 +12,15 @@ const RestoreSpeciality = () => {
     const {aToken} = useContext(AdminContext);
     const [specialities, setSpecialities] = useState([]);
 
-    const [hiddenState, setHiddenState] = useState(true);
+    const [hiddenState, setHiddenState] = useState("true");
     const [open, setOpen] = useState(false);
 
     const [selectedSpecialityIds, setSelectedSpecialityIds] = useState([]);
 
     const findAllDeletedSpecialities = async () => {
-        const result = await specialityService.findAllDeleted(hiddenState.toString(), aToken)
+        const result = await specialityService.findAllDeleted(hiddenState, aToken)
+        console.log(result)
         setSpecialities(result);
-        console.log(hiddenState)
-
     }
 
     const toggleAccountSelection = (id) => {
@@ -113,7 +112,7 @@ const RestoreSpeciality = () => {
 
             <div className='w-full flex flex-wrap gap-4 pt-5 gap-y-6'>
                 {
-                    specialities.length > 0 ? (specialities?.map((item, index) => {
+                    specialities?.length > 0 ? (specialities?.map((item, index) => {
 
                         return (
                             <div

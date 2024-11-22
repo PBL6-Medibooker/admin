@@ -10,22 +10,19 @@ import Swal from "sweetalert2";
 
 const AccountDetails = () => {
     const {email} = useParams();
-    const {aToken} = useContext(AdminContext)
+    const {aToken} = useContext(AdminContext);
     const [account, setAccount] = useState(null);
     const [image, setImage] = useState(null);
-    // const [underlyingCondition, setUnderlyingCondition] = useState('ok');
     const [accountRole, setAccountRole] = useState('')
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
     const [userName, setUserName] = useState('');
     const {t} = useTranslation();
 
-
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImage(file);
     };
-
 
     const fetchAccountDetails = async () => {
         try {
@@ -99,14 +96,12 @@ const AccountDetails = () => {
         }
     }
 
-
     useEffect(() => {
 
         if (aToken) {
             fetchAccountDetails();
         }
     }, [aToken, email]);
-
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>

@@ -1,139 +1,220 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {assets} from "../../assets/assets";
-import {toast} from "react-toastify";
-import * as specialityService from "../../service/SpecialityService"
-import {AdminContext} from "../../context/AdminContext";
-import {useNavigate} from "react-router-dom";
-
+import React, { useContext, useEffect, useState } from "react";
+import { assets } from "../../assets/assets";
+import { toast } from "react-toastify";
+import * as specialityService from "../../service/SpecialityService";
+import { AdminContext } from "../../context/AdminContext";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 const AddSpeciality = () => {
     const [specImg, setSpecImg] = useState(null);
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const {aToken} = useContext(AdminContext);
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const { aToken } = useContext(AdminContext);
     const [specialities, setSpecialities] = useState([]);
-
-
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const findAllSpecialities = async () => {
         try {
             const result = await specialityService.findAll(false, aToken);
             setSpecialities(result);
         } catch (error) {
-            console.error('Error fetching specialities:', error);
+            console.error("Error fetching specialities:", error);
         }
     };
 
     useEffect(() => {
-        findAllSpecialities()
+        findAllSpecialities();
     }, []);
 
-
     const check = () => {
-        const exists = specialities.some(speciality => speciality.name.toLowerCase() === name.toLowerCase());
-
+        const exists = specialities.some(
+            (speciality) => speciality.name.toLowerCase() === name.toLowerCase()
+        );
         if (exists) {
-            toast.error('Speciality name already exists');
+            Swal.fire({
+                position: "top-end",
+                title: t("speciality.add.name"),
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
             return false;
         }
         return true;
     };
 
-
     const onSubmitHandler = async (e) => {
         e.preventDefault();
+
         if (!specImg) {
-            return toast.error('Image not selected')
-        }
-        if (!check()) {
+            await Swal.fire({
+                position: "top-end",
+                title: t("speciality.add.image"),
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
             return;
         }
+
+        if (!check()) return;
+
         const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("speciality_image", specImg);
 
-        formData.append('name', name)
-        formData.append('description', description)
-        formData.append('speciality_image', specImg)
-
-       try{
-           const data = await specialityService.addSpec(formData, aToken);
-           if (data !== null) {
-               navigate('/speciality')
-               console.log("Showing success toast");
-               toast.success('Add PostSpeciality Success');
-           } else {
-               console.log("Showing error toast");
-               toast.error('Error');
-           }
-
-           formData.forEach((value, key) => {
-               console.log(`${key}:${value}`)
-
-           })
-       } catch (error) {
-           const errorMessage = error.response?.data?.error || 'Something went wrong';
-           console.error('Error:', errorMessage);
-       }
-
+        try {
+            const data = await specialityService.addSpec(formData, aToken);
+            if (data) {
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("speciality.add.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                navigate("/speciality");
+            } else {
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("speciality.add.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error || "Something went wrong";
+            console.error("Error:", errorMessage);
+        }
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmitHandler} className='m-5 w-[50vw] h-[90vh]'>
-                <p className='mb-3 text-lg text-primary lg:text-2xl font-medium'>Add Speciality</p>
+        <motion.div
+            className="w-full h-screen"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+        >
+            <motion.h1
+                className="flex justify-items-start ml-5 text-3xl font-bold text-primary mt-4"
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                {t("speciality.add.title")}
+            </motion.h1>
 
-
-                <div className='bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll'>
-
-                    <div className='flex items-center gap-4 mb-8 text-gray-500'>
-                        <label htmlFor='doc-img'>
-                            <img className='w-16 bg-gray-100 rounded-full cursor-pointer'
-                                 src={specImg ? URL.createObjectURL(specImg) : assets.upload_area} alt='Upload Area'/>
+            <motion.div
+                className="flex justify-center items-center w-full h-screen bg-gray-50"
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                <motion.form
+                    onSubmit={onSubmitHandler}
+                    className="bg-white p-12 rounded-xl shadow-xl w-full max-w-3xl"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7 }}
+                >
+                    <motion.div
+                        className="mb-8 flex flex-col items-center"
+                        whileHover={{ scale: 1.05 }}
+                    >
+                        <label
+                            htmlFor="spec-img"
+                            className="flex flex-col items-center gap-3 cursor-pointer"
+                        >
+                            <motion.img
+                                src={
+                                    specImg
+                                        ? URL.createObjectURL(specImg)
+                                        : assets.upload_area
+                                }
+                                alt="Upload Area"
+                                className="w-32 h-32 object-cover rounded-full bg-gray-100"
+                                whileHover={{ scale: 1.1 }}
+                            />
+                            <span className="text-gray-500 text-sm">
+                                {t("speciality.add.upload")}
+                            </span>
                         </label>
-                        <input onChange={(e) => setSpecImg(e.target.files[0])} type='file' id='doc-img' hidden/>
-                        <p>Upload PostSpeciality <br/> picture</p>
+                        <input
+                            type="file"
+                            id="spec-img"
+                            hidden
+                            onChange={(e) => setSpecImg(e.target.files[0])}
+                        />
+                    </motion.div>
+
+                    <div className="mb-6">
+                        <label
+                            htmlFor="name"
+                            className="block text-gray-700 font-medium mb-2"
+                        >
+                            {t("speciality.add.sname")}
+                        </label>
+                        <motion.input
+                            id="name"
+                            type="text"
+                            placeholder='Dermatologist'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-3 text-base focus:ring-primary focus:outline-none focus:ring-2"
+                            required
+                            whileFocus={{ scale: 1.02 }}
+                        />
                     </div>
 
-                    <div className='flex flex-col lg:flex-row items-start gap-10 text-gray-600'>
-                        <div className='w-full lg:flex-1 flex flex-col gap-4'>
-                            <div className='flex flex-1 flex-col gap-1'>
-                                <p>PostSpeciality</p>
-                                <input onChange={(e) => setName(e.target.value)}
-                                       value={name}
-                                       className='border rounded px-3 py-2' type='text' placeholder='Speciality Name'
-                                       required autoFocus/>
-                            </div>
-
-
-                            <div className='w-full'>
-                                <p className='mt-4 mb-2'>Description</p>
-                                <textarea onChange={(e) => setDescription(e.target.value)}
-                                          value={description}
-                                          className='w-full px-4 pt-2 border rounded' rows={5}
-                                          placeholder='Write about this speciality'
-                                          required/>
-                            </div>
-                        </div>
-
-
+                    <div className="mb-8">
+                        <label
+                            htmlFor="description"
+                            className="block text-gray-700 font-medium mb-2"
+                        >
+                            {t("speciality.add.des")}
+                        </label>
+                        <motion.textarea
+                            id="description"
+                            placeholder={t("speciality.add.desPlaceholder")}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            rows="6"
+                            className="w-full border rounded-lg px-4 py-3 text-base focus:ring-primary focus:outline-none focus:ring-2"
+                            required
+                            whileFocus={{ scale: 1.02 }}
+                        />
                     </div>
 
-                    <div className='flex justify-end gap-3'>
-
-                        <button onClick={() => navigate('/speciality')} className='bg-red-500 px-10 py-3 mt-4 text-white rounded-full'>
-                            Back
-                        </button>
-
-                        <button type='submit' className='bg-primary px-10 py-3 mt-4 text-white rounded-full'>Add
-                            PostSpeciality
-                        </button>
-
-                    </div>
-                </div>
-            </form>
-        </div>
+                    <motion.div className="flex justify-end gap-4 items-center">
+                        <motion.button
+                            type="button"
+                            onClick={() => navigate("/speciality")}
+                            className="bg-red-500 text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {t("speciality.add.back")}
+                        </motion.button>
+                        <motion.button
+                            type="submit"
+                            className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            {t("speciality.add.save")}
+                        </motion.button>
+                    </motion.div>
+                </motion.form>
+            </motion.div>
+        </motion.div>
     );
 };
 
 export default AddSpeciality;
-

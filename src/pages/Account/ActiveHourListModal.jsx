@@ -62,7 +62,7 @@ const ActiveHourListModal = ({open, onClose, id}) => {
         },
         download: false,
         print: false,
-        selectableRows: false,
+        selectableRows: 'none',
     };
 
 

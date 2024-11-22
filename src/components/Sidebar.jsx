@@ -17,6 +17,9 @@ const Sidebar = () => {
     const {t, i18n} = useTranslation();
     const [currentLanguage, setCurrentLanguage] = useState("vi");
 
+    const isSpecialityActive = () => {
+        return location.pathname.includes("speciality");
+    };
     return (
         <div className='bg-white border-r'>
             <motion.div
@@ -43,7 +46,9 @@ const Sidebar = () => {
                             {[
                                 { to: "/admin-dashboard", icon: assets.home_icon, label: t("sidebar.dashboard") },
                                 { to: "/account-dashboard", icon: assets.user_icon, label: t("sidebar.account") },
-                                { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality") },
+                                { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality"),
+                                    isActive: isSpecialityActive()
+                                },
                                 { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region") },
                                 { to: "/appointment", icon: assets.appointment_icon, label: t("sidebar.appointment") },
                                 { to: "/article-dashboard", icon: assets.article, label: t("sidebar.article") },
@@ -55,7 +60,7 @@ const Sidebar = () => {
                                     to={item.to}
                                     className={({isActive}) =>
                                         `flex items-center gap-3 px-3 py-3.5 md:px-5 md:min-w-72 cursor-pointer transition-all duration-300 ${
-                                            isActive || location.pathname.includes(item.to)
+                                            item.isActive || isActive
                                                 ? "bg-[#F2F3FF] border-r-4 border-primary text-primary"
                                                 : "hover:bg-gray-100 text-gray-600"
                                         }`

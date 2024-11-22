@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { motion } from 'framer-motion';
 import * as specialityService from "../../service/SpecialityService";
+import {useTranslation} from "react-i18next";
+import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
 
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
 const SpecialityByDoctorChart = () => {
     const [data, setData] = useState([]);
+    const {t} = useTranslation();
+
+
 
     const getDoctorEachSpeciality = async () => {
         try {
@@ -21,7 +26,7 @@ const SpecialityByDoctorChart = () => {
         getDoctorEachSpeciality();
     }, []);
 
-    // Custom Legend Component
+
     const renderLegend = () => {
 
         return (
@@ -61,7 +66,7 @@ const SpecialityByDoctorChart = () => {
 
                 >
                     <p className="label" style={{ color: "#374151" }}>
-                        {speciality}: {doctorCount} doctors
+                        {speciality}: {doctorCount} {t("speciality.dashboard.tooltip")}
                     </p>
 
                 </div>
@@ -72,6 +77,9 @@ const SpecialityByDoctorChart = () => {
     };
 
 
+
+
+
     return (
         <motion.div
             className='bg-white shadow-lg rounded-xl p-6 border border-gray-300'
@@ -79,7 +87,7 @@ const SpecialityByDoctorChart = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
         >
-            <h2 className='text-lg font-medium mb-4 text-gray-800'>Doctor Distribution</h2>
+            <h2 className='text-lg font-medium mb-4 text-gray-950'>{t("speciality.dashboard.dis")} </h2>
             <div className='h-80'>
                 <ResponsiveContainer width={"100%"} height={"100%"}>
                     <PieChart>

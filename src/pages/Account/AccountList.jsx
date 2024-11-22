@@ -107,7 +107,7 @@ const AccountList = () => {
         if (selectedAccountIds?.length === 0) {
             // toast.warn('No account selected for deletion')
            await Swal.fire({
-                icon: "error",
+                icon: "warning",
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
             });

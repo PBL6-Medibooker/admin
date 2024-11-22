@@ -5,7 +5,7 @@ const REST_API_BASE_URL = "http://localhost:4000/special";
 
 export const findAll = async (hidden_state, aToken) => {
     try {
-        const result = await axios.get(REST_API_BASE_URL + "/get-speciality-list", {hidden_state}, {headers: {aToken}})
+        const result = await axios.post(REST_API_BASE_URL + "/get-speciality-list", {hidden_state}, {headers: {aToken}})
         return result.data
     } catch (e) {
         console.log(e)

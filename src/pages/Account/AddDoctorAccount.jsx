@@ -68,7 +68,7 @@ const AddDoctorAccount = () => {
                 transition={{ duration: 0.5 }}
                 className="mb-6"
             >
-                <p className="text-lg font-medium">{t("account.addDoctor.title")}</p>
+                <p className="text-sm text-primary lg:text-2xl font-medium">{t("account.addDoctor.title")}</p>
             </motion.div>
 
             {/* Form container with animation */}
