@@ -90,4 +90,12 @@ export const permanentDeleteAccount = async (selectedRegionIds, aToken) => {
     }
 }
 
+export const getDoctorEachRegion = async (aToken) =>{
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/region-doctor',  {headers: {aToken}});
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
 

@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import Error from "../../components/Error";
 
 const UserAppointments = () => {
+
     const {aToken} = useContext(AdminContext);
     const now = new Date();
     const {dateFormat, separateDayAndDate} = useContext(AppContext);
@@ -72,13 +73,13 @@ const UserAppointments = () => {
     // });
 
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         setIsInitialLoading(false);
-    //     }, 1000);
-    //
-    //     return () => clearTimeout(timer);
-    // }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsInitialLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleCancel = async (appointmentId) => {
         try {
@@ -132,13 +133,13 @@ const UserAppointments = () => {
 
 
 
-    // if (isInitialLoading || isLoading) {
-    //     return (
-    //         <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-    //             <Loader />
-    //         </div>
-    //     );
-    // }
+    if (isInitialLoading || isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        );
+    }
     if(isError){
         return (
             <div>
@@ -229,43 +230,45 @@ const UserAppointments = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end gap-2 mt-4">
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
-                >
-                    {"<"}
-                </button>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
-                >
-                    {">"}
-                </button>
+            {
+                paginatedData.length > 0 && <div className="flex items-center justify-end gap-2 mt-4">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
+                    >
+                        {">"}
+                    </button>
 
-                <div className="flex items-center gap-1">
-                    <span>{t("account.accountList.page")}</span>
-                    <strong>
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </strong>
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        </strong>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        | {t("account.accountList.goToPage")}:
+                        <input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={(e) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                table.setPageIndex(page);
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent hover:border-gray-500 transition-all duration-300"
+                        />
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-1">
-                    | {t("account.accountList.goToPage")}:
-                    <input
-                        type="number"
-                        defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            table.setPageIndex(page);
-                        }}
-                        className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent hover:border-gray-500 transition-all duration-300"
-                    />
-                </div>
-            </div>
-
+            }
             <Modal open={open} onClose={() => setOpen(false)}>
                 <motion.div
                     className="text-center w-80 p-4 bg-white rounded-lg"
@@ -278,7 +281,7 @@ const UserAppointments = () => {
                     <p className="text-gray-600">{t("account.user.pCD")}</p>
                     <div className="flex justify-around mt-6">
                         <motion.button
-                            onClick={()=>handleCancel(appointmentId)}
+                            onClick={() => handleCancel(appointmentId)}
                             whileHover={{scale: 1.05}}
                             className="text-white bg-red-600 px-6 py-2 rounded-md"
                         >

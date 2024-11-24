@@ -9,6 +9,8 @@ import {AppContext} from "../../context/AppContext";
 import {assets} from "../../assets/assets";
 import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const AppointmentList = () => {
     const navigate = useNavigate();
@@ -18,6 +20,7 @@ const AppointmentList = () => {
     const [appointments, setAppointments] = useState([]);
     const [open, setOpen] = useState(false)
     const [id, setId] = useState('')
+    const {t} = useTranslation()
 
 
     // const cancelBooking = async () =>{
@@ -35,13 +38,20 @@ const AppointmentList = () => {
     // }
 
 
-    const cancelBooking = async () =>{
+    const cancelBooking = async () => {
         try {
             const data = await appointmentService.softDeleteAppointment(id, aToken);
-            if (data){
-                toast.success('The Appointment has been cancelled');
+            if (data) {
+                // toast.success('The Appointment has been cancelled');
                 await getAllAppointment();
                 setOpen(false);
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("appointment.list.mcancel"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
 
         } catch (e) {
@@ -65,13 +75,27 @@ const AppointmentList = () => {
         {
             name: "#",
             options: {
-                customBodyRenderLite: (dataIndex) => dataIndex + 1,
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
+                            {'#'}
+                    </span>
+                ),
+                customBodyRenderLite: (dataIndex) => (
+                    <div className='ml-8'>
+                        {dataIndex + 1}
+                    </div>
+                ),
                 filter: false
             }
         },
         {
-            name: "Patient",
+            name: t("appointment.list.patient"),
             options: {
+                    customHeadLabelRender: () => (
+                        <span className="text-lg text-primary">
+                            {t("appointment.list.patient")}
+                    </span>
+                    ),
                 customBodyRenderLite: (dataIndex) => (
                     <div className="flex items-center gap-2">
                         <img
@@ -85,23 +109,42 @@ const AppointmentList = () => {
             },
         },
         {
-            name: "Age",
+            name: t("appointment.list.age"),
             options: {
-                customBodyRenderLite: (dataIndex) => calculateAge(appointments[dataIndex]?.user_id?.date_of_birth),
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
+                {t("appointment.list.age")}
+                    </span>
+                ),
+                customBodyRenderLite: (dataIndex) => (
+                    <div style={{marginLeft: "20px"}}>
+                        {calculateAge(appointments[dataIndex]?.user_id?.date_of_birth)}
+                    </div>
+                ),
             },
         },
         {
-            name: "Date & Time",
+            name: t("appointment.list.dnt"),
             options: {
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
+                            {t("appointment.list.dnt")}
+                    </span>
+                ),
                 customBodyRenderLite: (dataIndex) => {
-                    const { dayOfWeek, date } = separateDayAndDate(appointments[dataIndex]?.appointment_day);
+                    const {dayOfWeek, date} = separateDayAndDate(appointments[dataIndex]?.appointment_day);
                     return `${dayOfWeek}, ${dateFormat(date)} | ${appointments[dataIndex]?.appointment_time_start} - ${appointments[dataIndex]?.appointment_time_end}`;
                 },
             },
         },
         {
-            name: "Doctor",
+            name: t("appointment.list.doctor"),
             options: {
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
+                            {t("appointment.list.doctor")}
+                    </span>
+                ),
                 customBodyRenderLite: (dataIndex) => (
                     <div className="flex items-center ml-5 gap-2">
                         <p>{appointments[dataIndex]?.doctor_id?.username}</p>
@@ -110,16 +153,24 @@ const AppointmentList = () => {
             },
         },
         {
-            name: "Actions",
+            name: t("appointment.list.action"),
             options: {
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
+                            {t("appointment.list.action")}
+                    </span>
+                ),
                 customBodyRenderLite: (dataIndex) => {
                     const appointment = appointments[dataIndex];
+                    const now = new Date();
+                    const appointmentDate = new Date(appointment.appointment_day);
+                    const isCompleted = appointmentDate < now;
+
+
                     return (
-                        <div>
-                            {appointment.is_deleted ? (
-                                <p className="text-red-400 text-xs font-medium">Cancelled</p>
-                            ) : appointment.isCompleted ? (
-                                <p className="text-green-500 text-xs font-medium">Completed</p>
+                        <div className='ml-10'>
+                            {isCompleted ? (
+                                <p className="text-green-500 text-xs font-medium">{t("appointment.list.completed")}</p>
                             ) : (
                                 <img
                                     alt="pic"
@@ -142,7 +193,6 @@ const AppointmentList = () => {
     ];
 
 
-
     const options = {
         elevation: 0,
         rowsPerPage: 5,
@@ -160,6 +210,21 @@ const AppointmentList = () => {
         },
     };
 
+
+    //
+    // const modalVariants = {
+    //     hidden: { opacity: 0, y: "-50%" },
+    //     visible: { opacity: 1, y: "0%" },
+    //     exit: { opacity: 0, y: "50%" },
+    // };
+    //
+    // const backdropVariants = {
+    //     hidden: { opacity: 0 },
+    //     visible: { opacity: 1 },
+    //     exit: { opacity: 0 },
+    // };
+
+
     useEffect(() => {
         if (aToken) {
             getAllAppointment();
@@ -169,35 +234,35 @@ const AppointmentList = () => {
     return (
         <motion.div
             className="flex-1 overflow-auto relative z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            exit={{opacity: 0}}
+            transition={{duration: 0.5}}
         >
             <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
 
                 <motion.div
                     className="flex justify-between mb-4"
-                    initial={{ y: -20 }}
-                    animate={{ y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{y: -20}}
+                    animate={{y: 0}}
+                    transition={{duration: 0.5}}
                 >
-                    <p className="mb-1 text-lg lg:text-2xl text-primary font-medium">All Appointments</p>
+                    <p className="mb-1 text-lg lg:text-2xl text-primary font-medium">{t("appointment.list.title")}</p>
                     <motion.button
                         onClick={() => navigate("/booking-appointment")}
                         className="bg-primary text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{scale: 1.05}}
+                        whileTap={{scale: 0.95}}
                     >
-                        Booking Appointment
+                        {t("appointment.list.booking")}
                     </motion.button>
                 </motion.div>
 
                 <div className="w-full max-w-6xl m-5">
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.7 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.7}}
                     >
                         <MUIDataTable
                             data={appointments}
@@ -211,25 +276,75 @@ const AppointmentList = () => {
                 <div className="text-center w-72">
                     <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
                     <div className="mx-auto my-4 w-60">
-                        <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
+                        <h3 className="text-lg font-black text-gray-800">{t("appointment.list.confirmDelete")}</h3>
                         <p className="text-sm text-gray-600">
-                            Are you sure you want to delete ?
+                            {t("appointment.list.pCD")}
                         </p>
                     </div>
                     <div className="flex gap-4 mt-6">
                         <button
                             className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
-                            onClick={cancelBooking}>Delete
+                            onClick={cancelBooking}>{t("appointment.list.confirm")}
                         </button>
                         <button
                             className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                             onClick={() => setOpen(false)}
                         >
-                            Cancel
+                            {t("appointment.list.cancel")}
                         </button>
                     </div>
                 </div>
             </Modal>
+
+
+            {/*<AnimatePresence>*/}
+            {/*    {open && (*/}
+            {/*        <motion.div*/}
+            {/*            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"*/}
+            {/*            initial="hidden"*/}
+            {/*            animate="visible"*/}
+            {/*            exit="exit"*/}
+            {/*            variants={backdropVariants}*/}
+            {/*            onClick={() => setOpen(false)} // Close modal on backdrop click*/}
+            {/*        >*/}
+            {/*            <motion.div*/}
+            {/*                className="bg-white text-center p-6 rounded-lg shadow-lg w-72 relative"*/}
+            {/*                variants={modalVariants}*/}
+            {/*                initial="hidden"*/}
+            {/*                animate="visible"*/}
+            {/*                exit="exit"*/}
+            {/*                onClick={(e) => e.stopPropagation()} // Prevent backdrop click from closing modal*/}
+            {/*            >*/}
+            {/*                <FaRegTrashAlt size={56} className="mx-auto text-red-500" />*/}
+            {/*                <div className="mx-auto my-4 w-60">*/}
+            {/*                    <h3 className="text-lg font-black text-gray-800">*/}
+            {/*                        {t("appointment.list.confirmDelete")}*/}
+            {/*                    </h3>*/}
+            {/*                    <p className="text-sm text-gray-600">*/}
+            {/*                        {t("appointment.list.pCD")}*/}
+            {/*                    </p>*/}
+            {/*                </div>*/}
+            {/*                <div className="flex gap-4 mt-6">*/}
+            {/*                    <button*/}
+            {/*                        className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"*/}
+            {/*                        onClick={() => {*/}
+            {/*                            cancelBooking();*/}
+            {/*                            setOpen(false);*/}
+            {/*                        }}*/}
+            {/*                    >*/}
+            {/*                        {t("appointment.list.confirm")}*/}
+            {/*                    </button>*/}
+            {/*                    <button*/}
+            {/*                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"*/}
+            {/*                        onClick={() => setOpen(false)}*/}
+            {/*                    >*/}
+            {/*                        {t("appointment.list.cancel")}*/}
+            {/*                    </button>*/}
+            {/*                </div>*/}
+            {/*            </motion.div>*/}
+            {/*        </motion.div>*/}
+            {/*    )}*/}
+            {/*</AnimatePresence>*/}
 
         </motion.div>
     );

@@ -6,20 +6,18 @@ import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
 import {ClipboardList} from "lucide-react";
 import AppointmentChart from "../../components/Chart/AppointmentChart";
+import {useTranslation} from "react-i18next";
 
 const AppointmentDashboard = () => {
     const {aToken} = useContext(AdminContext)
 
-    const navigate = useNavigate();
-
     const [isDelete, setIsDelete] = useState(false)
     const [appointments, setAppointments] = useState([])
     const [totalAppointments, setTotalAppointments] = useState(0)
-
+    const {t} = useTranslation()
 
     const getAllAppointment = async () => {
         try {
-
             const data = await appointmentService.findAll(isDelete, aToken)
             if (data) {
                 setAppointments(data);
@@ -27,7 +25,7 @@ const AppointmentDashboard = () => {
             }
 
         } catch (e) {
-
+            console.log(e)
         }
     }
 
@@ -46,7 +44,7 @@ const AppointmentDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name='Total Appointment' to={'/all-appointment'} icon={ClipboardList}
+                    <StatCard name={t("appointment.dashboard.title")} to={'/all-appointment'} icon={ClipboardList}
                               value={totalAppointments} color='#6366F1'/>
 
                 </motion.div>

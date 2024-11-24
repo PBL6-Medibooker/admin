@@ -24,6 +24,8 @@ import {
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query'
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const RegionList = () => {
     const { aToken } = useContext(AdminContext);
@@ -38,6 +40,7 @@ const RegionList = () => {
     const [updateModal, setUpdateModal] = useState(false);
     const [regionId, setRegionId] = useState('');
     const [data, setData] = useState([]);
+    const {t}= useTranslation();
 
     // const members = useQuery({
     //     queryKey: [workSpace],
@@ -96,7 +99,7 @@ const RegionList = () => {
 
     const loadData = async () => {
         try {
-            // getRegionList();
+            getRegionList();
             setCreateModal(false);
             setUpdateModal(false);
         } catch (error) {
@@ -117,7 +120,7 @@ const RegionList = () => {
         }),
         columnHelper.accessor("name", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Region",
+            header:t("region.list.region"),
         })
     ];
 
@@ -142,23 +145,37 @@ const RegionList = () => {
 
     const openDeleteModal = () => {
         if (selectedRegionIds?.length === 0) {
-            toast.warn('No account selected for deletion');
-        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("region.list.deleteNoti"),
+            });        } else {
             setOpen(true);
         }
     };
 
     const softDeleteRegions = async () => {
         if (selectedRegionIds?.length === 0 && open) {
-            toast.warn('No region selected for deletion');
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("region.list.deleteNoti"),
+            });
             return;
         }
         try {
             await regionService.deleteSoftRegion(selectedRegionIds, aToken);
-            // getRegionList();
-            toast.success('Delete Successful');
+            await getRegionList();
+            // toast.success('Delete Successful');
             setSelectedRegionIds([]);
             setOpen(false);
+            await Swal.fire({
+                position: "top-end",
+                title: t("region.list.m"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             console.error(error.message);
             toast.error(error.message);
@@ -174,6 +191,8 @@ const RegionList = () => {
         }
     };
 
+
+
     useEffect(() => {
         if (aToken) {
             getRegionList();
@@ -181,7 +200,7 @@ const RegionList = () => {
     }, [aToken]);
 
     return (
-        <motion.div className='m-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
+        <motion.div className='mb-5 mt-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -189,7 +208,7 @@ const RegionList = () => {
         >
 
             <div className="flex justify-between items-center">
-                <h1 className="text-xl text-primary font-semibold">All Regions</h1>
+                <h1 className="text-xl text-primary lg:text-2xl font-semibold">{t("region.list.title")}</h1>
                 <div className="flex gap-2">
                     <motion.button
                         onClick={() => setCreateModal(true)}
@@ -207,7 +226,7 @@ const RegionList = () => {
                         whileTap={{ scale: 0.95 }}
                     >
                         <FaRegTrashAlt />
-                        Delete
+                        {t("region.list.delete")}
                     </motion.button>
 
                     <motion.button
@@ -217,7 +236,7 @@ const RegionList = () => {
                         whileTap={{ scale: 0.95 }}
                     >
                         <LuMapPinOff />
-                        Trash
+                        {t("region.list.trash")}
                     </motion.button>
                 </div>
             </div>
@@ -297,14 +316,14 @@ const RegionList = () => {
                     ))
                 ) : (
                     <tr className="text-center h-32 text-gray-400">
-                        <td colSpan={12}>No Record Found!</td>
+                        <td colSpan={12}>{t("region.list.nodata")}</td>
                     </tr>
                 )}
                 </tbody>
             </motion.table>
 
             {/* Pagination */}
-            <div className={`${table.getState().pagination.pageSize === 10 ? 'fixed bottom-0 left-0 right-0 z-10 p-4 ' : ''} flex items-center justify-end gap-2 h-12`}>
+            <div className={`${table.getState().pagination.pageSize === 10 ? 'fixed bottom-0 left-0 ml-[1020px] w-[500px] right-0 z-10 p-4 ' : ''} flex items-center w-[500px] justify-end gap-2 h-12`}>
                 <motion.button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -325,12 +344,12 @@ const RegionList = () => {
                 </motion.button>
 
                 <div className="flex items-center gap-1">
-                    <span>Page</span>
+                    <span>{t("account.accountList.page")}</span>
                     <strong>{table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</strong>
                 </div>
 
                 <div className="flex items-center gap-1">
-                    | Go to page:
+                    | {t("account.accountList.goToPage")}:
                     <input
                         type="number"
                         defaultValue={table.getState().pagination.pageIndex + 1}
@@ -343,15 +362,14 @@ const RegionList = () => {
                 </div>
             </div>
 
-            {/* Modals */}
             <AddRegion open={createModal} onClose={loadData} />
             <UpdateRegion open={updateModal} onClose={loadData} id={regionId} />
             <Modal open={open} onClose={() => setOpen(false)}>
                 <div className="text-center w-72">
                     <FaRegTrashAlt size={56} className="mx-auto text-red-500" />
                     <div className="mx-auto my-4 w-60">
-                        <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
-                        <p className="text-sm text-gray-600">Are you sure you want to delete ?</p>
+                        <h3 className="text-lg font-black text-gray-800">{t("region.list.confirm")}</h3>
+                        <p className="text-sm text-gray-600">{t("region.list.p")}</p>
                     </div>
                     <div className="flex gap-4 mt-6">
                         <motion.button
@@ -360,7 +378,7 @@ const RegionList = () => {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            Delete
+                            {t("region.list.delete")}
                         </motion.button>
                         <motion.button
                             className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
@@ -368,7 +386,7 @@ const RegionList = () => {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            Cancel
+                            {t("region.list.cancel")}
                         </motion.button>
                     </div>
                 </div>

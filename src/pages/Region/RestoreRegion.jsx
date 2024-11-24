@@ -6,25 +6,23 @@ import {
     getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import {useNavigate} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import {toast} from "react-toastify";
 import * as regionService from "../../service/RegionService";
 import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import { FaTrashRestoreAlt } from "react-icons/fa";
-import * as accountService from "../../service/AccountService";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const RestoreRegion = () => {
     const columnHelper = createColumnHelper();
-    const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
 
     const [hiddenState, setHiddenState] = useState('true');
     const [selectedRegionIds, setSelectedRegionIds] = useState([]);
     const [open, setOpen] = useState(false);
-
-
+    const {t}= useTranslation();
 
     const {aToken} = useContext(AdminContext);
 
@@ -36,7 +34,7 @@ const RestoreRegion = () => {
         }),
         columnHelper.accessor("name", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Region",
+            header: t("region.list.region"),
         })
 
 
@@ -65,15 +63,26 @@ const RestoreRegion = () => {
 
     const permanentDeleteRegions = async () => {
         if (selectedRegionIds?.length === 0 && open) {
-            toast.warn('No region selected for deletion')
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("region.list.deleteNoti"),
+            });
+            setOpen(false)
             return;
         }
         try {
             await regionService.permanentDeleteAccount(selectedRegionIds, aToken)
             getDeletedRegionList();
-            toast.success('Delete Successful');
             setSelectedRegionIds([]);
             setOpen(false)
+            await Swal.fire({
+                position: "top-end",
+                title: t("region.restore.ds"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             console.error(error.message);
             toast.error(error.message)
@@ -94,7 +103,11 @@ const RestoreRegion = () => {
 
     const restoreRegion = async () => {
         if (selectedRegionIds?.length === 0) {
-            toast.warn('No region selected for restoration')
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("region.restore.warn"),
+            });
             return;
         }
 
@@ -102,9 +115,16 @@ const RestoreRegion = () => {
             const response = await regionService.restoreRegion(selectedRegionIds, aToken);
             if (response.message !== '') {
                 await getDeletedRegionList();
-                toast.success(response.message);
+                // toast.success(response.message);
                 setSelectedRegionIds([]);
                 setOpen(false);
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("region.restore.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 toast.error('Error')
             }
@@ -124,18 +144,18 @@ const RestoreRegion = () => {
         <div className='m-5 max-h-[90vh] w-[90vw] overflow-y-scroll'>
 
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg text-primary lg:text-2xl font-medium'>All Deleted Region </h1>
+                <h1 className='text-lg text-primary lg:text-2xl font-medium'>{t("region.restore.title")}</h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreRegion}
                         className='flex items-center gap-1 bg-green-700 px-10 py-3 mt-4 text-white rounded-full cursor-pointer'>
-                       <FaTrashRestoreAlt/> Put Back
+                       <FaTrashRestoreAlt/> {t("region.restore.put")}
                     </button>
 
                     <button onClick={() => setOpen(true)}
                         className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer'
                     >
-                        <FaRegTrashAlt/> Delete Permanently
+                        <FaRegTrashAlt/> {t("region.restore.pd")}
                     </button>
 
 
@@ -145,21 +165,21 @@ const RestoreRegion = () => {
                     <div className="text-center w-72">
                         <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
                         <div className="mx-auto my-4 w-60">
-                            <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
+                            <h3 className="text-lg font-black text-gray-800"></h3>
                             <p className="text-sm text-gray-600">
-                                Are you sure you want to delete <strong className='text-red-500'>permanently</strong> ?
+                                {t("region.restore.p")} <strong className='text-red-500'>{t("region.restore.dp")}</strong> ?
                             </p>
                         </div>
                         <div className="flex gap-4 mt-6">
                             <button
                                 className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
-                                onClick={permanentDeleteRegions}>Delete
+                                onClick={permanentDeleteRegions}>{t("region.restore.delete")}
                             </button>
                             <button
                                 className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                                 onClick={() => setOpen(false)}
                             >
-                                Cancel
+                                {t("region.restore.cancel")}
                             </button>
                         </div>
                     </div>
@@ -224,50 +244,50 @@ const RestoreRegion = () => {
                     ))
                 ) : (
                     <tr className="text-center h-32 text-blue-400">
-                        <td colSpan={12}>No Record Found!</td>
+                        <td colSpan={12}>{t("region.list.nodata")}</td>
                     </tr>
                 )}
                 </tbody>
             </table>
 
-            <div
-                className={`${table.getState().pagination.pageSize === 10 ?
-                    'fixed bottom-0 left-0 right-0 z-10 p-4 ' : ''} flex items-center justify-end gap-2 h-12`}>
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
+            {
+                data.length > 0 && <div
+                    className={`${table.getState().pagination.pageSize === 10 ? 'fixed bottom-0 left-0 ml-[1020px] w-[500px] right-0 z-10 p-4 ' : ''} flex items-center w-[500px] justify-end gap-2 h-12`}
                 >
-                    {"<"}
-                </button>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
-                >
-                    {">"}
-                </button>
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
+                    >
+                        {">"}
+                    </button>
 
-                <div className="flex items-center gap-1">
-                    <span>Page</span>
-                    <strong>{table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</strong>
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
+                        <strong>{table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</strong>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        | {t("account.accountList.goToPage")}:
+                        <input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={(e) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                table.setPageIndex(page);
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-300 rounded bg-transparent"
+                        />
+                    </div>
                 </div>
-
-                <div className="flex items-center gap-1">
-                    | Go to page:
-                    <input
-                        type="number"
-                        defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            table.setPageIndex(page);
-                        }}
-                        className="w-16 px-2 py-1 border border-gray-300 rounded bg-transparent"
-                    />
-                </div>
-            </div>
-
-
+            }
 
         </div>
 

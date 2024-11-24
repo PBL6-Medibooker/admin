@@ -14,11 +14,12 @@ import {
 import { motion } from "framer-motion";
 import { AdminContext } from "../../context/AdminContext";
 import * as appointmentService from "../../service/AppointmentService";
+import {useTranslation} from "react-i18next";
 
 const AppointmentChart = () => {
     const { aToken } = useContext(AdminContext);
     const [dataAppointments, setDataAppointments] = useState([]);
-
+    const {t} = useTranslation();
 
     const getAppointmentByMonth = async () => {
         try {
@@ -59,7 +60,7 @@ const AppointmentChart = () => {
             transition={{ delay: 1 }}
         >
             <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>Appointment Overview</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>{t("appointment.dashboard.ctitle")}</h2>
             </div>
 
             <div className='w-full h-80'>
@@ -80,10 +81,10 @@ const AppointmentChart = () => {
                                 itemStyle={{
                                     color: "#1F2937"
                                 }}
-                                labelFormatter={(month) => `Month: ${month}`}
+                                labelFormatter={(month) => `${t("appointment.dashboard.month")}: ${month}`}
                                 formatter={(value, name, props) => {
                                     if (props.dataKey === 'appointmentCountBar') {
-                                        return [`Number of Appointments: ${value}`];
+                                        return [`${t("appointment.dashboard.number")}: ${value}`];
                                     }
                                     return null;
                                 }}
@@ -94,7 +95,7 @@ const AppointmentChart = () => {
                                 formatter={(value, entry, index) => {
 
                                     if (entry.dataKey === "appointmentCountBar") {
-                                        return 'Number of Appointments in a Month';
+                                        return t("appointment.dashboard.label");
                                     }
                                     return '';
                                 }}
@@ -104,27 +105,28 @@ const AppointmentChart = () => {
                             <Area
                                 syncId="anyId"
                                 type="monotone"
-                                dataKey="appointmentCount"
+                                dataKey="appointmentCountBar"
                                 stroke="#2563EB"
                                 fill="#2563EB"
                                 fillOpacity={0.3}
-                            />
-
-
-                            <Bar
-                                dataKey="appointmentCountBar"
-                                barSize={20}
-                                fill="#413ea0"
                                 name="Number of Appointments in a Month"
                             />
 
 
-                            <Line
-                                type="monotone"
-                                dataKey="appointmentCount"
-                                stroke="#ff7300"
-                                name=""
-                            />
+                            {/*<Bar*/}
+                            {/*    dataKey="appointmentCountBar"*/}
+                            {/*    barSize={20}*/}
+                            {/*    fill="#413ea0"*/}
+                            {/*    name="Number of Appointments in a Month"*/}
+                            {/*/>*/}
+
+
+                            {/*<Line*/}
+                            {/*    type="monotone"*/}
+                            {/*    dataKey="appointmentCount"*/}
+                            {/*    stroke="#ff7300"*/}
+                            {/*    name=""*/}
+                            {/*/>*/}
                         </ComposedChart>
                     ) : (
                         <p>No data available</p>

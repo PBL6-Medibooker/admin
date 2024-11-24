@@ -206,7 +206,7 @@
     "dashboard": {
       "title": "Chuyên Khoa",
       "tooltip": "bác sĩ",
-      "dis": "Số Lượng Bác Sĩ Của Mỗi Chuyên Khoa "
+      "dis": "Số Lượng Bác Sĩ Mỗi Chuyên Khoa "
     },
     "list": {
       "title": "Danh sách các chuyên khoa",
@@ -242,9 +242,96 @@
       "rsuccess": "Khôi phục thành công",
       "rwarn": "Chưa chọn chuyên khoa cần khôi phục",
       "p": "Đã xoá chuyên khoa"
+    }
+  },
+  "region": {
+    "dashboard": {
+      "total": "Thành Phố",
+      "ctitle": "Số lượng bác sĩ mỗi vùng ",
+      "doctor": "bác sĩ"
+    },
+    "list": {
+      "region": "Thành Phố",
+      "delete": "Xoá",
+      "confirm": "Xác nhận xoá",
+      "p": "Bạn có chắc chắn muốn xoá thành phố không?",
+      "cancel": "Huỷ",
+      "title": "Danh sách các thành phố",
+      "nodata": "Không có dữ liệu!",
+      "m": "Xoá thành công",
+      "deleteNoti": "Chưa chọn thành phố để xoá!",
+      "trash": "Khôi Phục"
 
-
-
+    },
+    "add": {
+      "success": " Thêm vùng mới thành công ",
+      "title": "Thêm Thành Phố",
+      "name": "Tên Thành Phố",
+      "cancel": "Huỷ",
+      "save": "Hoàn tất",
+      "ename": "Vui lòng chọn tên thành phố khác!"
+    },
+    "restore": {
+      "warn": "Chưa chọn thành phố! ",
+      "success": "Khôi phục thành công",
+      "title": "Danh Sách Thành Phố Đã Xoá",
+      "put": "Khôi Phục",
+      "pd": "Xoá Vĩnh Viễn",
+      "cancel": "Huỷ",
+      "delete": "Xoá",
+      "confirm": "Xác Nhận Xoá",
+      "p": "Bạn có muốn xoá thành phố đã chọn ",
+      "dp": "vĩnh viễn",
+      "ds": " Xoá thành công!"
+    }
+  },
+  "appointment": {
+    "dashboard": {
+      "title": "Tất cả cuộc hẹn",
+      "noData": "Không có dữ liệu!",
+      "ctitle": "Tổng quan về cuộc hẹn",
+      "label": "Tổng số cuộc hẹn trong một tháng",
+      "month": "Tháng",
+      "number": "Số cuộc hẹn"
+    },
+    "list": {
+      "title": "Danh Sách Cuộc Hẹn",
+      "mcancel": "Đã huỷ lịch khám!",
+      "booking": "Đặt lịch khám",
+      "patient": "Bệnh nhân",
+      "age": "Tuổi",
+      "dnt": "Ngày & Giờ",
+      "doctor": "Bác sĩ",
+      "action": "Hành động",
+      "confirmDelete": "Xác nhận huỷ lịch khám",
+      "pCD": "Bạn có muốn huỷ lịch khám đã chọn?",
+      "cancel": "Trở lại",
+      "confirm": "Huỷ",
+      "completed": "Hoàn Thành"
+    },
+    "add": {
+      "title": "Đặt Lịch Khám",
+      "select": "Chọn người dùng",
+      "selectp": "Chọn chuyên khoa",
+      "selectd": "Chọn bác sĩ",
+      "option": "Chưa có bác sĩ cho chuyên khoa này!",
+      "date": "Chọn ngày - khung giờ khám",
+      "describe": "Miêu tả lí do đặt lịch khám",
+      "placeholder": "Ho, sốt...",
+      "back": "Trở về",
+      "continue": "Tiếp tục điền thông tin bảo hiểm",
+      "warn": "Vui lòng điền thông tin cần thiết để tiếp tục.",
+      "wbook": "Lịch khám không còn chỗ trống!",
+      "insurance": {
+        "success": "Đặt lịch khám hoàn tất!",
+        "title": "Thêm thông tin bảo hiểm",
+        "name": "Tên Bảo Hiểm",
+        "number": "Số Bảo Hiểm",
+        "location": "Địa chỉ",
+        "date": " Ngày hết hạn ",
+        "back": "Trở lại",
+        "save": "Hoàn tất"
+      }
     }
   }
 }

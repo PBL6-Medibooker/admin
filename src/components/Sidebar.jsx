@@ -20,6 +20,10 @@ const Sidebar = () => {
     const isSpecialityActive = () => {
         return location.pathname.includes("speciality");
     };
+
+    const isRegionActive = () => {
+        return location.pathname.includes("region");
+    };
     return (
         <div className='bg-white border-r'>
             <motion.div
@@ -49,7 +53,8 @@ const Sidebar = () => {
                                 { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality"),
                                     isActive: isSpecialityActive()
                                 },
-                                { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region") },
+                                { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region"),
+                                isActive: isRegionActive()},
                                 { to: "/appointment", icon: assets.appointment_icon, label: t("sidebar.appointment") },
                                 { to: "/article-dashboard", icon: assets.article, label: t("sidebar.article") },
                                 { to: "/forum-dashboard", icon: assets.forum, label: t("sidebar.forum") },

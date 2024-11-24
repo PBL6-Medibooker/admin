@@ -27,9 +27,6 @@ const TopUsers = () => {
                 console.error(e);
                 throw new Error("Failed to load appointments");
             }
-        },
-        onSuccess: () => {
-            // setIsInitialLoading(false);
         }
     });
 

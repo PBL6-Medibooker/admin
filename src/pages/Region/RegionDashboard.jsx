@@ -5,6 +5,7 @@ import {MapPin} from "lucide-react";
 import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
 import {useTranslation} from "react-i18next";
+import DoctorEachRegion from "../../components/Chart/DoctorEachRegion";
 
 const RegionDashboard = () => {
 
@@ -40,15 +41,14 @@ const RegionDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name='Total Region' to={'/region'} icon={MapPin} value={totalRegion}
+                    <StatCard name={t("region.dashboard.total")} to={'/region'} icon={MapPin} value={totalRegion}
                               color='#6366F1'/>
                 </motion.div>
 
                 {/* CHARTS */}
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-
-
+                    <DoctorEachRegion />
                 </div>
             </main>
         </div>

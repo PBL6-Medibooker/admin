@@ -3,17 +3,18 @@ import Modal from "../../components/Modal/Modal";
 import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
 import {toast} from "react-toastify";
+import {useTranslation} from "react-i18next";
 
 
 const UpdateRegion = ({open, onClose, id}) => {
 
     const [name, setName] = useState('');
     const {aToken} = useContext(AdminContext);
+    const {t} = useTranslation();
 
     const getRegionDetails = async () => {
-
         const result = await regionService.getRegionDetails(id, aToken);
-        if(result?.success){
+        if (result?.success) {
             setName(result.data.name);
         } else {
             toast.error(result?.message)
@@ -24,8 +25,7 @@ const UpdateRegion = ({open, onClose, id}) => {
         if (aToken) {
             getRegionDetails();
         }
-    }, [aToken,id]);
-
+    }, [aToken, id]);
 
 
     const handleSubmit = async (e) => {
@@ -75,14 +75,14 @@ const UpdateRegion = ({open, onClose, id}) => {
                             type="button"
                             className="bg-red-500 px-10 py-3 mt-4 text-white rounded-full"
                         >
-                            Cancel
+                            {t("region.add.cancel")}
                         </button>
 
                         <button
                             type="submit"
                             className="bg-primary px-10 py-3 mt-4 text-white rounded-full"
                         >
-                            Save
+                            {t("region.add.save")}
                         </button>
                     </div>
                 </div>

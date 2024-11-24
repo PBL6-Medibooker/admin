@@ -4,12 +4,15 @@ import {toast} from "react-toastify";
 import * as appointmentService from "../../service/AppointmentService";
 import {useNavigate, useParams} from "react-router-dom";
 import {motion} from "framer-motion";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 
 const AddInsuranceByAppointmentId = () => {
     const {aToken} = useContext(AdminContext)
     const {id} = useParams();
+    const {t}= useTranslation();
 
     const [insuranceData, setInsuranceData] = useState({
         name: '',
@@ -33,8 +36,15 @@ const AddInsuranceByAppointmentId = () => {
             const data = await appointmentService.addInsurance(payload, id, aToken)
             if (data) {
                 console.log(data)
-                toast.success('Booking completed');
+                // toast.success('Booking completed');
                 navigate('/all-appointment')
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("appointment.add.insurance.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             } else {
                 toast.error(data.error)
             }
@@ -53,7 +63,7 @@ const AddInsuranceByAppointmentId = () => {
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl text-primary lg:text-2xl font-semibold mb-4">
-                    Add Insurance Infomation
+                    {t("appointment.add.insurance.title")}
                 </p>
             </motion.div>
 
@@ -78,7 +88,7 @@ const AddInsuranceByAppointmentId = () => {
                             <label htmlFor="insurance_name"
                                    className="block text-lg font-medium text-gray-700 mb-2">
 
-                                Insurance Name
+                                {t("appointment.add.insurance.name")}
                             </label>
                             <input
                                 onChange={(e) => setInsuranceData(prev => ({...prev, name: e.target.value}))}
@@ -104,7 +114,7 @@ const AddInsuranceByAppointmentId = () => {
                             <label htmlFor="insurance_number"
                                    className="block text-lg font-medium text-gray-700 mb-2">
 
-                                Insurance Number
+                                {t("appointment.add.insurance.number")}
                             </label>
                             <input
                                 onChange={(e) => setInsuranceData(prev => ({
@@ -132,7 +142,7 @@ const AddInsuranceByAppointmentId = () => {
                             <label htmlFor="insurance_location"
                                    className="block text-lg font-medium text-gray-700 mb-2">
 
-                                Location
+                                {t("appointment.add.insurance.location")}
                             </label>
                             <input
                                 onChange={(e) => setInsuranceData(prev => ({
@@ -159,7 +169,7 @@ const AddInsuranceByAppointmentId = () => {
                             <label htmlFor="insurance_exp_date"
                                    className="block text-lg font-medium text-gray-700 mb-2">
 
-                                Expiry Date
+                                {t("appointment.add.insurance.date")}
                             </label>
                             <input
                                 onChange={(e) => setInsuranceData(prev => ({
@@ -182,13 +192,13 @@ const AddInsuranceByAppointmentId = () => {
                         transition={{delay: 0.7, duration: 0.5}}
                         className="flex justify-end gap-6 mt-6"
                     >
-                        <button
-                            type="button"
-                            onClick={() => navigate('/booking-appointment')}
-                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
-                        >
-                            <i className="fas fa-arrow-left mr-2"></i> Back
-                        </button>
+                        {/*<button*/}
+                        {/*    type="button"*/}
+                        {/*    onClick={() => navigate('/booking-appointment')}*/}
+                        {/*    className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"*/}
+                        {/*>*/}
+                        {/*    <i className="fas fa-arrow-left mr-2"></i> {t("appointment.add.insurance.back")}*/}
+                        {/*</button>*/}
 
                         <button
                             type="button"
@@ -196,7 +206,7 @@ const AddInsuranceByAppointmentId = () => {
                             className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                             aria-label="Save booking"
                         >
-                            <i className="fas fa-save mr-2"></i> Save
+                            <i className="fas fa-save mr-2"></i> {t("appointment.add.insurance.save")}
                         </button>
                     </motion.div>
                 </div>

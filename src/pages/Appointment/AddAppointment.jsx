@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { assets } from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 import * as accountService from "../../service/AccountService";
 import * as appointmentService from "../../service/AppointmentService";
@@ -10,6 +9,8 @@ import DatePicker from "../../components/DatePickerCustom/DatePicker";
 import { motion } from "framer-motion";
 import * as specialityService from "../../service/SpecialityService";
 import { FaArrowCircleRight } from "react-icons/fa";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const AddAppointment = () => {
@@ -34,6 +35,7 @@ const AddAppointment = () => {
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
     const [specialities, setSpecialities] = useState([]);
     const [filteredDoctors, setFilteredDoctors] = useState([]);
+    const {t}= useTranslation();
 
     const [fullyBookedHours, setFullyBookedHours] = useState([
         // {
@@ -139,7 +141,14 @@ const AddAppointment = () => {
             type_service,
         });
         if (!user_id || !doctor_id || !datePicker.time?.start_time || !datePicker.time?.end_time || !health_issue) {
-            toast.warn('Please fill out all required fields before proceeding.');
+            // toast.warn('Please fill out all required fields before proceeding.');
+            await Swal.fire({
+                position: "top-end",
+                title: t("appointment.add.warn"),
+                icon: "warning",
+                showConfirmButton: false,
+                timer: 1500
+            });
             return;
         }
         try {
@@ -159,8 +168,13 @@ const AddAppointment = () => {
                 navigate(`/add-insurance/${response._id}`);
                 // toast.success('Booking Appointment Successful');
             } else {
-                toast.warn('This schedule is fully booked');
-            }
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("appointment.add.wbook"),
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 1500
+                });            }
 
         } catch (error) {
             console.error('Error creating appointment:', error.response?.data || error.message);
@@ -196,7 +210,7 @@ const AddAppointment = () => {
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl text-primary lg:text-2xl font-semibold mb-4">
-                    Booking Appointment
+                    {t("appointment.add.title")}
                 </p>
             </motion.div>
 
@@ -217,9 +231,6 @@ const AddAppointment = () => {
                         className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
                     >
                         <div className="mb-6">
-                            {/*<label htmlFor="user-select" className="block text-lg font-medium text-gray-700 mb-2">*/}
-                            {/*    Select User*/}
-                            {/*</label>*/}
                             <select
                                 id="user-select"
                                 value={user_id}
@@ -229,7 +240,7 @@ const AddAppointment = () => {
                                 aria-required="true"
                             >
                                 <option value="" disabled className="text-gray-400">
-                                    Select a user
+                                    {t("appointment.add.select")}
                                 </option>
                                 {users?.map((user) => (
                                     <option key={user._id} value={user._id}>
@@ -247,9 +258,6 @@ const AddAppointment = () => {
                         className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
                     >
                         <div className="mb-6">
-                            {/*<label htmlFor="user-select" className="block text-lg font-medium text-gray-700 mb-2">*/}
-                            {/*    Select PostSpeciality*/}
-                            {/*</label>*/}
                             <select
                                 id="user-select"
                                 value={spec_id}
@@ -259,7 +267,7 @@ const AddAppointment = () => {
                                 aria-required="true"
                             >
                                 <option value="" disabled className="text-gray-400">
-                                    Select a speciality
+                                    {t("appointment.add.selectp")}
                                 </option>
                                 {specialities?.map((speciality) => (
                                     <option key={speciality._id} value={speciality._id}>
@@ -290,7 +298,7 @@ const AddAppointment = () => {
                                 aria-required="true"
                             >
                                 <option value="" disabled className="text-gray-400">
-                                    Select a doctor
+                                    {t("appointment.add.selectd")}
                                 </option>
                                 {filteredDoctors?.length > 0 ? (
                                     filteredDoctors.map((doctor) => (
@@ -300,7 +308,7 @@ const AddAppointment = () => {
                                     ))
                                 ) : (
                                     <option value="" disabled>
-                                        No doctor for this speciality yet!
+                                        {t("appointment.add.option")}
                                     </option>
                                 )}
                             </select>
@@ -319,7 +327,7 @@ const AddAppointment = () => {
                             value={datePicker}
                             schedule={doctor ? doctor.active_hours : null}
                             onChange={setDatePicker}
-                            placeholder="Chọn ngày - khung giờ khám"
+                            placeholder={t("appointment.add.date")}
                             disabled={!(user_id && doctor)}
                             onFocus={(e) => {
                                 handleFocus("time");
@@ -338,8 +346,8 @@ const AddAppointment = () => {
                         className="mb-6"
                     >
                         <label htmlFor="health-issue"
-                               className="block text-lg font-medium text-gray-700 mb-2">
-                            Describe Your Health Issues
+                               className="block text-lg font-medium text-primary mb-2">
+                            {t("appointment.add.describe")}
                         </label>
                         <textarea
                             id="health-issue"
@@ -347,7 +355,7 @@ const AddAppointment = () => {
                             onChange={(e) => setHealthIssue(e.target.value)}
                             rows="4"
                             className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            placeholder="Describe your health issue here..."
+                            placeholder={t("appointment.add.placeholder")}
                             required
                             aria-required="true"
                         />
@@ -363,9 +371,9 @@ const AddAppointment = () => {
                         <button
                             type="button"
                             onClick={() => navigate('/all-appointment')}
-                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
+                            className="bg-gray-300 px-6 py-3 text-sm text-black text-center rounded-full hover:bg-gray-400 transition-all"
                         >
-                            <i className="fas fa-arrow-left mr-2"></i> Back
+                            <i className="fas fa-arrow-left mr-2"></i> {t("appointment.add.back")}
                         </button>
                         <button
                             type="button"
@@ -379,7 +387,7 @@ const AddAppointment = () => {
                             disabled={!datePicker.date}
                         >
                             <i className="fas fa-save mr-2"></i>
-                            Continue fill in insurance info
+                            {t("appointment.add.continue")}
                             <FaArrowCircleRight
                                 className={`transform transition-transform duration-300 ${
                                     datePicker.date ? 'group-hover:translate-x-2' : ''

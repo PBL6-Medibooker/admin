@@ -240,5 +240,94 @@
       "rwarn": "No speciality selected for restoration",
       "p": "Speciality Deleted"
     }
+  },
+  "region": {
+    "dashboard": {
+      "total": "Total Region",
+      "ctitle": "Doctors Of Each Region",
+      "doctor": "doctors"
+    },
+    "list": {
+      "region": "Region",
+      "delete": "Delete",
+      "confirm": "Confirm Delete",
+      "p": " Are you sure you want to delete?",
+      "cancel": "Cancel",
+      "title": "All Regions",
+      "nodata": "No Record Found!",
+      "m": "Delete Successful!",
+      "deleteNoti": "No region selected for deletion!",
+      "trash": "Trash"
+    },
+    "add": {
+      "success": "Add Region Success",
+      "title": "Add Region",
+      "name": "Enter province name",
+      "cancel": "Cancel",
+      "save": "Save",
+      "ename": "Region Already Exist!"
+    },
+    "restore": {
+      "warn": "No region selected for restoration",
+      "success": "Restored Region Successful",
+      "title": "All Deleted Region",
+      "put": "Put Back",
+      "pd": "Delete Permanently",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "confirm": "Confirm Delete",
+      "p": "Are you sure you want to delete",
+      "dp": "permanently",
+      "ds": "Delete Successful!"
+    }
+  },
+  "appointment": {
+    "dashboard": {
+      "title": "Total Appointment",
+      "noData": "No data available",
+      "ctitle": "Appointment Overview",
+      "label": "Number of Appointments in a Month",
+      "month": "Month",
+      "number": "Number of Appointments"
+    },
+    "list": {
+      "title": "All Appointments",
+      "mcancel": "The Appointment has been cancelled",
+      "booking": "Booking Appointment",
+      "patient": "Patient",
+      "age": "Age",
+      "dnt": "Date & Time",
+      "doctor": "Doctor",
+      "action": "Actions",
+      "confirmDelete": "Confirm Delete",
+      "pCD": "Are you sure you want to delete?",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "completed": "Completed"
+    },
+    "add": {
+      "title": "Booking Appointment",
+      "select": "Select a user",
+      "selectp": "Select a speciality",
+      "selectd": "Select a doctor",
+      "option": "No doctor for this speciality yet!",
+      "date": "Pick date & time for appointment",
+      "describe": "Describe Your Health Issues",
+      "placeholder": "Cough, fever...",
+      "back": "Back",
+      "continue": "Continue fill in insurance info",
+      "warn": "Please fill out all required fields before proceeding.",
+      "wbook": "This schedule is fully booked",
+      "insurance": {
+        "success": "Booking completed",
+        "title": "Add Insurance Information",
+        "name": "Insurance Name",
+        "number": "Insurance Number",
+        "location": "Location",
+        "date": "Expiry Date",
+        "back": "Back",
+        "save": "Save"
+      }
+    }
   }
 }
