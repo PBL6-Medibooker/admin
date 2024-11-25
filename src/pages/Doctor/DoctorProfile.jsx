@@ -18,14 +18,12 @@ const DoctorProfile = () => {
 
     const getDoctorData = async () => {
         try {
-
             const result = await accountService.getDoctorProfile(dToken);
             console.log(result)
             if (result.success) {
                 setDoctorData(result.profileData)
                 setDocId(result.profileData._id)
             }
-
         } catch (e) {
             console.log(e);
         }

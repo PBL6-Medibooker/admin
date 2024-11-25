@@ -153,6 +153,7 @@
       "day": "DAY",
       "start": "Start Time",
       "end": "End Time",
+      "type": "Type",
       "action": "Action",
       "delete": "Delete",
       "message": "Active hour deleted successfully",
@@ -160,7 +161,8 @@
       "confirm": "Confirm Delete",
       "p": "Are you sure you want to delete this active hour?",
       "bd": " Delete",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "emessage": "Please check time of appointment!"
     },
     "aa": {
       "title": "Add Active Hour",
@@ -172,7 +174,8 @@
       "end": "End Time",
       "success": "Active hour added successfully",
       "error": "End time must be later than start time",
-      "emessage": "Eror"
+      "emessage": "Eror",
+      "select": "Select a Day"
     },
     "updateaa": {
       "title": "Update Active Hour",
@@ -328,6 +331,143 @@
         "back": "Back",
         "save": "Save"
       }
+    },
+    "update": {
+      "title": "Update Appointment Information of",
+      "nodata": "No user selected",
+      "insurance": "Insurance Information",
+      "y": " You have booked an appointment with",
+      "on": "on",
+      "at": "at",
+      "nod": "No doctor selected",
+      "nodate": "No date selected",
+      "time": "No time selected",
+      "select": "Select another Appointment Time",
+      "hi": "Your Health Issues",
+      "back": "Back",
+      "save": "Save",
+      "success": "Insurance Updated",
+      "error": "Error updating insurance",
+      "ti": "Insurance Information Of ",
+      "iname": "Name",
+      "inumber": "Number",
+      "address": "Location",
+      "ex": "Expiry Date"
+    }
+  },
+  "article": {
+    "dashboard": {
+      "title": "Total Article",
+      "articles": "articles",
+      "ctitle": "Article Overview",
+      "nodata": "No data available!",
+      "mtitle": "Number of article in a month",
+      "number": "Number of Articles",
+      "month": "Month",
+      "label": "Number of Articles in a Month"
+    },
+    "list": {
+      "warn": "No article selected for deletion",
+      "success": "Create a new article successfully!",
+      "image": "Image",
+      "title": "Article Title",
+      "doctor": "Doctor",
+      "spec": "Speciality",
+      "public": "Publish Date",
+      "ctitle": "Article List",
+      "delete": "Delete",
+      "restore": "Restore",
+      "search": "Search news...",
+      "confirmDelete": "Confirm Delete",
+      "pCD": "Are you sure you want to delete?",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "noData": "No Article Found!",
+      "dsuccess": "Article Deleted!"
+    },
+    "restore": {
+      "success": "Restore Successful",
+      "title": "Deleted Article",
+      "pd": "Delete Permanently",
+      "dsuccess": "Article Deleted!"
+    },
+    "add": {
+      "title": "Create New Article",
+      "a": "Select a doctor",
+      "atitle": "Article Title",
+      "content": "Article Content",
+      "back": "Back",
+      "save": "Save"
+    },
+    "update": {
+      "success": "Article Updated",
+      "title": "Update Article Information",
+      "t": "This article is written by"
+    }
+  },
+  "forum": {
+    "dashboard": {
+      "title": "Total Post"
+    },
+    "ps": {
+      "title": "Post By Speciality",
+      "see": "See all post"
+    },
+    "list": {
+      "warn": "No post selected for deletion",
+      "success": "Create a new post!",
+      "spec": "Speciality",
+      "delete": "Delete",
+      "restore": "Trash",
+      "search": "Search post...",
+      "confirmDelete": "Confirm Delete",
+      "pCD": "Are you sure you want to delete?",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "noData": "No Post Found!",
+      "dsuccess": "Post Deleted!",
+      "ttitle": "Title",
+      "user": "User",
+      "dp": "Delete Permanently",
+      "put": "Put Back",
+      "dspec": "Deleted Post Of Speciality",
+      "pconfirm": "Delete Permanent",
+      "rsuccess": "Post Restored!",
+      "rwarn": "No post selected for restoration"
+    },
+    "update": {
+      "success": "Post Updated!",
+      "title": "Update Post Information",
+      "ptitle": "Post Title",
+      "content": "Post Content",
+      "back": "Back",
+      "save": "Save",
+      "t": "This post is created by"
+    }
+  },
+  "adminProfile": {
+    "success": "Updated Admin Information",
+    "contact": "CONTACT INFORMATION",
+    "phone": "Phone",
+    "address": "Address",
+    "basic": "BASIC INFORMATION",
+    "dob": "Date of birth",
+    "save": "Save",
+    "edit": "Edit"
+  },
+  "doctor": {
+    "profile": {
+
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "account": "Account",
+      "speciality": "Speciality",
+      "region": "Region",
+      "appointment": "Appointment",
+      "article": "Article",
+      "forum": "Forum",
+      "profile": "Profile"
     }
   }
 }

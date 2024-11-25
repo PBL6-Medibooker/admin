@@ -83,8 +83,8 @@ const AccountDetails = () => {
 
     const resetPass = async () => {
         try {
+            console.log(email);
             const result = await accountService.forgotPassword(email, aToken);
-
             if (result) {
                 toast.success(result.message)
             } else {

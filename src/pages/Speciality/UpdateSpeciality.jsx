@@ -82,7 +82,7 @@ const UpdateSpeciality = () => {
             exit={{ opacity: 0 }}
         >
             <motion.h1
-                className="flex justify-items-start ml-5 text-3xl font-bold text-primary mt-4"
+                className="flex justify-items-start ml-5 text-3xl font-bold text-primary mt-5"
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}

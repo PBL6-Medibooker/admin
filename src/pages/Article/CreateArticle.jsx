@@ -6,6 +6,8 @@ import * as articleService from "../../service/ArticleService";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import {assets} from "../../assets/assets";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const CreateArticle = () => {
 
@@ -17,6 +19,7 @@ const CreateArticle = () => {
     const [articleImage, setArticleImage] = useState(null);
     const [image, setImage] = useState(null);
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
 
     const getDoctorAccountList = async () => {
@@ -31,7 +34,7 @@ const CreateArticle = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setArticleImage(file);
+            setImage(file);
         }
     };
 
@@ -43,12 +46,19 @@ const CreateArticle = () => {
             formData.append('email', email)
             formData.append('article_title', articleTitle)
             formData.append('article_content', articleContent)
-            formData.append('article_img', articleImage);
+            formData.append('article_image', image);
 
             const result = await articleService.addArticle(formData, aToken)
             if (result) {
-                toast.success('Create Article Successful')
+                // toast.success('Create Article Successful')
                 navigate('/article')
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("article.add.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 toast.error('Error')
             }
@@ -74,7 +84,7 @@ const CreateArticle = () => {
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl mt-1 text-primary lg:text-2xl font-semibold mb-4">
-                    Add Article
+                    {t("article.add.title")}
                 </p>
             </motion.div>
 
@@ -99,7 +109,8 @@ const CreateArticle = () => {
                             <div className="relative sm:max-w-80 h-[200px]">
                                 <img
                                     className="w-full h-full object-cover rounded-lg"
-                                    src={articleImage ? URL.createObjectURL(articleImage) : assets.upload_icon}                                    alt="image"
+                                    src={image ? URL.createObjectURL(image) : assets.upload_icon}
+                                    alt="image"
                                 />
 
                                 {!image && (
@@ -127,9 +138,6 @@ const CreateArticle = () => {
                         </label>
 
                         <div className="mb-6">
-                            <label htmlFor="user-select" className="block text-lg font-medium text-gray-700 mb-2">
-                                Select Doctor
-                            </label>
                             <select
                                 id="user-select"
                                 value={email}
@@ -139,7 +147,7 @@ const CreateArticle = () => {
                                 aria-required="true"
                             >
                                 <option value="" disabled className="text-gray-400">
-                                    Select a doctor
+                                    {t("article.add.a")}
                                 </option>
                                 {doctors?.map((doctor) => (
                                     <option key={doctor._id} value={doctor.email}>
@@ -157,8 +165,8 @@ const CreateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-gray-700 mb-2">
-                            Article Title
+                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                            {t("article.add.atitle")}
                         </label>
                         <input
                             id="health-issue"
@@ -178,8 +186,8 @@ const CreateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-gray-700 mb-2">
-                            Article Content
+                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                            {t("article.add.content")}
                         </label>
                         <textarea
                             id="health-issue"
@@ -187,7 +195,7 @@ const CreateArticle = () => {
                             onChange={(e) => setArticleContent(e.target.value)}
                             rows="4"
                             className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            placeholder="Describe your health issue here..."
+                            placeholder="..."
                             required
                             aria-required="true"
                         />
@@ -205,7 +213,7 @@ const CreateArticle = () => {
                             onClick={() => navigate('/article')}
                             className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
                         >
-                            <i className="fas fa-arrow-left mr-2"></i> Back
+                            <i className="fas fa-arrow-left mr-2"></i> {t("article.add.back")}
                         </button>
 
                         <button
@@ -214,7 +222,7 @@ const CreateArticle = () => {
                             className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                             aria-label="Save booking"
                         >
-                            <i className="fas fa-save mr-2"></i> Save
+                            <i className="fas fa-save mr-2"></i> {t("article.add.save")}
                         </button>
                     </motion.div>
                 </div>

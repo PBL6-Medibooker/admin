@@ -1,18 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {assets} from "../../assets/assets";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import * as forumService from "../../service/ForumService";
 import {toast} from "react-toastify";
-import { motion } from "framer-motion";
-
+import {motion} from "framer-motion";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const PostDetails = () => {
     const {aToken} = useContext(AdminContext);
     const {id} = useParams();
     const navigate = useNavigate();
-
+    const {t} = useTranslation();
     const [postData, setPostData] = useState({
         post_title: '',
         post_content: '',
@@ -21,14 +21,14 @@ const PostDetails = () => {
 
 
     const openPostBySpecialityList = (value) => {
-        navigate('/post-list-by-speciality', { state: { name: value } });
+        navigate('/post-list-by-spec', {state: {name: value}});
 
     }
 
     const getPostDetails = async () => {
         try {
             const result = await forumService.getPost(id, aToken)
-            if(result){
+            if (result) {
                 console.log(result)
                 setPostData(result)
             }
@@ -46,8 +46,16 @@ const PostDetails = () => {
             };
             const result = await forumService.updatePost(payload, id, aToken);
             if (result) {
-                toast.success('Post Updated');
-                navigate('/post-list-by-speciality', { state: { name: postData.speciality_id.name } });            }
+
+                navigate('/post-list-by-spec', {state: {name: postData.speciality_id.name}});
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("forum.update.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         } catch (e) {
             console.error(e);
             toast.error('Failed to update post');
@@ -56,7 +64,7 @@ const PostDetails = () => {
 
 
     useEffect(() => {
-        if(aToken){
+        if (aToken) {
             getPostDetails()
         }
     }, [aToken]);
@@ -75,7 +83,7 @@ const PostDetails = () => {
                     transition={{delay: 0.3}}
                 >
                     <p className="text-2xl lg:text-2xl text-primary font-bold mb-4">
-                        Update Post Information
+                        {t("forum.update.title")}
                     </p>
                 </motion.div>
 
@@ -91,7 +99,7 @@ const PostDetails = () => {
                         <div className="flex items-center gap-6 mb-8 text-gray-500">
                             <div className="text-center">
                                 <p className="text-base font-semibold">
-                                    This post is created by <span
+                                    {t("forum.update.t")} <span
                                     className="text-primary">{postData?.user_id?.email}</span>
                                 </p>
                             </div>
@@ -100,7 +108,7 @@ const PostDetails = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 text-gray-600">
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-lg font-medium">Post Title</label>
+                                    <label className="text-lg text-primary font-medium">{t("forum.update.ptitle")}</label>
                                     <motion.input
                                         onChange={(e) => setPostData(prev => ({...prev, post_title: e.target.value}))}
                                         value={postData?.post_title}
@@ -114,7 +122,7 @@ const PostDetails = () => {
                                 </div>
 
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-lg font-medium">Post Content</label>
+                                    <label className="text-lg text-primary font-medium">{t("forum.update.content")}</label>
                                     <motion.textarea
                                         onChange={(e) => setPostData(prev => ({...prev, post_content: e.target.value}))}
                                         value={postData?.post_content}
@@ -131,18 +139,18 @@ const PostDetails = () => {
                         <div className="flex justify-end gap-8 mt-8">
                             <motion.button
                                 onClick={() => openPostBySpecialityList(postData.speciality_id.name)}
-                                className="bg-gray-300 px-8 py-4 text-lg text-gray-700 rounded-full hover:bg-gray-400 transition-all"
+                                className="bg-gray-300 px-8 py-2 text-lg text-gray-700 rounded-full hover:bg-gray-400 transition-all"
                                 whileHover={{scale: 1.1}}
                             >
-                                Back
+                                {t("forum.update.back")}
                             </motion.button>
 
                             <motion.button
                                 type="submit"
-                                className="bg-primary px-8 py-4 text-lg text-white rounded-full hover:bg-primary-dark transition-all"
+                                className="bg-primary px-8 py-2 text-lg text-white rounded-full hover:bg-primary-dark transition-all"
                                 whileHover={{scale: 1.1}}
                             >
-                                Save
+                                {t("forum.update.save")}
                             </motion.button>
                         </div>
                     </div>

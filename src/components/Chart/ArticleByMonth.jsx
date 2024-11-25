@@ -11,11 +11,12 @@ import {
 import {motion} from "framer-motion";
 import {AdminContext} from "../../context/AdminContext";
 import * as articleService from "../../service/ArticleService";
+import {useTranslation} from "react-i18next";
 
 
 const ArticleByMonth = () => {
     const { aToken } = useContext(AdminContext);
-
+    const {t}= useTranslation();
     const [articleData, setArticleData] = useState([]);
 
 
@@ -43,7 +44,7 @@ const ArticleByMonth = () => {
             transition={{delay: 1}}
         >
             <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>Article Overview</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>{t("article.dashboard.mtitle")}</h2>
             </div>
 
             <div className='w-full h-80'>
@@ -60,10 +61,10 @@ const ArticleByMonth = () => {
                                     color: "#374151"
                                 }}
                                 itemStyle={{color: "#374151"}}
-                                labelFormatter={(month) => `Month: ${month}`}
+                                labelFormatter={(month) => `${t("article.dashboard.month")}: ${month}`}
                                 formatter={(value, name, props) => {
                                     if (props.dataKey === 'count') {
-                                        return [`Number of Articles: ${value}`];
+                                        return [`${t("article.dashboard.number")}: ${value}`];
                                     }
                                     return null;
                                 }}
@@ -73,11 +74,11 @@ const ArticleByMonth = () => {
 
                             <Line type='monotone' dataKey='count' stroke='#8B5CF6' strokeWidth={2}
                                   dot={{fill: '#8B5CF6'}}
-                                  name='Number of Articles in a Month'
+                                  name={t("article.dashboard.label")}
                             />
                         </LineChart>
                     ) : (
-                        <p className="text-center text-gray-500">No data available</p>
+                        <p className="text-center text-gray-500">{t("article.dashboard.nodata")}</p>
                     )}
                 </ResponsiveContainer>
             </div>

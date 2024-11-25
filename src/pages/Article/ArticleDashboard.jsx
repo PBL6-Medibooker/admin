@@ -6,11 +6,13 @@ import StatCard from "../../components/StatCard";
 import {Newspaper} from "lucide-react";
 import ArticleByMonth from "../../components/Chart/ArticleByMonth";
 import ArticleBySpeciality from "../../components/Chart/ArticleBySpeciality";
+import {useTranslation} from "react-i18next";
 
 const ArticleDashboard = () => {
     const {aToken} = useContext(AdminContext);
     const [articles, setArticles] = useState([])
     const [totalArticles, setTotalArticles] = useState(0)
+    const {t}= useTranslation()
 
 
     const getAllArticle = async () => {
@@ -43,7 +45,7 @@ const ArticleDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name='Total Article' to={'/article'} icon={Newspaper} value={totalArticles} color='#6366F1'/>
+                    <StatCard name={t("article.dashboard.title")} to={'/article'} icon={Newspaper} value={totalArticles} color='#6366F1'/>
                 </motion.div>
 
                 {/* CHARTS */}

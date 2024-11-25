@@ -82,6 +82,11 @@ const AccountList = () => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
+    // const rows = useMemo(() => {
+    //     return table.getRowModel().rows.filter(row => row.original.role !== 'admin');
+    // }, [table.getRowModel().rows]);
+
+
     const getAccountList = async () => {
 
         try {
@@ -157,7 +162,7 @@ const AccountList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
-                <h1 className="text-lg text-primary lg:text-2xl font-semibold">{t("account.accountList.userAccounts")}</h1>
+                <h1 className="text-lg text-primary lg:text-2xl">{t("account.accountList.userAccounts")}</h1>
                 <div className="flex gap-4">
                     <motion.button
                         onClick={() => navigate(`/add-customer-account`)}

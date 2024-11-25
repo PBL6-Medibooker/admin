@@ -20,10 +20,25 @@ const Sidebar = () => {
     const isSpecialityActive = () => {
         return location.pathname.includes("speciality");
     };
-
     const isRegionActive = () => {
         return location.pathname.includes("region");
     };
+    const isArticleActive = () => {
+        return location.pathname.includes("article");
+    };
+    const isPostOrForumActive = () => {
+        return location.pathname.includes("post") || location.pathname.includes("forum");
+    };
+
+    const isAppointmentActive = () => {
+        return location.pathname.includes("appointment");
+    };
+
+    const isAccountActive = () => {
+        return location.pathname.includes("account");
+    };
+
+
     return (
         <div className='bg-white border-r'>
             <motion.div
@@ -49,15 +64,19 @@ const Sidebar = () => {
                         <ul className="text-[#515151]">
                             {[
                                 { to: "/admin-dashboard", icon: assets.home_icon, label: t("sidebar.dashboard") },
-                                { to: "/account-dashboard", icon: assets.user_icon, label: t("sidebar.account") },
+                                { to: "/account-dashboard", icon: assets.user_icon, label: t("sidebar.account"),
+                                isActive: isAccountActive()},
                                 { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality"),
                                     isActive: isSpecialityActive()
                                 },
                                 { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region"),
                                 isActive: isRegionActive()},
-                                { to: "/appointment", icon: assets.appointment_icon, label: t("sidebar.appointment") },
-                                { to: "/article-dashboard", icon: assets.article, label: t("sidebar.article") },
-                                { to: "/forum-dashboard", icon: assets.forum, label: t("sidebar.forum") },
+                                { to: "/appointment", icon: assets.appointment_icon, label: t("sidebar.appointment"),
+                                isActive: isAppointmentActive()},
+                                { to: "/article-dashboard", icon: assets.article, label: t("sidebar.article"),
+                                isActive: isArticleActive()},
+                                { to: "/forum-dashboard", icon: assets.forum, label: t("sidebar.forum"),
+                                isActive: isPostOrForumActive()},
                                 { to: "/admin-profile", icon: assets.admin, label: t("sidebar.profile") },
                             ].map((item) => (
                                 <NavLink
@@ -104,9 +123,10 @@ const Sidebar = () => {
                     {dToken && (
                         <ul className="text-[#515151]">
                             {[
-                                {to: "/doctor-dashboard", icon: assets.home_icon, label: "Dashboard"},
-                                {to: "/doctor-appointments", icon: assets.appointment_icon, label: "Appointment"},
-                                {to: "/doctor-profile", icon: assets.people_icon, label: "Profile"},
+                                {to: "/doctor-dashboard", icon: assets.home_icon, label: t("doctor.sidebar.dashboard")},
+                                {to: "/doctor-appointments", icon: assets.appointment_icon, label: t("doctor.sidebar.appointment")},
+                                {to: "/doctor-article", icon: assets.news, label: t("doctor.sidebar.article")},
+                                {to: "/doctor-profile", icon: assets.people_icon, label: t("doctor.sidebar.profile")},
                             ].map((item) => (
                                 <NavLink
                                     key={item.to}
@@ -134,6 +154,17 @@ const Sidebar = () => {
                                     </AnimatePresence>
                                 </NavLink>
                             ))}
+
+                            <ThemeWrapper>
+                                <ToggleWrapper>
+                                    <ToggleSwitch
+                                        onClick={() => {
+                                            setCurrentLanguage(currentLanguage === "vi" ? "en" : "vi");
+                                            i18n.changeLanguage(currentLanguage === "vi" ? "en" : "vi");
+                                        }}
+                                        type="checkbox" role="switch" />
+                                </ToggleWrapper>
+                            </ThemeWrapper>
                         </ul>
                     )}
                 </nav>

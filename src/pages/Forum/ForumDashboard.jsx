@@ -4,12 +4,14 @@ import * as forumService from "../../service/ForumService";
 import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
 import {EthernetPort} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 const ForumDashboard = () => {
 
     const {aToken} = useContext(AdminContext);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([])
     const [totalPost, setTotalPost] = useState(0)
+    const {t} = useTranslation()
 
 
     const getPostList = async () => {
@@ -37,7 +39,7 @@ const ForumDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name='Total Post' to={'/speciality-forum'} icon={EthernetPort} value={totalPost}
+                    <StatCard name={t("forum.dashboard.title")} to={'/spec-forum'} icon={EthernetPort} value={totalPost}
                               color='#6366F1'/>
                 </motion.div>
 

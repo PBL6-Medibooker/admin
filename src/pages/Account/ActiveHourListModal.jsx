@@ -50,6 +50,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
     const [bookedHours, setBookedHours] = useState([]);
     const [fullyBookedHours, setFullyBookedHours] = useState([]);
     const {t} = useTranslation();
+    const [isAdd, setIsAdd] = useState(false);
+
 
 
     const options = {
@@ -92,17 +94,17 @@ const ActiveHourListModal = ({open, onClose, id}) => {
                 filter: false,
             }
         },
-        // {
-        //     name: "hour_type",
-        //     label: 'Type',
-        //     options: {
-        //         customBodyRender: (value) => (
-        //             <p className={`capitalize inline-block px-3 py-2 rounded-full ${value === 'working' ? 'bg-primary text-white' : 'bg-blue-200'}`}>
-        //                 {value}
-        //             </p>
-        //         ),
-        //     }
-        // },
+        {
+            name: "hour_type",
+            label: <span className=' text-primary lg:text-xl'>{t("account.active.type")}</span>,
+            options: {
+                customBodyRender: (value) => (
+                    <p className={`capitalize inline-block px-3 py-2 rounded-full ${value === 'working' ? 'bg-primary text-white' : 'bg-blue-200'}`}>
+                        {value}
+                    </p>
+                ),
+            }
+        },
         // {
         //     name: "status",
         //     label: "Booking Status",
@@ -218,7 +220,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
 
 
     const onLoad = async () => {
-        await getAccountActiveHourList();
+        setIsAdd(true)
+        await getActiveHourList();
         setCreateModal(false);
         setUpdateModal(false);
     };
@@ -252,7 +255,7 @@ const ActiveHourListModal = ({open, onClose, id}) => {
         if (aToken) {
             getActiveHourList();
         }
-    }, [aToken]);
+    }, [aToken, isAdd]);
 
     return (
         <Modal className='w-full max-w-4xl h-full max-h-[80vh]' open={open} onClose={onClose}>

@@ -235,3 +235,4 @@ export const getTopUsers = async ( aToken) => {
         console.error(e);
     }
 };
+

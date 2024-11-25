@@ -52,7 +52,9 @@
      "confirmDelete": "Xác nhận xoá tài khoản",
      "pCD": "Bạn có muốn xoá tài khoản đã chọn?",
      "cancel": "Huỷ",
-     "confirm": "Xoá"
+     "confirm": "Xoá",
+     "nodata": "Không có dữ liệu!"
+
    },
    "addNewCustomerAcc": {
      "success": "Thêm tài khoản thành công!",
@@ -153,6 +155,7 @@
      "day": "Thứ",
      "start": "Bắt Đầu",
      "end": "Kết Thúc",
+     "type": "Giờ",
      "action": "Hành Động",
      "delete": "Xoá",
      "message": "Thời gian khám đã xoá!",
@@ -160,7 +163,8 @@
      "confirm": "Xác Nhận Xoá",
      "p": "Bạn có muốn xoá giờ khám này không?",
      "bd": " Xoá",
-     "cancel": "Huỷ"
+     "cancel": "Huỷ",
+     "emessage": "Vui lòng chọn lại giờ khám!"
    },
    "aa": {
      "title": "Thêm Lịch Khám",
@@ -172,7 +176,8 @@
      "end": "Kết Thúc Vào",
      "success": "Thêm Lịch Khám Thành Công",
      "error": "Giờ kết thúc phải lớn hơn giờ bắt đầu",
-     "emessage": "Xảy ra lỗi"
+     "emessage": "Xảy ra lỗi",
+     "select": "Chọn ngày"
    },
    "updateaa": {
      "title": "Cập Nhật Lịch Khám",
@@ -332,6 +337,143 @@
         "back": "Trở lại",
         "save": "Hoàn tất"
       }
+    },
+    "update": {
+      "title": "Cập Nhật Thông Tin Lịch Khám Của ",
+      "nodata": "Không có người dùng",
+      "insurance": "Thông Tin Bảo Hiểm",
+      "y": "Người dùng đã đặt lịch khám với",
+      "on": "vào",
+      "at": "lúc",
+      "nod": "Không có bác sĩ",
+      "nodate": "Chưa chọn ngày",
+      "time": "Chưa chọn giờ khám",
+      "select": "Đổi lịch khám",
+      "hi": "Vấn đề về sức khoẻ",
+      "back": "Trở lại",
+      "save": "Hoàn tất",
+      "success": "Cập nhật thông tin bảo hiểm thành công!",
+      "error": "Xảy ra lỗi khi cập nhật thông tin!",
+      "ti": "Thông Tin Bảo Hiểm Của ",
+      "iname": "Loại Bảo Hiểm",
+      "inumber": "Số Bảo Hiểm",
+      "address": "Địa chỉ",
+      "ex": "Ngày hết hạn"
+    }
+  },
+  "article": {
+    "dashboard": {
+      "title": "Tổng số bài báo",
+      "articles": "bài báo",
+      "ctitle": "Số lượng bài báo mỗi chuyên khoa",
+      "nodata": "Không có dữ liệu!",
+      "mtitle": "Tổng bài báo trong một tháng",
+      "number": "Số lượng bài báo",
+      "month": "Tháng",
+      "label": "Số lượng bài báo trong một tháng"
+    },
+    "list": {
+      "warn": "Chưa chọn bài báo để xoá",
+      "success": "Tạo bài báo mới thành công!",
+      "image": "Ảnh bìa",
+      "title": "Tiêu đề",
+      "doctor": "Bác sĩ",
+      "spec": "Chuyên khoa",
+      "public": "Ngày xuất bản",
+      "ctitle": "Danh Sách Các Bài Báo",
+      "delete": " Xoá ",
+      "restore": " Khôi phục ",
+      "search": "Tìm kiếm...",
+      "confirmDelete": "Xác nhận xoá bài báo",
+      "pCD": "Bạn có muốn xoá bài báo đã chọn không?",
+      "cancel": "Huỷ",
+      "confirm": "Xoá",
+      "noData": "Không có bài báo nào!",
+      "dsuccess": "Xoá bài báo đã chọn thành công!"
+    },
+    "restore": {
+      "success": "Khôi phục bài báo đã chọn!",
+      "title": "Danh Sách Các Bài Báo Đã Xoá",
+      "pd": "Xoá vĩnh viễn",
+      "dsuccess": "Đã xoá bài báo được chọn!"
+    },
+    "add": {
+      "title": "Tạo Bài Báo Mới",
+      "a": "Chọn bác sĩ",
+      "atitle": "Tiêu đề",
+      "content": "Nội dung",
+      "back": "Trở về",
+      "save": "Hoàn tất"
+    },
+    "update": {
+      "success": "Cập nhật bài báo thành công",
+      "title": "Cập Nhật Thông Tin Bài Báo",
+      "t": "Tác giả bài báo này là"
+    }
+  },
+  "forum": {
+    "dashboard": {
+      "title": "Tất cả bài đăng"
+    },
+    "ps": {
+      "title": "Bài Đăng Theo Chuyên Khoa",
+      "see": "Xem tất cả"
+    },
+    "list": {
+      "warn": "Chưa chọn bài đăng để xoá!",
+      "success": "Tạo bài đăng mới thành công!",
+      "spec": "Chuyên Khoa",
+      "delete": "Xoá",
+      "restore": "Thùng rác",
+      "search": "Tìm bài đăng...",
+      "confirmDelete": "Xác nhận xoá",
+      "pCD": "Bạn có chắc chắn muốn xoá bài đăng không?",
+      "cancel": "Huỷ",
+      "confirm": "Xoá",
+      "noData": "Không tìm thấy bài đăng!",
+      "dsuccess": "Xoá bài đăng thành công!",
+      "ttitle": "Tiêu đề bài đăng",
+      "user": "Người đăng",
+      "dp": "Xoá vĩnh viễn",
+      "put": "Khôi phục",
+      "dspec": "Bài Đăng Đã Xoá Của Chuyên Khoa",
+      "pconfirm": "Xoá vĩnh viễn",
+      "rsuccess": "Bài đăng được khôi phục!",
+      "rwarn": "Chưa chọn bài đăng để khôi phục!"
+    },
+    "update": {
+      "success": "Cập nhật bài đăng thành công!",
+      "title": "Cập Nhật Nội Dung Bài Đăng",
+      "ptitle": "Tiêu đề",
+      "content": "Nội dung",
+      "back": "Trở về",
+      "save": "Hoàn tất",
+      "t": "Bài đăng này được tạo bởi"
+    }
+  },
+  "adminProfile": {
+    "success": "Cập nhật thông tin quản lí thành công!",
+    "contact": "THÔNG TIN LIÊN HỆ",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ",
+    "basic": "THÔNG TIN CƠ BẢN",
+    "dob": "Ngày sinh",
+    "save": "Hoàn tất",
+    "edit": "Chỉnh sửa"
+  },
+  "doctor": {
+    "profile": {
+
+    },
+    "sidebar": {
+      "dashboard": "Trang chủ",
+      "account": "Tài khoản",
+      "speciality": "Chuyên khoa",
+      "region": "Thành Phố",
+      "appointment": "Cuộc hẹn",
+      "article": "Bài viết",
+      "forum": "Diễn đàn",
+      "profile": "Trang cá nhân"
     }
   }
 }

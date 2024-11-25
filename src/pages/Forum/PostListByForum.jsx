@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import * as specialityService from "../../service/SpecialityService";
 import {AdminContext} from "../../context/AdminContext";
 import {useNavigate} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
@@ -14,8 +13,10 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {useLocation} from 'react-router-dom';
-import * as accountService from "../../service/AccountService";
+import { FaTrashRestoreAlt } from "react-icons/fa";
 import {toast} from "react-toastify";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const PostListByForum = () => {
@@ -23,9 +24,9 @@ const PostListByForum = () => {
     const {aToken} = useContext(AdminContext);
     const navigate = useNavigate();
     const location = useLocation();
-    const {name} = location.state || {};
+    const {name, isDelete} = location.state || {};
     const columnHelper = createColumnHelper();
-    const [selectedAccountIds, setSelectedAccountIds] = useState([]);
+    const [selectedPostId, setSelectedPostId] = useState('');
     const [globalFilter, setGlobalFilter] = useState("");
     const [isUser, setIsUser] = useState(false);
     const [isVerify, setIsVerify] = useState(true);
@@ -33,12 +34,23 @@ const PostListByForum = () => {
     const [open, setOpen] = useState(false);
 
     const [data, setData] = useState([]);
-
+    const {t} = useTranslation();
 
     const getAllPostBySpeciality = async () => {
-        const result = await forumService.getAllPostBySpeciality(name, aToken)
-        setData(result)
-    }
+        try {
+            const result = await forumService.getAllPostBySpeciality(name, aToken);
+            if (!isDelete) {
+                const filteredPosts = result.filter(post => !post.is_deleted);
+                setData(filteredPosts);
+            } else {
+                const filteredPosts = result.filter(post => post.is_deleted);
+                setData(filteredPosts);
+            }
+
+        } catch (error) {
+            console.error("Error fetching posts by speciality:", error);
+        }
+    };
 
     const openDetailPage = async (id, value) => {
         navigate(`/update-post/${id}`, {state: {name: value}})
@@ -46,12 +58,18 @@ const PostListByForum = () => {
 
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
-        columnHelper.accessor("post_title", {cell: (info) => <span>{info?.getValue()}</span>, header: "Title"}),
+        columnHelper.accessor("post_title", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("forum.list.ttitle")
+        }),
         columnHelper.accessor("speciality_id.name", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header: "Speciality"
+            header: t("forum.list.spec")
         }),
-        columnHelper.accessor("user_id.email", { cell: (info) => <span>{info?.getValue()}</span>, header: "User" }),
+        columnHelper.accessor("user_id.email", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("forum.list.user")
+        }),
     ];
     const table = useReactTable({
         data: data || [],
@@ -63,50 +81,107 @@ const PostListByForum = () => {
         initialState: {pagination: {pageSize: 7}}
     });
 
-    const toggleAccountSelection = (id) => {
-        setSelectedAccountIds((prevSelected) =>
-            prevSelected.includes(id) ? prevSelected.filter((accountId) => accountId !== id) : [...prevSelected, id]
-        );
-    };
-
-    const getAccountList = async () => {
-        try {
-            const result = await accountService.findAll(isUser, hiddenState, isVerify, aToken);
-            setData(result);
-        } catch (e) {
-            console.log(e.error);
-        }
-    };
 
     const openDeleteModal = () => {
-        if (selectedAccountIds?.length === 0) {
-            toast.warn('No post selected for deletion');
+        if (selectedPostId?.length === 0) {
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.warn"),
+            });
         } else {
             setOpen(true);
         }
     };
 
-    const softDeleteAccounts = async () => {
-        if (selectedAccountIds?.length === 0) {
-            toast.warn('No post selected for deletion');
+    const softDeletePost = async () => {
+        if (selectedPostId?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.warn"),
+            });
             return;
         }
         try {
-            const response = await accountService.deleteSoftAccount(selectedAccountIds, aToken);
-            getAccountList();
-            toast.success(response.message);
-            setSelectedAccountIds([]);
+            await forumService.softDelete(selectedPostId, aToken);
+            await getAllPostBySpeciality();
+            setSelectedPostId('');
             setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("forum.list.dsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             console.error(error.message);
             alert("Error deleting posts: " + error.message);
         }
     };
+
+    const permanentDeletePost = async () => {
+        if (selectedPostId?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.warn"),
+            });
+            return;
+        }
+        try {
+            await forumService.permanentDelete(selectedPostId, aToken);
+            await getAllPostBySpeciality();
+            setSelectedPostId('');
+            setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("forum.list.dsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error(error.message);
+            alert("Error deleting posts: " + error.message);
+        }
+    };
+
+
+    const restorePost = async () =>{
+        if (selectedPostId?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.rwarn"),
+            });
+            return;
+        }
+        try {
+            await forumService.restorePost(selectedPostId, aToken);
+            await getAllPostBySpeciality();
+            setSelectedPostId('');
+            setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("forum.list.rsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
     useEffect(() => {
         if (aToken) {
             getAllPostBySpeciality()
         }
-    }, [aToken]);
+    }, [aToken, isDelete]);
     return (
         <div className='className="mb-5 ml-5 mr-5 mt-1 w-[100vw] h-[100vh]'>
 
@@ -115,115 +190,176 @@ const PostListByForum = () => {
                 initial={{opacity: 0}}
                 animate={{opacity: 1}}
                 exit={{opacity: 0}}
-                >
+            >
 
-            <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">Speciality: {name}</h1>
-                <div className="flex gap-1">
+                {
+                    !isDelete
+                        ? <div className="flex justify-between items-center">
+                            <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("forum.list.spec")}: {name}</h1>
+                            <div className="flex gap-1">
 
-                    <button onClick={openDeleteModal}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> Delete
-                    </button>
-                    <button onClick={() => navigate('/restore-account')}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> Restore
-                    </button>
+                                <button onClick={openDeleteModal}
+                                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
+                                    {t("forum.list.delete")}
+                                </button>
+                                <button
+                                    onClick={() => navigate('/post-list-by-spec', {state: {name: name, isDelete: true}})}
+                                    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-red-400/40 cursor-pointer">
+                                    <FaRegTrashAlt/> {t("forum.list.restore")}
+                                </button>
+                            </div>
+                        </div>
+                        : <div className="flex justify-between items-center">
+                            <h1 className="text-lg max-w-[50vw] text-primary lg:text-2xl font-medium">{t("forum.list.dspec")} {name}</h1>
+                            <div className="flex gap-1">
+
+                                <button onClick={openDeleteModal}
+                                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
+                                    {t("forum.list.dp")}
+                                </button>
+                                <button
+                                    onClick={restorePost}
+                                    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">
+                                     <FaTrashRestoreAlt />{t("forum.list.put")}
+                                </button>
+                            </div>
+                        </div>
+                }
+
+                <div className="mt-5">
+                    <input
+                        type="text"
+                        placeholder={t("forum.list.search")}
+                        value={globalFilter || ""}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                    />
                 </div>
-            </div>
 
-            <div className="mt-5">
-                <input
-                    type="text"
-                    placeholder="Search posts..."
-                    value={globalFilter || ""}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
-                />
-            </div>
-
-            <AnimatePresence>
-                {open && (
-                    <Modal open={open} onClose={() => setOpen(false)}>
-                        <motion.div className="text-center w-72" initial={{scale: 0.8, opacity: 0}}
-                                    animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
-                            <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
-                            <div className="mx-auto my-4 w-60">
-                                <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
-                                <p className="text-sm text-gray-600">Are you sure you want to delete?</p>
-                            </div>
-                            <div className="flex gap-4 mt-6">
-                                <button onClick={softDeleteAccounts}
-                                        className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">Delete
-                                </button>
-                                <button onClick={() => setOpen(false)}
-                                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">Cancel
-                                </button>
-                            </div>
-                        </motion.div>
-                    </Modal>
-                )}
-            </AnimatePresence>
-
-            <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
-                          initial={{opacity: 0}} animate={{opacity: 1}}>
-                <thead className="bg-gray-600">
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                        <th className="p-2">
-                            <input
-                                type="checkbox"
-                                checked={table.getRowModel().rows.length > 0 && table.getRowModel().rows.every((row) => selectedAccountIds.includes(row.original._id))}
-                                onChange={(e) =>
-                                    setSelectedAccountIds(
-                                        e.target.checked ? table.getRowModel().rows.map((row) => row.original._id) : []
-                                    )
-                                }
-                            />
-                        </th>
-                        {headerGroup.headers.map((header) => (
-                            <th key={header.id}
-                                className="capitalize p-2">{flexRender(header.column.columnDef.header, header.getContext())}</th>
-                        ))}
-                    </tr>
-                ))}
-                </thead>
-                <tbody>
                 <AnimatePresence>
-                    {table.getRowModel().rows.length ? (
-                        table.getRowModel().rows.map((row, i) => (
-                            <motion.tr
-                                key={row.id}
-                                className={i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'}
-                                initial={{y: 10, opacity: 0}}
-                                animate={{y: 0, opacity: 1}}
-                                exit={{y: 10, opacity: 0}}
-                            >
-                                <td className="p-2">
-                                    <input type="checkbox" checked={selectedAccountIds.includes(row.original._id)}
-                                           onChange={() => toggleAccountSelection(row.original._id)}/>
-                                </td>
-                                {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="p-2"
-                                        onClick={() => openDetailPage(row.original._id, row.original.name)}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </td>
-                                ))}
-                            </motion.tr>
-                        ))
-                    ) : (
-                        <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
-                                   animate={{opacity: 1}}>
-                            <td colSpan={12}>No Post Found!</td>
-                        </motion.tr>
+                    {open && (
+                        <Modal open={open} onClose={() => setOpen(false)}>
+                            <motion.div className="text-center w-72" initial={{scale: 0.8, opacity: 0}}
+                                        animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
+                                <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
+                                <div className="mx-auto my-4 w-60">
+                                <h3 className="text-lg font-black text-gray-800">{t("forum.list.confirmDelete")}</h3>
+                                    <p className="text-sm text-gray-600">{t("forum.list.pCD")}</p>
+                                </div>
+                                <div className="flex gap-4 mt-6">
+                                    {
+                                        !isDelete
+                                            ? <button onClick={softDeletePost}
+                                                      className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">
+                                                {t("forum.list.confirm")}
+                                            </button>
+                                            : <button onClick={permanentDeletePost}
+                                                      className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">
+                                                {t("forum.list.pconfirm")}
+                                            </button>
+                                    }
+                                    <button onClick={() => setOpen(false)}
+                                            className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">
+                                        {t("forum.list.cancel")}
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </Modal>
                     )}
                 </AnimatePresence>
-                </tbody>
-            </motion.table>
-        </motion.div>
-</div>
-)
-    ;
+
+                <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
+                              initial={{opacity: 0}} animate={{opacity: 1}}>
+                    <thead className="bg-gray-600">
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <tr key={headerGroup.id}>
+                            <th className="p-2">
+                                <input
+                                    type="checkbox"
+                                    disabled
+                                />
+                            </th>
+                            {headerGroup.headers.map((header) => (
+                                <th key={header.id}
+                                    className="capitalize p-2">{flexRender(header.column.columnDef.header, header.getContext())}</th>
+                            ))}
+                        </tr>
+                    ))}
+                    </thead>
+                    <tbody>
+                    <AnimatePresence>
+                        {table.getRowModel().rows.length ? (
+                            table.getRowModel().rows.map((row, i) => (
+                                <motion.tr
+                                    key={row.id}
+                                    className={i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'}
+                                    initial={{y: 10, opacity: 0}}
+                                    animate={{y: 0, opacity: 1}}
+                                    exit={{y: 10, opacity: 0}}
+                                >
+                                    <td className="p-2">
+                                        <input type="checkbox" checked={selectedPostId.includes(row.original._id)}
+                                               onChange={() => setSelectedPostId(row.original._id)}/>
+                                    </td>
+                                    {row.getVisibleCells().map((cell) => (
+                                        <td key={cell.id} className="p-2"
+                                            onClick={() => openDetailPage(row.original._id, row.original.name)}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </td>
+                                    ))}
+                                </motion.tr>
+                            ))
+                        ) : (
+                            <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
+                                       animate={{opacity: 1}}>
+                                <td colSpan={12}>{t("forum.list.noData")}</td>
+                            </motion.tr>
+                        )}
+                    </AnimatePresence>
+                    </tbody>
+                </motion.table>
+            </motion.div>
+
+            {
+                data.length > 0 && <div className="flex items-center justify-end gap-2 mr-5 mt-4">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {">"}
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        </strong>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        | {t("account.accountList.goToPage")}:
+                        <input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={(e) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                table.setPageIndex(page);
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
+                        />
+                    </div>
+                </div>
+            }
+        </div>
+    );
 };
 
 export default PostListByForum;

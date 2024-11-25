@@ -48,3 +48,30 @@ export const createPost = async (data,id,dToken) => {
         console.log(e)
     }
 }
+
+export const softDelete = async (id, aToken)=>{
+    try {
+        const result = await axios.post(REST_API_BASE_URL + `/soft-del-post/${id}`,{},{headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const restorePost = async (id, aToken)=>{
+    try {
+        const result = await axios.post(REST_API_BASE_URL + `/restore-post/${id}`,{},{headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const permanentDelete = async (id, aToken)=>{
+    try {
+        const result = await axios.post(REST_API_BASE_URL + `/perma-del-post/${id}`,{},{headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

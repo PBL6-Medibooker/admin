@@ -4,9 +4,10 @@ import {AdminContext} from "../../context/AdminContext";
 import {motion} from "framer-motion";
 import * as appointmentService from "../../service/AppointmentService";
 import {toast} from "react-toastify";
-import DatePicker from "../../components/DatePickerCustom/DatePicker";
 import * as accountService from "../../service/AccountService";
 import UpdateInsuranceModal from "./UpdateInsuranceModal";
+import DetailInsuranceModal from "./DetailInsuranceModal";
+import {useTranslation} from "react-i18next";
 
 
 const UpdateAppointmentInfo = () => {
@@ -24,8 +25,22 @@ const UpdateAppointmentInfo = () => {
     const [doctor, setDoctor] = useState(null);
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
 
-    const [updateModal, setUpdateModal] = useState(false)
+    const [updateModal, setUpdateModal] = useState(false);
+    const [detailModal, setDetailModal] = useState(false);
+    const [name, setName] = useState('');
+    const {t} = useTranslation();
 
+
+    const getName = async () => {
+        if (users.length > 0 && appointmentData.user_id) {
+            const user = users.find((user) => user._id === appointmentData.user_id);
+            if (user) {
+                setName(user.username);
+            } else {
+                setName('No user found');
+            }
+        }
+    }
 
     const [appointmentData, setAppointmentData] = useState({
         user_id: '',
@@ -90,6 +105,7 @@ const UpdateAppointmentInfo = () => {
                 });
 
                 await getActiveHourList();
+                // await getName()
 
             }
         } catch (e) {
@@ -103,7 +119,7 @@ const UpdateAppointmentInfo = () => {
             if (doctorId) {
                 const response = await accountService.getAccountActiveHourList(doctorId, aToken);
                 console.log(response);
-                const { active_hours, fully_booked } = response;
+                const {active_hours, fully_booked} = response;
 
                 const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
 
@@ -119,7 +135,6 @@ const UpdateAppointmentInfo = () => {
             console.log(error);
         }
     };
-
 
 
     const updateAppointmentInfo = async () => {
@@ -159,7 +174,9 @@ const UpdateAppointmentInfo = () => {
             console.log(e.error);
         }
     };
-
+    const onLoad = () =>{
+        setDetailModal(false)
+    }
 
 
     useEffect(() => {
@@ -182,6 +199,10 @@ const UpdateAppointmentInfo = () => {
         }
     }, [aToken, doctorId])
 
+    useEffect(() => {
+        getName()
+    }, [users, appointmentData.user_id]);
+
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>
@@ -195,14 +216,27 @@ const UpdateAppointmentInfo = () => {
                     className="flex justify-between items-center mb-6"
                 >
                     <p className="text-xl text-primary lg:text-2xl">
-                        Update Appointment Infomation
-                        of {users?.find(user => user._id === appointmentData.user_id)?.username || 'No user selected'}
+                        {t("appointment.update.title")}
+                        {users?.find(user => user._id === appointmentData.user_id)?.username || t("appointment.update.nodata")}
 
                     </p>
 
+                    {/*<motion.button*/}
+                    {/*    type="button"*/}
+                    {/*    onClick={() => setUpdateModal(true)}*/}
+                    {/*    className="bg-amber-400 text-gray-700 px-6 py-2 rounded-full shadow-md transition mr-4"*/}
+                    {/*    whileHover={{scale: 1.05}}*/}
+                    {/*    whileTap={{scale: 0.95}}*/}
+                    {/*    initial={{opacity: 0}}*/}
+                    {/*    animate={{opacity: 1}}*/}
+                    {/*    transition={{delay: 0.3, duration: 0.5}}*/}
+                    {/*>*/}
+                    {/*    Insurance Information*/}
+                    {/*</motion.button>*/}
+
                     <motion.button
                         type="button"
-                        onClick={() => setUpdateModal(true)}
+                        onClick={() => setDetailModal(true)}
                         className="bg-amber-400 text-gray-700 px-6 py-2 rounded-full shadow-md transition mr-4"
                         whileHover={{scale: 1.05}}
                         whileTap={{scale: 0.95}}
@@ -210,7 +244,7 @@ const UpdateAppointmentInfo = () => {
                         animate={{opacity: 1}}
                         transition={{delay: 0.3, duration: 0.5}}
                     >
-                        Insurance Information
+                        {t("appointment.update.insurance")}
                     </motion.button>
 
 
@@ -230,19 +264,20 @@ const UpdateAppointmentInfo = () => {
                             transition={{delay: 0.4, duration: 0.5}}
                             className="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-6"
                         >
-                        <div className="p-4 bg-white rounded-lg  border-gray-200">
+                            <div className="p-4 bg-white rounded-lg  border-gray-200">
                                 <p className="text-gray-700">
-                                    You have booked an appointment with{' '}
+                                    {t("appointment.update.y")}
+                                    {' '}
                                     <span className="font-semibold text-blue-600">
-                {doctors?.find((doc) => doc._id === appointmentData.doctor_id)?.username || 'No doctor selected'}
+                {doctors?.find((doc) => doc._id === appointmentData.doctor_id)?.username || t("appointment.update.nod")}
             </span>{' '}
-                                    on{' '}
+                                    {t("appointment.update.on")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_day || 'No date selected'}
+                {appointmentData.appointment_day || t("appointment.update.nodate")}
             </span>{' '}
-                                    at{' '}
+                                    {t("appointment.update.at")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_time_start || 'No time selected'} - {appointmentData.appointment_time_end || ''}
+                {appointmentData.appointment_time_start || t("appointment.update.time")} - {appointmentData.appointment_time_end || ''}
             </span>.
                                 </p>
                             </div>
@@ -257,8 +292,9 @@ const UpdateAppointmentInfo = () => {
                         >
                             <div className="mb-6">
                                 <div className="mb-6">
-                                    <p className="text-lg font-medium text-gray-700 mb-2">Select another Appointment
-                                        Time</p>
+                                    <p className="text-lg font-medium text-gray-700 mb-2">
+                                        {t("appointment.update.select")}
+                                    </p>
                                     <div className="flex flex-wrap gap-4">
                                         {doctorActiveHours?.map((time, index) => {
                                             const isFullyBooked = fullyBookedHours?.some(
@@ -282,7 +318,7 @@ const UpdateAppointmentInfo = () => {
                                                     }}
                                                     className={`${
                                                         isDisabled
-                                                            ? 'bg-gray-400 text-white cursor-not-allowed' 
+                                                            ? 'bg-gray-400 text-white cursor-not-allowed'
                                                             : 'bg-white text-black border rounded'
                                                     } px-6 py-2 rounded-lg transition-all hover:bg-primary focus:outline-none focus:bg-primary focus:text-white focus:ring-2 hover:text-white focus:border-transparent`}
                                                     disabled={isDisabled}
@@ -302,8 +338,8 @@ const UpdateAppointmentInfo = () => {
                             transition={{delay: 0.6, duration: 0.5}}
                             className="mb-6"
                         >
-                            <label htmlFor="health-issue" className="block text-lg font-medium text-gray-700 mb-2">
-                                Your Health Issues
+                            <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                                {t("appointment.update.hi")}
                             </label>
                             <textarea
                                 id="health-issue"
@@ -331,7 +367,7 @@ const UpdateAppointmentInfo = () => {
                                 animate={{opacity: 1}}
                                 transition={{delay: 0.3, duration: 0.5}}
                             >
-                                Back
+                                {t("appointment.update.back")}
                             </motion.button>
 
                             <motion.button
@@ -343,7 +379,7 @@ const UpdateAppointmentInfo = () => {
                                 animate={{opacity: 1}}
                                 transition={{delay: 0.3, duration: 0.5}}
                             >
-                                Save
+                                {t("appointment.update.save")}
                             </motion.button>
                         </div>
 
@@ -354,9 +390,18 @@ const UpdateAppointmentInfo = () => {
 
                 <UpdateInsuranceModal
                     open={updateModal}
-                    cancel={()=> setUpdateModal(false)}
-                id={id}
+                    cancel={() => setUpdateModal(false)}
+                    id={id}
                 />
+
+                <DetailInsuranceModal
+                    open={detailModal}
+                    cancel={() => setDetailModal(false)}
+                    id={id}
+                    name={name}
+                    onClose={onLoad}
+                />
+
 
             </div>
 

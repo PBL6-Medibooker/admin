@@ -27,8 +27,10 @@ const AddSpeciality = () => {
     };
 
     useEffect(() => {
-        findAllSpecialities();
-    }, []);
+        if(aToken){
+            findAllSpecialities();
+        }
+    }, [aToken]);
 
     const check = () => {
         const exists = specialities.some(

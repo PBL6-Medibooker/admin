@@ -10,6 +10,7 @@ import {
     ResponsiveContainer,
     Tooltip
 } from "recharts";
+import {useTranslation} from "react-i18next";
 
 
 const COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FED766", "#2AB7CA"];
@@ -17,7 +18,7 @@ const COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FED766", "#2AB7CA"];
 
 const ArticleBySpeciality = () => {
     const { aToken } = useContext(AdminContext);
-
+    const {t} = useTranslation();
     const [articleData, setArticleData] = useState([]);
 
 
@@ -79,7 +80,7 @@ const ArticleBySpeciality = () => {
                 >
                     <p className="label" style={{ color: "#374151" }}>
                         {specialityName}: {articleCount
-                    } articles
+                    } {t("article.dashboard.articles")}
                     </p>
 
                 </div>
@@ -97,7 +98,7 @@ const ArticleBySpeciality = () => {
             transition={{delay: 1}}
         >
             <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>Article Overview</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>{t("article.dashboard.ctitle")}</h2>
             </div>
 
             <div className='w-full h-80'>
@@ -122,7 +123,7 @@ const ArticleBySpeciality = () => {
                             <Legend content={renderLegend} />
                         </PieChart>
                     ) : (
-                        <p className="text-center text-gray-500">No data available</p>
+                        <p className="text-center text-gray-500">{t("article.dashboard.nodata")}</p>
                     )}
                 </ResponsiveContainer>
             </div>

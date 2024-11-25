@@ -15,6 +15,8 @@ import {assets} from "../../assets/assets";
 import * as articleService from "../../service/ArticleService";
 import {toast} from "react-toastify";
 import { FaRegNewspaper } from "react-icons/fa";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 const ArticleList = () => {
 
@@ -26,6 +28,7 @@ const ArticleList = () => {
     const [open, setOpen] = useState(false);
     const {aToken} = useContext(AdminContext);
     const [data, setData] = useState([]);
+    const {t} = useTranslation();
 
 
     const getAllArticle = async () => {
@@ -40,9 +43,13 @@ const ArticleList = () => {
         }
     }
 
-    const openDeleteModal = () => {
+    const openDeleteModal = async () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No article selected for deletion');
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("article.list.warn"),
+            });
         } else {
             setOpen(true);
         }
@@ -50,15 +57,26 @@ const ArticleList = () => {
 
     const softDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0) {
-            toast.warn('No article selected for deletion');
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("article.list.warn"),
+            });
             return;
         }
         try {
-            const response = await articleService.softDeleteArticle(selectedAccountIds, aToken);
+            await articleService.softDeleteArticle(selectedAccountIds, aToken);
             await getAllArticle();
-            toast.success(response.message);
+            // toast.success(response.message);
             setSelectedAccountIds([]);
             setOpen(false);
+            await Swal.fire({
+                position: "top-end",
+                title: t("article.list.dsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
         } catch (error) {
             console.error(error.message);
             alert("Error deleting article: " + error.message);
@@ -87,15 +105,15 @@ const ArticleList = () => {
         columnHelper.accessor("article_image", {
             cell: (info) => <img className="rounded-full w-10 h-10 object-cover"
                                  src={info?.getValue() || assets.user_icon} alt="..."/>,
-            header: "Image"
+            header: t("article.list.image")
         }),
-        columnHelper.accessor("article_title", {cell: (info) => <span>{info?.getValue()}</span>, header: "Article Title"}),
-        columnHelper.accessor("doctor_id.username", {cell: (info) => <span>{info?.getValue()}</span>, header: "Doctor"}),
-        columnHelper.accessor("doctor_id.speciality_id.name", {cell: (info) => <span>{info?.getValue()}</span>, header: "Speciality"}),
+        columnHelper.accessor("article_title", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.title")}),
+        columnHelper.accessor("doctor_id.username", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.doctor")}),
+        columnHelper.accessor("doctor_id.speciality_id.name", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.spec")}),
         columnHelper.accessor("date_published", {cell: (info) => {
                 const date = new Date(info?.getValue())
                 return <span>{date.toLocaleDateString("en-GB")}</span>
-            }, header: "Publish Date"
+            }, header:t("article.list.public")
         })
     ];
 
@@ -113,11 +131,13 @@ const ArticleList = () => {
 
     return (
         <motion.div
-            className="mb-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}} exit={{opacity: 0}}>
+            className="mb-5 pl-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5}}
+        >
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">Article</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.list.ctitle")}</h1>
                 <div className="flex gap-1">
 
                     <button
@@ -129,24 +149,38 @@ const ArticleList = () => {
                     <button
                         onClick={openDeleteModal}
                         className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> Delete
+                        <FaRegTrashAlt/> {t("article.list.delete")}
                     </button>
                     <button onClick={() => navigate('/restore-article')}
                             className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> Restore
+                        <FaRegTrashAlt/> {t("article.list.restore")}
                     </button>
                 </div>
             </div>
 
-            <div className="mt-5">
-                <input
-
-                    type="text"
-                    placeholder="Search news..."
-                    value={globalFilter || ""}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
-                />
+            <div className="mt-2">
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    whileHover={{
+                        scale: 1.05,
+                        transition: { duration: 0.2 },
+                    }}
+                    whileFocus={{
+                        scale: 0.5,
+                        transition: { duration: 0.3 },
+                    }}
+                    className="inline-block"
+                >
+                    <input
+                        type="text"
+                        placeholder={t("article.list.search")}
+                        value={globalFilter || ""}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        className="w-[20vw] p-3 border border-gray-300 rounded mb-4 focus:border-transparent transition-all"
+                    />
+                </motion.div>
             </div>
 
             <AnimatePresence>
@@ -156,16 +190,16 @@ const ArticleList = () => {
                                     animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
                             <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
                             <div className="mx-auto my-4 w-60">
-                                <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
-                                <p className="text-sm text-gray-600">Are you sure you want to delete?</p>
+                                <h3 className="text-lg font-black text-gray-800">{t("article.list.confirmDelete")}</h3>
+                                <p className="text-sm text-gray-600">{t("article.list.pCD")}</p>
                             </div>
                             <div className="flex gap-4 mt-6">
                                 <button
                                     onClick={softDeleteAccounts}
-                                    className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">Delete
+                                    className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">{t("article.list.confirm")}
                                 </button>
                                 <button onClick={() => setOpen(false)}
-                                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">Cancel
+                                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">{t("article.list.cancel")}
                                 </button>
                             </div>
                         </motion.div>
@@ -173,8 +207,11 @@ const ArticleList = () => {
                 )}
             </AnimatePresence>
 
-            <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
-                          initial={{opacity: 0}} animate={{opacity: 1}}>
+            <motion.table className="border border-gray-700 w-full mt-2 text-left text-white border-collapse"
+                          initial={{y: 20, opacity: 0}}
+                          animate={{y: 0, opacity: 1}}
+                          transition={{delay: 0.3}}
+            >
                 <thead className="bg-gray-600">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
@@ -197,7 +234,6 @@ const ArticleList = () => {
                 ))}
                 </thead>
                 <tbody>
-                <AnimatePresence>
                     {table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map((row, i) => (
                             <motion.tr
@@ -223,10 +259,9 @@ const ArticleList = () => {
                     ) : (
                         <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
                                    animate={{opacity: 1}}>
-                            <td colSpan={12}>No Article Found!</td>
+                            <td colSpan={12}>{t("article.list.noData")}</td>
                         </motion.tr>
                     )}
-                </AnimatePresence>
                 </tbody>
             </motion.table>
 
@@ -248,14 +283,14 @@ const ArticleList = () => {
                 </button>
 
                 <div className="flex items-center gap-1">
-                    <span>Page</span>
+                    <span>{t("account.accountList.page")}:</span>
                     <strong>
                         {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
                     </strong>
                 </div>
 
                 <div className="flex items-center gap-1">
-                    | Go to page:
+                    | {t("account.accountList.goToPage")}:
                     <input
                         type="number"
                         defaultValue={table.getState().pagination.pageIndex + 1}

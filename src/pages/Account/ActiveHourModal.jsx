@@ -11,6 +11,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
 
     const {aToken} = useContext(AdminContext);
     const {t} = useTranslation();
+    const [isAdd, setIsAdd] = useState(false);
 
     const [activeHour, setActiveHour] = useState({
         day: '',
@@ -52,12 +53,10 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
             }
 
             const result = await accountService.addDoctorActiveHours(activeHour, id, aToken);
-
+            onClose();
             if (result) {
-                onClose()
-
+                setIsAdd(true)
                 console.log("Active hour added successfully:", result);
-
                 await Swal.fire({
                     position: "top-end",
                     title: t("account.aa.success"),
@@ -65,6 +64,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                     showConfirmButton: false,
                     timer: 1500
                 });
+
             } else {
 
                 await Swal.fire({
@@ -101,7 +101,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                                 required
                                 className="border p-2 rounded"
                             >
-                                <option value="">Select a Day</option>
+                                <option value="">{t("account.aa.select")}</option>
                                 <option value="Monday">Monday</option>
                                 <option value="Tuesday">Tuesday</option>
                                 <option value="Wednesday">Wednesday</option>

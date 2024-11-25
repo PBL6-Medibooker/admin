@@ -49,6 +49,7 @@ import Test from "./pages/Test";
 import './config-translation'
 import Loading from "./pages/Loading";
 import UserAppointments from "./pages/Account/UserAppointments";
+import DoctorArticleList from "./pages/Doctor/DoctorArticleList";
 
 
 function App() {
@@ -106,13 +107,14 @@ function App() {
 
 
                     <Route path='/forum-dashboard' element={<ForumDashboard/>} />
-                    <Route path='/speciality-forum' element={<PostSpeciality/>} />
-                    <Route path='/post-list-by-speciality' element={<PostListByForum/>} />
+                    <Route path='/spec-forum' element={<PostSpeciality/>} />
+                    <Route path='/post-list-by-spec' element={<PostListByForum/>} />
                     <Route path='/update-post/:id' element={<PostDetails/>} />
 
 
                     <Route path='/doctor-profile' element={<DoctorProfile/>} />
                     <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
+                    <Route path='/doctor-article' element={<DoctorArticleList/>} />
                     <Route path='/doctor-appointments' element={<DoctorAppointments/>} />
                     <Route path='/update-appointment-of-doctor/:id' element={<UpdateAppointment/>} />
 

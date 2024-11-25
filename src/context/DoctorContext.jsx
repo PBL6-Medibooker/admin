@@ -13,7 +13,6 @@ const DoctorContextProvider = (props) => {
 
     const getDoctorData = async () => {
         try {
-
             const result = await accountService.getDoctorProfile(dToken);
             console.log(result)
             if (result.success) {
@@ -28,7 +27,7 @@ const DoctorContextProvider = (props) => {
 
 
     const value = {
-        backendUrl, dToken, setDToken, getDoctorData, docId
+        backendUrl, dToken, setDToken, getDoctorData, docId, doctorData
     }
 
     return(

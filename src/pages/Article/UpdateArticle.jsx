@@ -5,6 +5,8 @@ import {AdminContext} from "../../context/AdminContext";
 import {useNavigate, useParams} from "react-router-dom";
 import * as articleService from "../../service/ArticleService";
 import {toast} from "react-toastify";
+import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const UpdateArticle = () => {
@@ -16,6 +18,7 @@ const UpdateArticle = () => {
     const [articleImage, setArticleImage] = useState(null);
     const [image, setImage] = useState(null);
     const [name, setName] = useState('');
+    const {t}= useTranslation();
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -23,8 +26,6 @@ const UpdateArticle = () => {
             setImage(file);
         }
     };
-
-
 
     const articleInfo = async () => {
         const data = await articleService.getArticleById(id, aToken)
@@ -43,11 +44,18 @@ const UpdateArticle = () => {
             const formData = new FormData();
             formData.append('article_title', articleTitle)
             formData.append('article_content', articleContent)
-            formData.append('article_img', image);
+            formData.append('article_image', image);
             const result = await articleService.updateArticle(formData, id, aToken);
             if(result){
-                toast.success('Article Updated')
+                // toast.success('Article Updated')
                 navigate('/article')
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("article.update.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         } catch (e){
             console.log(e)
@@ -68,7 +76,7 @@ const UpdateArticle = () => {
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl text-primary lg:text-2xl font-semibold mb-4">
-                    Update Article Information
+                    {t("article.update.title")}
                 </p>
             </motion.div>
 
@@ -108,7 +116,7 @@ const UpdateArticle = () => {
 
                         <div className="mb-6">
                             <p className="text-lg font-medium text-gray-800 bg-yellow-100 p-3 rounded-md shadow-md inline-block">
-                                This article is written by <strong>{name}</strong>
+                                {t("article.update.t")} <strong>{name}</strong>
                             </p>
                         </div>
                     </motion.div>
@@ -120,8 +128,8 @@ const UpdateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-gray-700 mb-2">
-                            Article Title
+                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                            {t("article.add.atitle")}
                         </label>
                         <input
                             id="health-issue"
@@ -130,6 +138,7 @@ const UpdateArticle = () => {
                             className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             placeholder="Title"
                             required
+                            autoFocus
                             aria-required="true"
                         />
                     </motion.div>
@@ -141,8 +150,8 @@ const UpdateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-gray-700 mb-2">
-                            Article Content
+                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                            {t("article.add.content")}
                         </label>
                         <textarea
                             id="health-issue"
@@ -168,7 +177,7 @@ const UpdateArticle = () => {
                             onClick={() => navigate('/article')}
                             className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
                         >
-                            <i className="fas fa-arrow-left mr-2"></i> Back
+                            <i className="fas fa-arrow-left mr-2"></i> {t("article.add.back")}
                         </button>
 
                         <button
@@ -177,7 +186,7 @@ const UpdateArticle = () => {
                             className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                             aria-label="Save booking"
                         >
-                            <i className="fas fa-save mr-2"></i> Save
+                            <i className="fas fa-save mr-2"></i> {t("article.add.save")}
                         </button>
                     </motion.div>
                 </div>

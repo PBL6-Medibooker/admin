@@ -22,7 +22,7 @@ const UpdateDocInfoAcc = () => {
     const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(false);
     const [email, setEmail] = useState('');
-    const [proof, setProof] = useState('');
+    const [proof, setProof] = useState(null);
     const [provinces, setProvinces] = useState([]);
     const [specialities, setSpecialities] = useState([]);
     const [image, setImage] = useState(null);
@@ -59,11 +59,7 @@ const UpdateDocInfoAcc = () => {
 
                 });
                 setAccount(result);
-                if (result.proof && result.proof.data) {
-                    const proofBlob = new Blob([new Uint8Array(result.proof.data)], { type: 'application/pdf' });
-                    const proofUrl = URL.createObjectURL(proofBlob);
-                    setProof(proofUrl);
-                }
+                setProof(result.proof)
                 setEmail(result.email);
                 setIsVerify(result.verified);
                 if (!initialAccountRef.current) {
@@ -71,8 +67,8 @@ const UpdateDocInfoAcc = () => {
                 }
 
                 console.log("Fetched account details:", result);
-                console.log('proof',proof)
-                console.log('proof',result.proof)
+                console.log('proof', proof)
+                console.log('proof', result.proof)
             }
         } catch (error) {
             console.log("Error fetching account details:", error);
@@ -292,7 +288,13 @@ const UpdateDocInfoAcc = () => {
                     </div>
 
                     <div className="flex flex-col ">
-                        {proof ? (
+                        {account?.proof ? (
+                                // <iframe
+                                //     src={account.proof}
+                                //     width="100%"
+                                //     height="600px">
+                                // </iframe>
+
                             <span
                                 className="text-green-600 font-medium">{t("account.updateDocInfo.uploaded")}</span>
                         ) : (
