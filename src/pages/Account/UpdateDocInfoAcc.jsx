@@ -11,8 +11,7 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {assets} from "../../assets/assets";
 import isEqual from 'lodash.isequal';
-import DisplayProof from "../../components/DisplayProof";
-import PdfViewer from "../../components/DisplayProof";
+
 
 const UpdateDocInfoAcc = () => {
     const {id} = useParams();
@@ -232,7 +231,6 @@ const UpdateDocInfoAcc = () => {
     return (
         <div className="m-5 w-full h-[90vh] flex flex-col items-center overflow-y-scroll">
 
-            {/*<PdfViewer proofUrl={proof} />*/}
             <motion.div
                 className="flex justify-between items-center w-full max-w-4xl mb-8"
                 initial={{opacity: 0}}
