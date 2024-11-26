@@ -162,15 +162,15 @@ const UserAppointments = () => {
 
                     return (
                         <motion.div
-                            key={index}
+                            key={item._id}
                             className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
                             initial={{opacity: 0, y: 20}}
                             animate={{opacity: 1, y: 0}}
                             transition={{duration: 0.5, delay: index * 0.05}}
                         >
-                            <div>
+                            <div className='w-32 h-32'>
                                 <motion.img
-                                    className="w-32 bg-indigo-50"
+                                    className="w-full h-full object-cover bg-indigo-50"
                                     src={item.doctor_id.profile_image ? item.doctor_id.profile_image : assets.user_icon}
                                     alt="Doctor"
                                     initial={{scale: 0.9}}
