@@ -148,7 +148,8 @@
      "verify": "Xác Minh",
      "bio": "Bio",
      "back": "Trở lại",
-     "save": "Hoàn Tất"
+     "save": "Hoàn Tất",
+     "verified": "Xác minh"
    },
    "active": {
      "title": "Lịch Khám",
@@ -329,6 +330,7 @@
       "wbook": "Lịch khám không còn chỗ trống!",
       "insurance": {
         "success": "Đặt lịch khám hoàn tất!",
+        "isuccess": "Thêm thông tin bảo hiểm thành công!",
         "title": "Thêm thông tin bảo hiểm",
         "name": "Tên Bảo Hiểm",
         "number": "Số Bảo Hiểm",
@@ -343,6 +345,7 @@
       "nodata": "Không có người dùng",
       "insurance": "Thông Tin Bảo Hiểm",
       "y": "Người dùng đã đặt lịch khám với",
+      "y2": "Người dùng đã đặt lịch khám ",
       "on": "vào",
       "at": "lúc",
       "nod": "Không có bác sĩ",
@@ -358,7 +361,9 @@
       "iname": "Loại Bảo Hiểm",
       "inumber": "Số Bảo Hiểm",
       "address": "Địa chỉ",
-      "ex": "Ngày hết hạn"
+      "ex": "Ngày hết hạn",
+      "asuccess":  "Cập nhật thông tin lịch hẹn thành công!"
+
     }
   },
   "article": {
@@ -463,7 +468,14 @@
   },
   "doctor": {
     "profile": {
-
+      "success": "Cập nhật thông tin bác sĩ thành công!",
+      "contact": "THÔNG TIN LIÊN HỆ",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ",
+      "basic": "THÔNG TIN CƠ BẢN",
+      "dob": "Ngày sinh",
+      "save": "Hoàn tất",
+      "edit": "Chỉnh sửa"
     },
     "sidebar": {
       "dashboard": "Trang chủ",
@@ -474,6 +486,13 @@
       "article": "Bài viết",
       "forum": "Diễn đàn",
       "profile": "Trang cá nhân"
+    },
+    "appointment":{
+      "title": "Danh Sách Lịch Hẹn Khám",
+      "create": "Thêm cuộc hẹn"
+    },
+    "article": {
+      "create": "Tạo bài viết mới"
     }
   }
 }

@@ -16,6 +16,7 @@ import * as accountService from "../../service/AccountService";
 import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import Loader from "../../components/Loader";
 
 const VerifyDoctorList = () => {
 
@@ -27,7 +28,7 @@ const VerifyDoctorList = () => {
     const [isVerify, setIsVerify] = useState(true);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const { aToken } = useContext(AdminContext);
+    const { aToken, isLoading, verifiedDoctor } = useContext(AdminContext);
     const {t} = useTranslation();
 
 
@@ -44,7 +45,8 @@ const VerifyDoctorList = () => {
     ];
     const [data, setData] = useState([]);
     const table = useReactTable({
-        data: data || [],
+        // data: data || [],
+        data: verifiedDoctor || [],
         columns,
         state: { globalFilter },
         getFilteredRowModel: getFilteredRowModel(),
@@ -108,11 +110,22 @@ const VerifyDoctorList = () => {
         }
     };
 
-    useEffect(() => {
-        if (aToken) {
-            getAccountList();
-        }
-    }, [aToken, hiddenState]);
+
+    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getAccountList();
+    //     }
+    // }, [aToken, hiddenState]);
+
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <motion.div className="m-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}

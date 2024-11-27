@@ -18,7 +18,7 @@ const UpdateDocInfoAcc = () => {
     const {aToken} = useContext(AdminContext);
     const navigate = useNavigate();
     const {t} = useTranslation();
-    const [isVerify, setIsVerify] = useState(false);
+    const [isVerify, setIsVerify] = useState(true);
     const [hiddenState, setHiddenState] = useState(false);
     const [email, setEmail] = useState('');
     const [proof, setProof] = useState(null);
@@ -60,7 +60,7 @@ const UpdateDocInfoAcc = () => {
                 setAccount(result);
                 setProof(result.proof)
                 setEmail(result.email);
-                setIsVerify(result.verified);
+                // setIsVerify(result.verified);
                 if (!initialAccountRef.current) {
                     initialAccountRef.current = result;
                 }
@@ -140,31 +140,36 @@ const UpdateDocInfoAcc = () => {
 
             await updateDocInfo();
 
-            if (isFormValid) {
-                await changeDoctorVerifyStatus();
-            }
+            // if (!isFormValid) {
+            // }
+            // setIsVerify(true)
 
-            const result = await accountService.updateDocInfoAcc(data, id, aToken);
+            setIsVerify(true)
+            await changeDoctorVerifyStatus();
 
-            if (result?.status === 200) {
-                navigate('/verified-doc-account');
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("account.updateDocInfo.success"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                toast.error('Error updating doctor info.');
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("account.updateDocInfo.error"),
-                    icon: "error",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
+
+            // setIsVerify(true)
+            // const result = await accountService.updateDocInfoAcc(data, id, aToken);
+            //
+            // if (result?.status === 200) {
+            //     navigate('/verified-doc-account');
+            //     await Swal.fire({
+            //         position: "top-end",
+            //         title: t("account.updateDocInfo.success"),
+            //         icon: "success",
+            //         showConfirmButton: false,
+            //         timer: 1500
+            //     });
+            // } else {
+            //     toast.error('Error updating doctor info.');
+            //     await Swal.fire({
+            //         position: "top-end",
+            //         title: t("account.updateDocInfo.error"),
+            //         icon: "error",
+            //         showConfirmButton: false,
+            //         timer: 1500
+            //     });
+            // }
         } catch (e) {
             console.log(e);
             toast.error(e.message);
@@ -187,13 +192,25 @@ const UpdateDocInfoAcc = () => {
 
     const changeDoctorVerifyStatus = async () => {
         try {
-            const result = await accountService.changeDoctorVerifyStatus(email, isVerify, aToken);
 
+            console.log(isVerify)
+            const result = await accountService.changeDoctorVerifyStatus(email, true, aToken);
             if (result) {
+                console.log("change doctor verify", result)
                 toast.success(result.message);
             } else {
                 toast.error(result.error);
             }
+
+            // if (isVerify === false) {
+            //     const result = await accountService.changeDoctorVerifyStatus(email, isVerify, aToken);
+            //     if (result) {
+            //         console.log("change doctor verify", result)
+            //         toast.success(result.message);
+            //     } else {
+            //         toast.error(result.error);
+            //     }
+            // }
         } catch (e) {
             console.log(e);
         }
@@ -205,7 +222,8 @@ const UpdateDocInfoAcc = () => {
 
     useEffect(() => {
         const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address
-            && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof;
+            && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
+            ;
         setIsFormValid(isValid);
     }, [account, docData]);
 
@@ -287,11 +305,11 @@ const UpdateDocInfoAcc = () => {
 
                     <div className="flex flex-col ">
                         {account?.proof ? (
-                                // <iframe
-                                //     src={account.proof}
-                                //     width="100%"
-                                //     height="600px">
-                                // </iframe>
+                            // <iframe
+                            //     src={account.proof}
+                            //     width="100%"
+                            //     height="600px">
+                            // </iframe>
 
                             <span
                                 className="text-green-600 font-medium">{t("account.updateDocInfo.uploaded")}</span>
@@ -568,19 +586,19 @@ const UpdateDocInfoAcc = () => {
                     {/*</div>*/}
 
 
-                    <div className="flex items-center gap-3 mt-6 lg:mt-0">
-                        <input hidden={isVerify}
-                               type="checkbox"
-                               id="verify-checkbox"
-                               checked={isVerify}
-                               onChange={() => setIsVerify((prev) => !prev)}
-                               className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"
-                               disabled={!(docData.region && docData.speciality && proof)}
-                        />
-                        <label htmlFor="verify-checkbox" className="text-sm font-medium" hidden={isVerify}>
-                            {t("account.updateDocInfo.verify")}
-                        </label>
-                    </div>
+                    {/*<div className="flex items-center gap-3 mt-6 lg:mt-0">*/}
+                    {/*    <input hidden={isVerify}*/}
+                    {/*           type="checkbox"*/}
+                    {/*           id="verify-checkbox"*/}
+                    {/*           checked={isVerify}*/}
+                    {/*           onChange={() => setIsVerify((prev) => !prev)}*/}
+                    {/*           className="w-4 h-4 text-primary focus:ring-2 focus:ring-primary"*/}
+                    {/*           disabled={!(docData.region && docData.speciality && proof)}*/}
+                    {/*    />*/}
+                    {/*    <label htmlFor="verify-checkbox" className="text-sm font-medium" hidden={isVerify}>*/}
+                    {/*        {t("account.updateDocInfo.verify")}*/}
+                    {/*    </label>*/}
+                    {/*</div>*/}
 
                     <div className="lg:col-span-2 flex flex-col">
                         <label className="text-sm font-medium mb-2 flex items-center gap-1">
@@ -627,15 +645,15 @@ const UpdateDocInfoAcc = () => {
                         isFormValid
                             ? <button
                                 type="submit"
-                                className="bg-amber-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                                className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
                             >
                                 {t("account.updateDocInfo.save")}
                             </button>
                             : <button
                                 type="submit"
-                                className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                                className="bg-amber-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
                             >
-                                {t("account.updateDocInfo.save")}
+                                {t("account.updateDocInfo.verify")}
                             </button>
                     }
                 </div>

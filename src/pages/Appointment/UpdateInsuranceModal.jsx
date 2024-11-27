@@ -8,7 +8,6 @@ import MUIDataTable from "mui-datatables"
 import {createTheme, ThemeProvider} from "@mui/material/styles"
 import {motion} from "framer-motion"
 import {FaRegTrashAlt} from "react-icons/fa"
-import {IoMdAddCircle} from "react-icons/io";
 import { MdOutlineClose } from "react-icons/md";
 
 

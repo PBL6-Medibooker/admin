@@ -84,7 +84,7 @@ const AddAppointment = () => {
                const { active_hours, booked, fully_booked } = response;
 
                setFullyBookedHours(fully_booked);
-               console.log('Fully Booked:', fully_booked);
+               // console.log('Fully Booked:', fully_booked);
            }
         } catch (error) {
             console.log(error)

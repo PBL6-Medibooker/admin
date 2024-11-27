@@ -9,7 +9,7 @@ import {useTranslation} from "react-i18next";
 import TopUsers from "../../components/Chart/TopUsers";
 
 const AccountDashboard = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken, verifiedDoctor} = useContext(AdminContext);
 
     const [totalUsers, setTotalUser] = useState(0);
     const [totalDoctors, setTotalDoctors] = useState(0);
@@ -53,21 +53,24 @@ const AccountDashboard = () => {
     }
     useEffect(() => {
         if (aToken) {
-            getDoctorAccountList();
-        }
-    }, [aToken]);
+            setTotalDoctors(verifiedDoctor.length);
 
-    useEffect(() => {
-        if (aToken) {
-            getDoctorUnverifyAccountList();
-        }
-    }, [aToken]);
-
-    useEffect(() => {
-        if (aToken) {
+            // getDoctorAccountList();
             getAccountList();
+            getDoctorUnverifyAccountList();
+
         }
     }, [aToken]);
+
+    // useEffect(() => {
+    //     if (aToken) {
+    //     }
+    // }, [aToken]);
+    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //     }
+    // }, [aToken]);
 
 
     return (

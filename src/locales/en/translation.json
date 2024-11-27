@@ -146,7 +146,8 @@
       "verify": "Verify Doctor",
       "bio": "Doctor Bio",
       "back": "Back",
-      "save": "Save"
+      "save": "Save",
+      "verified": "Verify Doctor"
     },
     "active": {
       "title": "Active Hour List",
@@ -323,6 +324,7 @@
       "wbook": "This schedule is fully booked",
       "insurance": {
         "success": "Booking completed",
+        "isuccess": "Add Insurance Information Successful!",
         "title": "Add Insurance Information",
         "name": "Insurance Name",
         "number": "Insurance Number",
@@ -336,7 +338,8 @@
       "title": "Update Appointment Information of",
       "nodata": "No user selected",
       "insurance": "Insurance Information",
-      "y": " You have booked an appointment with",
+      "y": " Patient has booked an appointment with",
+      "y2": " Patient has booked an appointment ",
       "on": "on",
       "at": "at",
       "nod": "No doctor selected",
@@ -352,7 +355,8 @@
       "iname": "Name",
       "inumber": "Number",
       "address": "Location",
-      "ex": "Expiry Date"
+      "ex": "Expiry Date",
+      "asuccess": "Appointment Updated!"
     }
   },
   "article": {
@@ -457,7 +461,14 @@
   },
   "doctor": {
     "profile": {
-
+      "success": "Updated Doctor Information",
+      "contact": "CONTACT INFORMATION",
+      "phone": "Phone",
+      "address": "Address",
+      "basic": "BASIC INFORMATION",
+      "dob": "Date of birth",
+      "save": "Save",
+      "edit": "Edit"
     },
     "sidebar": {
       "dashboard": "Dashboard",
@@ -468,6 +479,13 @@
       "article": "Article",
       "forum": "Forum",
       "profile": "Profile"
+    },
+    "appointment":{
+      "title": "All Appointments",
+      "create": "Create Appointment"
+    },
+    "article": {
+      "create": "Create New Article"
     }
   }
 }

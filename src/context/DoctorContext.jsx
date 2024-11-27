@@ -1,5 +1,8 @@
 import {createContext, useEffect, useState} from "react";
 import * as accountService from "../service/AccountService";
+import {useQuery} from "@tanstack/react-query";
+import Error from "../components/Error";
+import * as appointmentService from "../service/AppointmentService";
 
 export const DoctorContext = createContext();
 
@@ -25,9 +28,32 @@ const DoctorContextProvider = (props) => {
         }
     };
 
+    const {
+        data: doctorAppointments = [],
+        isLoading: isDoctorAppointmentsLoading,
+        isError,
+        refetch: reFetchDA
+    } = useQuery({
+        queryKey: ["dAppointments"],
+        queryFn: async () => {
+            if (!docId || !dToken) return [];
+            try {
+                const data = await appointmentService.getAppointmentByDoctor(false, docId, dToken);
+                return data;
+            } catch (e) {
+                console.error(e);
+                throw new Error("Failed to load");
+            }
+        },
+        enabled: !!docId && !!dToken, // Ensure query runs only when docId and dToken are truthy
+    });
+
+
 
     const value = {
-        backendUrl, dToken, setDToken, getDoctorData, docId, doctorData
+        backendUrl, dToken, setDToken, getDoctorData,
+        docId, doctorData, doctorAppointments, isDoctorAppointmentsLoading,
+        reFetchDA
     }
 
     return(

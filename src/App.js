@@ -50,6 +50,7 @@ import './config-translation'
 import Loading from "./pages/Loading";
 import UserAppointments from "./pages/Account/UserAppointments";
 import DoctorArticleList from "./pages/Doctor/DoctorArticleList";
+import DoctorCreateArticle from "./pages/Doctor/DoctorCreateArticle";
 
 
 function App() {
@@ -115,6 +116,7 @@ function App() {
                     <Route path='/doctor-profile' element={<DoctorProfile/>} />
                     <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
                     <Route path='/doctor-article' element={<DoctorArticleList/>} />
+                    <Route path='/doctor-create-article' element={<DoctorCreateArticle/>} />
                     <Route path='/doctor-appointments' element={<DoctorAppointments/>} />
                     <Route path='/update-appointment-of-doctor/:id' element={<UpdateAppointment/>} />
 

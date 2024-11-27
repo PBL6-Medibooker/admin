@@ -53,6 +53,7 @@ const AddInsuranceByAppointmentId = () => {
         }
 
     }
+
     return (
 
         <div className='m-5 w-[90vw] h-[100vh]'>

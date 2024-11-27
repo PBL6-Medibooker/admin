@@ -93,9 +93,21 @@ const DoctorArticleList = () => {
     // }, [dToken, email]);
     return (
         <div className="m-5 w-[90vw] h-[100vh]">
-            {/*<p className="pb-3 mt-7 font-medium text-primary lg:text-2xl border-b">*/}
-            {/*    {name} {t("account.user.na")}*/}
-            {/*</p>*/}
+            <motion.div
+                className="flex justify-end mb-4"
+                initial={{y: -20}}
+                animate={{y: 0}}
+                transition={{duration: 0.5}}
+            >
+                <motion.button
+                    // onClick={() => navigate("/booking-appointment")}
+                    className="bg-primary text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
+                    whileHover={{scale: 1.05}}
+                    whileTap={{scale: 0.95}}
+                >
+                    {t("doctor.article.create")}
+                </motion.button>
+            </motion.div>
             <div>
                 {paginatedData.reverse().map((item, index) => {
                     // const {dayOfWeek, date} = separateDayAndDate(item.appointment_day);
@@ -129,7 +141,7 @@ const DoctorArticleList = () => {
                                 <p className="text-black font-medium mt-1">
                                     {/*{t("account.user.address")}: */}
                                     <span
-                                    className="text-xs">{d}</span>
+                                        className="text-xs">{d}</span>
                                 </p>
                                 {/*<p className="text-xs mt-1">*/}
                                 {/*    <span*/}

@@ -5,6 +5,7 @@ import * as appointmentService from "../../service/AppointmentService";
 import { toast } from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import {DoctorContext} from "../../context/DoctorContext";
 
 const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
     const { aToken } = useContext(AdminContext);
@@ -20,6 +21,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
     const getInsuranceInfo = async () => {
         try {
             const data = await appointmentService.getInsuranceInfo(id, aToken);
+            console.log('detail', data)
             if (data && data[0]) {
                 setInsuranceData({
                     id: data[0]._id || "",
@@ -29,13 +31,56 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                     exp_date: data[0].exp_date || "",
                 });
             }
+            // else {
+            //     setInsuranceData({
+            //         id: "",
+            //         name: "",
+            //         number: "",
+            //         location: "",
+            //         exp_date: "",
+            //     });
+            // }
         } catch (e) {
             console.error(e);
         }
     };
 
+    const addInsurance = async () => {
+        try {
+            const payload = {
+                name: insuranceData.name,
+                number: insuranceData.number,
+                location: insuranceData.location,
+                exp_date: insuranceData.exp_date
+            }
+            // console.log(payload)
+            const data = await appointmentService.addInsurance(payload, id, aToken)
+            if (data) {
+                // console.log(data)
+                cancel()
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("appointment.add.insurance.isuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            } else {
+                toast.error(data.error)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if(insuranceData.id === ""){
+            // console.log('meo')
+            await addInsurance()
+            return;
+        }
         try {
             const payload = {
                 appointment_id: id,
@@ -46,9 +91,9 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                 exp_date: insuranceData.exp_date,
             };
 
-            console.log(payload)
-
+            // console.log(payload)
             const data = await appointmentService.updateInsuranceInfo(payload, aToken);
+
             if (data) {
                 // toast.success("Insurance Updated");
                 onClose();
@@ -63,7 +108,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                 await Swal.fire({
                     position: "top-end",
                     title: t("appointment.update.error"),
-                    icon: "success",
+                    icon: "error",
                     showConfirmButton: false,
                     timer: 1500
                 });

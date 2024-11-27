@@ -8,6 +8,7 @@ import * as accountService from "../../service/AccountService";
 import UpdateInsuranceModal from "./UpdateInsuranceModal";
 import DetailInsuranceModal from "./DetailInsuranceModal";
 import {useTranslation} from "react-i18next";
+import Swal from "sweetalert2";
 
 
 const UpdateAppointmentInfo = () => {
@@ -146,8 +147,14 @@ const UpdateAppointmentInfo = () => {
             await changeAppointmentTime();
             const response = await appointmentService.updateAppointmentInfo(data, id, aToken)
             if (response) {
-                toast.success('Updated')
                 navigate('/all-appointment')
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("appointment.update.asuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             } else {
                 toast.error('Doctor is not available')
             }
@@ -174,6 +181,7 @@ const UpdateAppointmentInfo = () => {
             console.log(e.error);
         }
     };
+
     const onLoad = () =>{
         setDetailModal(false)
     }
@@ -195,7 +203,6 @@ const UpdateAppointmentInfo = () => {
     useEffect(() => {
         if (aToken) {
             getAppointmentInfo();
-
         }
     }, [aToken, doctorId])
 
@@ -400,6 +407,7 @@ const UpdateAppointmentInfo = () => {
                     id={id}
                     name={name}
                     onClose={onLoad}
+
                 />
 
 
