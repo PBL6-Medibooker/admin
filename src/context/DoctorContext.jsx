@@ -39,13 +39,13 @@ const DoctorContextProvider = (props) => {
             if (!docId || !dToken) return [];
             try {
                 const data = await appointmentService.getAppointmentByDoctor(false, docId, dToken);
-                return data;
+                return data.reverse();
             } catch (e) {
                 console.error(e);
                 throw new Error("Failed to load");
             }
         },
-        enabled: !!docId && !!dToken, // Ensure query runs only when docId and dToken are truthy
+        enabled: !!docId && !!dToken,
     });
 
 

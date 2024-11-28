@@ -32,7 +32,8 @@ import UpdateAppointmentInfo from "./pages/Appointment/UpdateAppointmentInfo";
 import RegionDashboard from "./pages/Region/RegionDashboard";
 import ArticleDashboard from "./pages/Article/ArticleDashboard";
 import ArticleList from "./pages/Article/ArticleList";
-import AdminProfile from "./pages/AdminProfile";
+// import AdminProfile from "./pages/AdminProfile";
+import AdminProfile from "./pages/Admin/AdminProfile";
 import CreateArticle from "./pages/Article/CreateArticle";
 import UpdateArticle from "./pages/Article/UpdateArticle";
 import RestoreArticle from "./pages/Article/RestoreArticle";
@@ -49,8 +50,8 @@ import Test from "./pages/Test";
 import './config-translation'
 import Loading from "./pages/Loading";
 import UserAppointments from "./pages/Account/UserAppointments";
-import DoctorArticleList from "./pages/Doctor/DoctorArticleList";
-import DoctorCreateArticle from "./pages/Doctor/DoctorCreateArticle";
+import DoctorArticleList from "./pages/Doctor/article/DoctorArticleList";
+import DoctorCreateArticle from "./pages/Doctor/article/DoctorCreateArticle";
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
                     {/*<Route path='/' element={<Test />} />*/}
                     {/*<Route path='/' element={<Loading />} />*/}
                     <Route path='/admin-dashboard' element={<Dashboard/>}/>
+                    {/*<Route path='/admin-profile' element={<AdminProfile/>}/>*/}
                     <Route path='/admin-profile' element={<AdminProfile/>}/>
 
                     <Route path='/speciality-dashboard' element={<SpecialityDashBoard/>} />

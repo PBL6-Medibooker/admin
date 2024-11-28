@@ -11,10 +11,13 @@ import {FaRegTrashAlt} from "react-icons/fa";
 import {toast} from "react-toastify";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
+import {useQuery} from "@tanstack/react-query";
+import Error from "../../components/Error";
+import Loader from "../../components/Loader";
 
 
 const DoctorAppointments = () => {
-    const {dToken, getDoctorData, docId, doctorAppointments} = useContext(DoctorContext);
+    const {dToken, getDoctorData, docId, doctorAppointments, isDoctorAppointmentsLoading,reFetchDA} = useContext(DoctorContext);
     const {calculateAge, dateFormat, separateDayAndDate} = useContext(AppContext);
 
     const [appointments, setAppointments] = useState([]);
@@ -23,31 +26,15 @@ const DoctorAppointments = () => {
     const [open, setOpen] = useState(false)
     const [id, setId] =useState('')
     const {t} = useTranslation()
-    // const [doctorData, setDoctorData] = useState({});
-    // const [docId, setDocId] = useState('')
 
-
-    // const getDoctorData = async () => {
-    //     try {
-    //         const result = await accountService.getDoctorProfile(dToken);
-    //         console.log(result)
-    //         if (result.success) {
-    //             setDoctorData(result.profileData)
-    //             setDocId(result.profileData._id)
-    //             await getDoctorAppointments();
-    //         }
-    //
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
 
     const cancelBooking = async () =>{
         try {
             const data = await appointmentService.softDeleteAppointment(id, dToken);
             if (data){
                 // toast.success('The Appointment has been cancelled');
-                await getDoctorAppointments();
+                // await getDoctorAppointments();
+                reFetchDA()
                 setOpen(false);
 
                 await Swal.fire({
@@ -64,19 +51,20 @@ const DoctorAppointments = () => {
         }
     }
 
+    //
+    // const getDoctorAppointments = async () =>{
+    //     try {
+    //         console.log(docId)
+    //         const data = await appointmentService.getAppointmentByDoctor(false,docId, dToken)
+    //         if(data){
+    //             console.log(data)
+    //             setAppointments(data.reverse())
+    //         }
+    //     }catch (e) {
+    //         console.log(e)
+    //     }
+    // }
 
-    const getDoctorAppointments = async () =>{
-        try {
-            console.log(docId)
-            const data = await appointmentService.getAppointmentByDoctor(false,docId, dToken)
-            if(data){
-                console.log(data)
-                setAppointments(data.reverse())
-            }
-        }catch (e) {
-            console.log(e)
-        }
-    }
 
     const columns = [
         {
@@ -107,10 +95,10 @@ const DoctorAppointments = () => {
                     <div className="flex ml-4 items-center gap-2">
                         <img
                             className="w-8 rounded-full"
-                            src={appointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
+                            src={doctorAppointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
                             alt=""
                         />
-                        <p>{appointments[dataIndex]?.user_id?.username}</p>
+                        <p>{doctorAppointments[dataIndex]?.user_id?.username}</p>
                     </div>
                 ),
             },
@@ -125,7 +113,7 @@ const DoctorAppointments = () => {
                 ),
                 customBodyRenderLite: (dataIndex) => (
                     <div style={{ marginLeft: "20px" }}>
-                        {calculateAge(appointments[dataIndex]?.user_id?.date_of_birth)}
+                        {calculateAge(doctorAppointments[dataIndex]?.user_id?.date_of_birth)}
                     </div>
                 ),
             },
@@ -139,10 +127,10 @@ const DoctorAppointments = () => {
                     </span>
                 ),
                 customBodyRenderLite: (dataIndex) => {
-                    const { dayOfWeek, date } = separateDayAndDate(appointments[dataIndex]?.appointment_day);
+                    const { dayOfWeek, date } = separateDayAndDate(doctorAppointments[dataIndex]?.appointment_day);
                     return (
                         <div style={{ marginLeft: "20px" }}>
-                            {`${dayOfWeek}, ${dateFormat(date)} | ${appointments[dataIndex]?.appointment_time_start} - ${appointments[dataIndex]?.appointment_time_end}`}
+                            {`${dayOfWeek}, ${dateFormat(date)} | ${doctorAppointments[dataIndex]?.appointment_time_start} - ${doctorAppointments[dataIndex]?.appointment_time_end}`}
                         </div>
                     );
                 },
@@ -159,7 +147,7 @@ const DoctorAppointments = () => {
                 ),
                 customBodyRenderLite: (dataIndex) => {
 
-                    const appointment = appointments[dataIndex];
+                    const appointment = doctorAppointments[dataIndex];
                     const now = new Date();
                     const appointmentDate = new Date(appointment.appointment_day);
                     const isCompleted = appointmentDate < now;
@@ -193,7 +181,7 @@ const DoctorAppointments = () => {
         rowsPerPage: 5,
         rowsPerPageOptions: [5, 10, 20],
         onRowClick: (rowData, rowMeta) => {
-            const appointment = appointments[rowMeta.dataIndex];
+            const appointment = doctorAppointments[rowMeta.dataIndex];
             navigate(`/update-appointment-of-doctor/${appointment._id}`)
         },
         download: false,
@@ -204,16 +192,16 @@ const DoctorAppointments = () => {
     useEffect(() => {
         if (dToken) {
             getDoctorData()
-            console.log(doctorAppointments)
-            setAppointments(doctorAppointments.reverse())
         }
     }, [dToken, docId])
 
-    // useEffect(() => {
-    //     if (dToken) {
-    //         getDoctorAppointments()
-    //     }
-    // }, [dToken])
+    if(isDoctorAppointmentsLoading){
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='w-full max-w-6xl m-5'>
@@ -250,7 +238,7 @@ const DoctorAppointments = () => {
                             transition={{duration: 0.7}}
                         >
                             <MUIDataTable
-                                data={appointments}
+                                data={doctorAppointments}
                                 columns={columns}
                                 options={options}
                             />

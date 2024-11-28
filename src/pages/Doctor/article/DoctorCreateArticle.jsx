@@ -1,79 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React from 'react';
 import {motion} from "framer-motion";
-import {AdminContext} from "../../context/AdminContext";
-import * as accountService from "../../service/AccountService";
-import * as articleService from "../../service/ArticleService";
+import {assets} from "../../../assets/assets";
 import {useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
-import {assets} from "../../assets/assets";
 import {useTranslation} from "react-i18next";
-import Swal from "sweetalert2";
-import {DoctorContext} from "../../context/DoctorContext";
 
-const CreateArticle = () => {
-
-    const {aToken} = useContext(AdminContext);
-    const {dToken} = useContext(DoctorContext);
-    const [doctors, setDoctors] = useState([]);
-    const [email, setEmail] = useState('');
-    const [articleTitle, setArticleTitle] = useState('');
-    const [articleContent, setArticleContent] = useState('');
-    const [image, setImage] = useState(null);
+const DoctorCreateArticle = () => {
     const navigate = useNavigate();
     const {t} = useTranslation();
-
-    const getDoctorAccountList = async () => {
-        try {
-            const result = await accountService.findAll(false, false, true, aToken);
-            setDoctors(result);
-        } catch (e) {
-            console.log(e.error);
-        }
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(file);
-        }
-    };
-
-    const createArticle = async () => {
-        try {
-            const formData = new FormData();
-
-            formData.append('email', email)
-            formData.append('article_title', articleTitle)
-            formData.append('article_content', articleContent)
-            formData.append('article_image', image);
-
-            const result = await articleService.addArticle(formData, aToken)
-            if (result) {
-                // toast.success('Create Article Successful')
-                navigate('/article')
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("article.add.success"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                toast.error('Error')
-            }
-
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
-    useEffect(() => {
-        if (aToken) {
-            getDoctorAccountList()
-        }
-    }, [aToken]);
-
-
     return (
         <div className='ml-5 mr-5 mb-5 w-[90vw] h-[100vh]'>
             <motion.div
@@ -136,27 +69,25 @@ const CreateArticle = () => {
                             />
                         </label>
 
-                        {
-                            aToken ? <div className="mb-6">
-                                <select
-                                    id="user-select"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    required
-                                    aria-required="true"
-                                >
-                                    <option value="" disabled className="text-gray-400">
-                                        {t("article.add.a")}
+                        <div className="mb-6">
+                            <select
+                                id="user-select"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                required
+                                aria-required="true"
+                            >
+                                <option value="" disabled className="text-gray-400">
+                                    {t("article.add.a")}
+                                </option>
+                                {doctors?.map((doctor) => (
+                                    <option key={doctor._id} value={doctor.email}>
+                                        {doctor.username}
                                     </option>
-                                    {doctors?.map((doctor) => (
-                                        <option key={doctor._id} value={doctor.email}>
-                                            {doctor.username}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div> : ''
-                        }
+                                ))}
+                            </select>
+                        </div>
                     </motion.div>
 
 
@@ -232,4 +163,4 @@ const CreateArticle = () => {
     );
 };
 
-export default CreateArticle;
+export default DoctorCreateArticle;

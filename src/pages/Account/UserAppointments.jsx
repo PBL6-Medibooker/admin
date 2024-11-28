@@ -140,6 +140,7 @@ const UserAppointments = () => {
             </div>
         );
     }
+
     if(isError){
         return (
             <div>

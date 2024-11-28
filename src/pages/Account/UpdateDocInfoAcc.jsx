@@ -140,36 +140,31 @@ const UpdateDocInfoAcc = () => {
 
             await updateDocInfo();
 
-            // if (!isFormValid) {
-            // }
-            // setIsVerify(true)
+            if(!isVerify){
+                await changeDoctorVerifyStatus();
+            }
 
-            setIsVerify(true)
-            await changeDoctorVerifyStatus();
+            const result = await accountService.updateDocInfoAcc(data, id, aToken);
 
-
-            // setIsVerify(true)
-            // const result = await accountService.updateDocInfoAcc(data, id, aToken);
-            //
-            // if (result?.status === 200) {
-            //     navigate('/verified-doc-account');
-            //     await Swal.fire({
-            //         position: "top-end",
-            //         title: t("account.updateDocInfo.success"),
-            //         icon: "success",
-            //         showConfirmButton: false,
-            //         timer: 1500
-            //     });
-            // } else {
-            //     toast.error('Error updating doctor info.');
-            //     await Swal.fire({
-            //         position: "top-end",
-            //         title: t("account.updateDocInfo.error"),
-            //         icon: "error",
-            //         showConfirmButton: false,
-            //         timer: 1500
-            //     });
-            // }
+            if (result?.status === 200) {
+                navigate('/verified-doc-account');
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateDocInfo.success"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                // toast.error('Error updating doctor info.');
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.updateDocInfo.error"),
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         } catch (e) {
             console.log(e);
             toast.error(e.message);
@@ -192,8 +187,6 @@ const UpdateDocInfoAcc = () => {
 
     const changeDoctorVerifyStatus = async () => {
         try {
-
-            console.log(isVerify)
             const result = await accountService.changeDoctorVerifyStatus(email, true, aToken);
             if (result) {
                 console.log("change doctor verify", result)
@@ -201,16 +194,6 @@ const UpdateDocInfoAcc = () => {
             } else {
                 toast.error(result.error);
             }
-
-            // if (isVerify === false) {
-            //     const result = await accountService.changeDoctorVerifyStatus(email, isVerify, aToken);
-            //     if (result) {
-            //         console.log("change doctor verify", result)
-            //         toast.success(result.message);
-            //     } else {
-            //         toast.error(result.error);
-            //     }
-            // }
         } catch (e) {
             console.log(e);
         }
@@ -229,21 +212,23 @@ const UpdateDocInfoAcc = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAccountDetails();
+            getAccountDetails()
+            getAllSpecialities()
+            getAllProvinces()
         }
     }, [aToken]);
 
-    useEffect(() => {
-        if (aToken) {
-            getAllSpecialities();
-        }
-    }, [aToken]);
-
-    useEffect(() => {
-        if (aToken) {
-            getAllProvinces();
-        }
-    }, [aToken]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //
+    //     }
+    // }, [aToken]);
+    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //
+    //     }
+    // }, [aToken]);
 
 
     return (

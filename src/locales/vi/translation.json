@@ -475,7 +475,10 @@
       "basic": "THÔNG TIN CƠ BẢN",
       "dob": "Ngày sinh",
       "save": "Hoàn tất",
-      "edit": "Chỉnh sửa"
+      "edit": "Chỉnh sửa",
+      "spec": "Chuyên khoa",
+      "region": "Thành phố",
+      "bio": "Mô tả"
     },
     "sidebar": {
       "dashboard": "Trang chủ",

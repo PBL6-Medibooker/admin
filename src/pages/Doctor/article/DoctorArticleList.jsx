@@ -1,14 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {DoctorContext} from "../../context/DoctorContext";
+import {DoctorContext} from "../../../context/DoctorContext";
 import {useTranslation} from "react-i18next";
 import {useQuery} from "@tanstack/react-query";
-import * as articleService from "../../service/ArticleService";
-import Error from "../../components/Error";
+import * as articleService from "../../../service/ArticleService";
+import Error from "../../../components/Error";
 import {motion} from "framer-motion";
-import {assets} from "../../assets/assets";
-import Modal from "../../components/Modal/Modal";
+import {assets} from "../../../assets/assets";
+import Modal from "../../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
+import Loader from "../../../components/Loader";
+import {useNavigate} from "react-router-dom";
 
 const DoctorArticleList = () => {
     const {dToken, doctorData, getDoctorData} = useContext(DoctorContext)
@@ -19,36 +21,37 @@ const DoctorArticleList = () => {
         pageSize: 3,
     })
     const [open, setOpen] = useState(false)
+    const navigate = useNavigate()
 
-
-    // const fetchDoctorArticles = async () => {
-    //     if (!doctorData?.email) {
-    //         const doctorProfile = await getDoctorData();
-    //         if (!doctorProfile?.email) {
-    //             throw new Error("Doctor email not found");
-    //         }
-    //         return articleService.getAllArticleByDoctor(doctorProfile.email, dToken);
-    //     }
-    //     return articleService.getAllArticleByDoctor(doctorData.email, dToken);
-    // };
 
     const fetchDoctorArticles = async () => {
         if (!doctorData?.email) {
-            console.log("Doctor email not found in context, fetching profile...");
             const doctorProfile = await getDoctorData();
             if (!doctorProfile?.email) {
                 throw new Error("Doctor email not found");
             }
-            console.log("Fetched doctor profile:", doctorProfile);
-            const articles = await articleService.getAllArticleByDoctor(doctorProfile.email, dToken);
-            console.log("Fetched articles by doctor:", articles);
-            return articles;
+            return articleService.getAllArticleByDoctor(doctorProfile.email, dToken);
         }
-        console.log("Using email from context:", doctorData.email);
-        const articles = await articleService.getAllArticleByDoctor(doctorData.email, dToken);
-        console.log("Fetched articles by doctor:", articles);
-        return articles;
+        return articleService.getAllArticleByDoctor(doctorData.email, dToken);
     };
+
+    // const fetchDoctorArticles = async () => {
+    //     if (!doctorData?.email) {
+    //         console.log("Doctor email not found in context, fetching profile...");
+    //         const doctorProfile = await getDoctorData();
+    //         if (!doctorProfile?.email) {
+    //             throw new Error("Doctor email not found");
+    //         }
+    //         console.log("Fetched doctor profile:", doctorProfile);
+    //         const articles = await articleService.getAllArticleByDoctor(doctorProfile.email, dToken);
+    //         console.log("Fetched articles by doctor:", articles);
+    //         return articles;
+    //     }
+    //     console.log("Using email from context:", doctorData.email);
+    //     const articles = await articleService.getAllArticleByDoctor(doctorData.email, dToken);
+    //     console.log("Fetched articles by doctor:", articles);
+    //     return articles;
+    // };
 
     const { data: articles = [], isLoading, isError } = useQuery({
         queryKey: ["articles", doctorData?.email],
@@ -91,6 +94,15 @@ const DoctorArticleList = () => {
     //         setEmail(doctorData?.email)
     //     }
     // }, [dToken, email]);
+
+    if(isLoading){
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        );
+    }
+
     return (
         <div className="m-5 w-[90vw] h-[100vh]">
             <motion.div
@@ -100,7 +112,7 @@ const DoctorArticleList = () => {
                 transition={{duration: 0.5}}
             >
                 <motion.button
-                    // onClick={() => navigate("/booking-appointment")}
+                    onClick={() => navigate("/create-article")}
                     className="bg-primary text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
                     whileHover={{scale: 1.05}}
                     whileTap={{scale: 0.95}}
@@ -110,9 +122,7 @@ const DoctorArticleList = () => {
             </motion.div>
             <div>
                 {paginatedData.reverse().map((item, index) => {
-                    // const {dayOfWeek, date} = separateDayAndDate(item.appointment_day);
-                    // const appointmentDate = new Date(item.appointment_day);
-                    // const isCompleted = appointmentDate < now;
+
                     const date = new Date(item.date_published)
                     const d = date.toLocaleDateString("en-GB")
 

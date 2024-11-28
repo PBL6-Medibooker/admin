@@ -7,7 +7,7 @@ import {motion} from "framer-motion";
 import {DoctorContext} from "../../context/DoctorContext";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
-import DetailInsuranceModal from "../Appointment/DetailInsuranceModal";
+import AddAndUpdateInsuranceByDoctor from "./AddAndUpdateInsuranceByDoctor";
 
 const UpdateAppointment = () => {
     const navigate = useNavigate();
@@ -378,13 +378,13 @@ const UpdateAppointment = () => {
 
                 </motion.div>
 
-                {/*<DetailInsuranceModal*/}
-                {/*    open={detailModal}*/}
-                {/*    cancel={() => setDetailModal(false)}*/}
-                {/*    id={id}*/}
-                {/*    name={name}*/}
-                {/*    onClose={()=> setDetailModal(false)}*/}
-                {/*/>*/}
+                <AddAndUpdateInsuranceByDoctor
+                    open={detailModal}
+                    cancel={() => setDetailModal(false)}
+                    id={id}
+                    name={name}
+                    onClose={()=> setDetailModal(false)}
+                />
 
             </div>
 

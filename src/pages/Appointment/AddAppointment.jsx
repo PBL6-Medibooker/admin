@@ -51,7 +51,7 @@ const AddAppointment = () => {
 
     const findAllSpecialities = async () => {
         const result = await specialityService.findAll(false, aToken);
-        console.log('spec',result)
+        // console.log('spec',result)
         setSpecialities(result);
     }
 

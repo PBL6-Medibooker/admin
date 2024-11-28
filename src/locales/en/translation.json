@@ -468,7 +468,10 @@
       "basic": "BASIC INFORMATION",
       "dob": "Date of birth",
       "save": "Save",
-      "edit": "Edit"
+      "edit": "Edit",
+      "spec": "Speciality",
+      "region": "City",
+      "bio": "Bio"
     },
     "sidebar": {
       "dashboard": "Dashboard",

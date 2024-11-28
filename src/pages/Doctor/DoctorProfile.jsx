@@ -4,17 +4,22 @@ import * as accountService from "../../service/AccountService";
 import {motion} from "framer-motion";
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
+import Swal from "sweetalert2";
+import {useTranslation} from "react-i18next";
+import {useQuery} from "@tanstack/react-query";
+import * as regionService from "../../service/RegionService";
+import * as specialityService from "../../service/SpecialityService";
 
 const DoctorProfile = () => {
     const {dToken} = useContext(DoctorContext);
 
     const [doctorData, setDoctorData] = useState({});
+    const [initialDoctorData, setInitialDoctorData] = useState({});
     const [isEdit, setIsEdit] = useState(false);
 
     const [image, setImage] = useState(false);
     const [docId, setDocId] = useState('')
-
-
+    const {t} = useTranslation()
 
     const getDoctorData = async () => {
         try {
@@ -23,18 +28,99 @@ const DoctorProfile = () => {
             if (result.success) {
                 setDoctorData(result.profileData)
                 setDocId(result.profileData._id)
+                setInitialDoctorData(result.profileData)
             }
         } catch (e) {
             console.log(e);
         }
     };
 
+    const {data: regionData, isLoading} = useQuery(
+        {
+            queryKey: ["regions"],
+            queryFn: async () => {
+                const data = regionService.findAll(false, dToken)
+                return data
+            }
+        }
+    )
+
+    const {data: specData} = useQuery(
+        {
+            queryKey: ["spec"],
+            queryFn: async () => {
+                const data = await specialityService.findAll(false, dToken);
+                return data
+            }
+        }
+    )
+
 
     const updateDoctorInfo = async () => {
+        console.log('meo')
+        const data = {
+            speciality: doctorData.speciality_id.name,
+            bio: doctorData.bio,
+            region: doctorData.region_id.name,
+        }
+
+        const result = await accountService.updateDocInfoAcc(data, doctorData._id, dToken);
+
+        if (result?.status === 200) {
+            setIsEdit(false)
+        } else {
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.updateDocInfo.error"),
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    }
+    const isObjectEqual = (obj1, obj2) => {
+        if (!obj1 || !obj2) return false;
+
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+
+        if (keys1.length !== keys2.length) return false;
+
+        for (let key of keys1) {
+            if (obj1[key] !== obj2[key]) return false;
+        }
+
+        return true;
+    };
+
+
+    const checkDataChange = () =>{
+        const originalData = {
+            region: initialDoctorData.region_id?.name,
+            speciality: initialDoctorData.speciality_id.name,
+            bio: initialDoctorData.bio
+        }
+
+        const updatedData = {
+            region: doctorData.region_id?.name,
+            speciality: doctorData.speciality_id.name,
+            bio:doctorData.bio
+        }
+
+        // const hasRegionChanged = originalData.region !== updatedData.region
+        // const hasBioChanged = originalData.bio !== updatedData.bio
+        //
+        // return hasRegionChanged || hasBioChanged
+
+        return !isObjectEqual(originalData, updatedData);
 
     }
 
     const updateDoctorProfile = async () => {
+
+        if (checkDataChange()) {
+            await updateDoctorInfo();
+        }
 
         try {
             const formData = new FormData();
@@ -53,13 +139,20 @@ const DoctorProfile = () => {
 
             await accountService.updateCusAcc(formData, doctorData._id, dToken);
 
-            toast.success('Updated Doctor Information');
             setIsEdit(false)
             await getDoctorData()
 
-            formData.forEach((value, key) => {
-                console.log(`${key}:${value}`);
-            });
+            await Swal.fire({
+                position: "top-end",
+                title: t("doctor.profile.success"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            // formData.forEach((value, key) => {
+            //     console.log(`${key}:${value}`);
+            // });
         } catch (e) {
             console.log(e);
             toast.error(e.message);
@@ -76,7 +169,6 @@ const DoctorProfile = () => {
             }));
         }
     };
-
 
 
     const fadeIn = {
@@ -161,7 +253,8 @@ const DoctorProfile = () => {
                     >
                         <p className="flex items-center w-full gap-3 text-3xl font-medium text-gray-700">
                             {isEdit ? (
-                                <input
+                                <motion.input
+                                    whileHover={{scale: 1.05}}
                                     type="text"
                                     className="border border-gray-300 rounded-md px-2 py-1 text-2xl font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={doctorData.username}
@@ -176,8 +269,8 @@ const DoctorProfile = () => {
                                 doctorData.username
                             )}
                         </p>
-                        <hr className='bg-zinc-400 h-[1px] border-none'/>
-                        <p className='text-neutral-500 underline mt-3'>CONTACT INFORMATION</p>
+                        <hr className='bg-zinc-400 h-[1px] border-none mt-2'/>
+                        <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.contact")}</p>
 
 
                         <p className="text-gray-600 flex gap-1 font-medium mt-4">
@@ -191,11 +284,12 @@ const DoctorProfile = () => {
 
 
                         <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            Phone:
+                            {t("doctor.profile.phone")}:
                             {isEdit ? (
                                 <motion.input
+                                    whileHover={{scale: 1.05}}
                                     type="text"
-                                    className="border rounded px-2 py-1"
+                                    className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={doctorData.phone || ''}
                                     onChange={(e) =>
                                         setDoctorData((prev) => ({
@@ -210,11 +304,12 @@ const DoctorProfile = () => {
                         </p>
 
                         <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            Address:
+                            {t("doctor.profile.address")}:
                             {isEdit ? (
                                 <motion.input
+                                    whileHover={{scale: 1.05}}
                                     type="text"
-                                    className="border rounded px-2 py-1"
+                                    className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={doctorData.address || ''}
                                     onChange={(e) =>
                                         setDoctorData((prev) => ({
@@ -229,53 +324,78 @@ const DoctorProfile = () => {
                         </p>
 
 
-                        <p className='text-neutral-500 underline mt-3'>BASIC INFORMATION</p>
+                        <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.basic")}</p>
 
-                        <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            Speciality:
+                        <p className="flex gap-3 text-black font-medium mt-4">
+                            {t("doctor.profile.spec")}:
                             {isEdit ? (
-                                <motion.input
-                                    rows={5}
-                                    className="border rounded px-2 py-1"
-                                    value={doctorData.speciality_id.name || ''}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            speciality: e.target.value,
-                                        }))
-                                    }
-                                />
+                                <motion.div
+                                    initial={{opacity: 0.8}}
+                                    whileHover={{scale: 1.05, opacity: 1}}
+                                    whileFocus={{scale: 1.1, borderColor: "blue"}}
+                                    className="relative"
+                                >
+                                    <select
+                                        className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                        onChange={(e) =>
+                                            setDoctorData((prev) => ({
+                                                ...prev,
+                                                speciality_id: {name: e.target.value},
+                                            }))
+                                        }
+                                        value={doctorData.speciality_id?.name || ""}
+                                    >
+                                        {specData?.map((spec) => (
+                                            <option key={spec._id} value={spec.name}>
+                                                {spec.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </motion.div>
                             ) : (
                                 <span className="text-gray-800">{doctorData.speciality_id?.name || 'N/A'}</span>
                             )}
                         </p>
 
-                        <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            Region:
+                        <p className="flex gap-3 text-black font-medium mt-4">
+                            {t("doctor.profile.region")}:
                             {isEdit ? (
-                                <motion.input
-                                    rows={5}
-                                    className="border rounded px-2 py-1"
-                                    value={doctorData.speciality_id.name || ''}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            speciality: e.target.value,
-                                        }))
-                                    }
-                                />
+                                <motion.div
+                                    initial={{opacity: 0.8}}
+                                    whileHover={{scale: 1.05, opacity: 1}}
+                                    whileFocus={{scale: 1.1, borderColor: "blue"}}
+                                    className="relative"
+                                >
+                                    <select
+                                        className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                        onChange={(e) =>
+                                            setDoctorData((prev) => ({
+                                                ...prev,
+                                                region_id: {name: e.target.value},
+                                            }))
+                                        }
+                                        value={doctorData.region_id?.name || ""}
+                                    >
+                                    {regionData.map((region) => (
+                                            <option key={region._id} value={region.name}>
+                                                {region.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </motion.div>
                             ) : (
-                                <span className="text-gray-800">{doctorData.region_id?.name || 'N/A'}</span>
+                                <span className="text-gray-800">{doctorData.region_id?.name || "N/A"}</span>
                             )}
                         </p>
 
                         <p className="text-gray-600 gap-3 flex font-medium mt-4">
-                            Date of birth:
+                            {t("doctor.profile.dob")}:
                             <span className="text-gray-800">
                             {isEdit ? (
                                 <motion.input
+                                    whileHover={{scale: 1.05}}
                                     type="date"
-                                    className="border rounded px-2 py-1"
+                                    className="border rounded px-2 py-1 focus:ring-primary focus:outline-none focus:ring-2"
                                     onChange={(e) => setDoctorData(prev => ({
                                         ...prev,
                                         date_of_birth: e.target.value
@@ -298,11 +418,12 @@ const DoctorProfile = () => {
                         </p>
 
                         <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            Bio:
+                            {t("doctor.profile.bio")}:
                             {isEdit ? (
                                 <motion.textarea
                                     rows={5}
-                                    className="border rounded px-2 py-1 w-[40vw]"
+                                    whileHover={{scale: 1.025}}
+                                    className="border rounded px-2 py-1 w-[40vw] focus:outline-none focus:ring-2 focus:ring-primary"
                                     value={doctorData.bio || ''}
                                     onChange={(e) =>
                                         setDoctorData((prev) => ({
@@ -328,7 +449,7 @@ const DoctorProfile = () => {
                                     whileHover={{scale: 1.05}}
                                     whileTap={{scale: 0.95}}
                                 >
-                                    Save
+                                    {t("doctor.profile.save")}
                                 </motion.button>
                             ) : (
                                 <motion.button
@@ -337,7 +458,7 @@ const DoctorProfile = () => {
                                     whileHover={{scale: 1.05}}
                                     whileTap={{scale: 0.95}}
                                 >
-                                    Edit
+                                    {t("doctor.profile.edit")}
                                 </motion.button>
                             )}
                         </motion.div>
