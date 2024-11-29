@@ -467,6 +467,12 @@
     "edit": "Chỉnh sửa"
   },
   "doctor": {
+    "dashboard": {
+      "da": "Bài báo đã xoá",
+      "dp": "Bài đăng đã xoá",
+      "tap": "Danh sách cuộc hẹn",
+      "ta": "Danh sách bài viết"
+    },
     "profile": {
       "success": "Cập nhật thông tin bác sĩ thành công!",
       "contact": "THÔNG TIN LIÊN HỆ",
@@ -488,14 +494,42 @@
       "appointment": "Cuộc hẹn",
       "article": "Bài viết",
       "forum": "Diễn đàn",
-      "profile": "Trang cá nhân"
+      "profile": "Trang cá nhân",
+      "trash": "Thùng rác",
+      "post": "Bài đăng"
     },
     "appointment":{
       "title": "Danh Sách Lịch Hẹn Khám",
       "create": "Thêm cuộc hẹn"
     },
     "article": {
-      "create": "Tạo bài viết mới"
+      "create": "Tạo bài viết mới",
+      "date": "Ngày tạo",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "confirmDelete": "Xác nhận xoá",
+      "pCD": "Bạn có muốn xoá bài báo đã chọn không?",
+      "cancel": "Huỷ",
+      "confirm": "Xoá",
+      "noData": "Không có bài báo nào!",
+      "dsuccess": "Xoá bài báo đã chọn thành công!",
+      "dp": "Xoá vĩnh viễn",
+      "pb": "Khôi phục",
+      "noDeletedArticles": "Không có bài báo nào đã xoá."
+    },
+    "post": {
+      "title": "Tạo Bài Đăng ",
+      "ltitle": "Danh sách bài đăng",
+      "add": "Thêm bài đăng",
+      "back": "Trở về",
+      "save": "Hoàn tất",
+      "success": "Tạo mới bài đăng thành công",
+      "ptitle": "Tiêu đề",
+      "content": "Nội dung",
+      "noData": "Chưa có bài đăng nào!",
+      "delete": "Xoá bài đăng",
+      "date": "Ngày đăng"
+
     }
   }
 }

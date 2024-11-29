@@ -3,6 +3,7 @@ import * as accountService from "../service/AccountService";
 import {useQuery} from "@tanstack/react-query";
 import Error from "../components/Error";
 import * as appointmentService from "../service/AppointmentService";
+import * as articleService from "../service/ArticleService";
 
 export const DoctorContext = createContext();
 
@@ -12,6 +13,7 @@ const DoctorContextProvider = (props) => {
 
     const [doctorData, setDoctorData] = useState({});
     const [docId, setDocId] = useState('')
+    const [docEmail, setDocEmail] = useState('')
 
 
     const getDoctorData = async () => {
@@ -21,8 +23,8 @@ const DoctorContextProvider = (props) => {
             if (result.success) {
                 setDoctorData(result.profileData)
                 setDocId(result.profileData._id)
+                setDocEmail(result.profileData.email)
             }
-
         } catch (e) {
             console.log(e);
         }
@@ -48,12 +50,27 @@ const DoctorContextProvider = (props) => {
         enabled: !!docId && !!dToken,
     });
 
+    const fetchDoctorArticles = async () => {
+        const email = doctorData?.email || (await getDoctorData())?.email;
+        if (!email) {
+            throw new Error("Doctor email not found");
+        }
+        const articles = await articleService.getAllArticleByDoctor(email, dToken);
+        return articles.filter((article) => article.is_deleted === true);
+    };
+
+    const {data: dArticles = [], isLoading} = useQuery({
+        queryKey: ["deletedArticles", doctorData?.email],
+        queryFn: fetchDoctorArticles,
+        enabled: !!dToken,
+    });
+
 
 
     const value = {
         backendUrl, dToken, setDToken, getDoctorData,
         docId, doctorData, doctorAppointments, isDoctorAppointmentsLoading,
-        reFetchDA
+        reFetchDA, docEmail, dArticles, fetchDoctorArticles
     }
 
     return(

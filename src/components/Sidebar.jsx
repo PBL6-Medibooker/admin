@@ -38,6 +38,12 @@ const Sidebar = () => {
         return location.pathname.includes("account");
     };
 
+    const isTrashActive = () => {
+        return location.pathname.includes("trash");
+    };
+
+
+
 
     return (
         <div className='bg-white border-r'>
@@ -124,16 +130,22 @@ const Sidebar = () => {
                         <ul className="text-[#515151]">
                             {[
                                 {to: "/doctor-dashboard", icon: assets.home_icon, label: t("doctor.sidebar.dashboard")},
-                                {to: "/doctor-appointments", icon: assets.appointment_icon, label: t("doctor.sidebar.appointment")},
-                                {to: "/doctor-article", icon: assets.news, label: t("doctor.sidebar.article")},
-                                {to: "/doctor-profile", icon: assets.people_icon, label: t("doctor.sidebar.profile")},
+                                {to: "/doctor-appointments", icon: assets.appointment_icon, label: t("doctor.sidebar.appointment"),
+                                isActive: isAppointmentActive()},
+                                {to: "/doctor-article", icon: assets.news, label: t("doctor.sidebar.article"),
+                                    isActive: isArticleActive()},
+                                {to: "/doctor-post", icon: assets.chat, label: t("doctor.sidebar.post"),
+                                isActive: isPostOrForumActive()},
+                                {to: "/doctor-profile", icon: assets.profile, label: t("doctor.sidebar.profile")},
+                                {to: "/doctor-trash", icon: assets.trash, label: t("doctor.sidebar.trash"),
+                                isActive: isTrashActive()},
                             ].map((item) => (
                                 <NavLink
                                     key={item.to}
                                     to={item.to}
                                     className={({isActive}) =>
                                         `flex items-center gap-3 px-3 py-3.5 md:px-5 md:min-w-72 cursor-pointer transition-all duration-300 ${
-                                            isActive
+                                            item.isActive || isActive
                                                 ? "bg-[#F2F3FF] border-r-4 border-primary text-primary"
                                                 : "hover:bg-gray-100 text-gray-600"
                                         }`

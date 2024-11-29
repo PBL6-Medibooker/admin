@@ -75,3 +75,13 @@ export const permanentDelete = async (id, aToken)=>{
         console.log(e)
     }
 }
+
+export const getAllPostByEmail = async (email,dToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + "/get-all-post-by-user",{email},{headers: {dToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+

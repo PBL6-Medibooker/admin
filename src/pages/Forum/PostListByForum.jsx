@@ -28,9 +28,6 @@ const PostListByForum = () => {
     const columnHelper = createColumnHelper();
     const [selectedPostId, setSelectedPostId] = useState('');
     const [globalFilter, setGlobalFilter] = useState("");
-    const [isUser, setIsUser] = useState(false);
-    const [isVerify, setIsVerify] = useState(true);
-    const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
 
     const [data, setData] = useState([]);

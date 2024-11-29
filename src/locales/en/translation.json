@@ -460,6 +460,12 @@
     "edit": "Edit"
   },
   "doctor": {
+    "dashboard": {
+      "da": "Deleted Article",
+      "dp": "Deleted Topic",
+      "tap": "Total Appointment",
+      "ta": "Total Article"
+    },
     "profile": {
       "success": "Updated Doctor Information",
       "contact": "CONTACT INFORMATION",
@@ -481,14 +487,42 @@
       "appointment": "Appointment",
       "article": "Article",
       "forum": "Forum",
-      "profile": "Profile"
+      "profile": "Profile",
+      "trash": "Trash",
+      "post": "Q&A"
+
     },
     "appointment":{
       "title": "All Appointments",
       "create": "Create Appointment"
     },
     "article": {
-      "create": "Create New Article"
+      "create": "Create New Article",
+      "date": "Date published",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Confirm Delete",
+      "pCD": "Are you sure you want to delete?",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "noData": "No Article Found!",
+      "dsuccess": "Article Deleted!",
+      "dp": "Delete Permanently",
+      "pb": "Put Back",
+      "noDeletedArticles": "No deleted articles available."
+    },
+    "post": {
+      "title": "Create New Topic",
+      "ltitle": "Topic List",
+      "add": "Add Topic",
+      "back": "Back",
+      "save": "Save",
+      "success": "Create New Topic Successful",
+      "ptitle": "Title",
+      "content": "Content",
+      "noData": "No post found!",
+      "delete": "Delete Topic",
+      "date": "Date published"
     }
   }
 }

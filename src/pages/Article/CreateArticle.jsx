@@ -13,7 +13,7 @@ import {DoctorContext} from "../../context/DoctorContext";
 const CreateArticle = () => {
 
     const {aToken} = useContext(AdminContext);
-    const {dToken} = useContext(DoctorContext);
+    const {dToken,docEmail} = useContext(DoctorContext);
     const [doctors, setDoctors] = useState([]);
     const [email, setEmail] = useState('');
     const [articleTitle, setArticleTitle] = useState('');
@@ -41,16 +41,24 @@ const CreateArticle = () => {
     const createArticle = async () => {
         try {
             const formData = new FormData();
+            let targetPath;
 
-            formData.append('email', email)
+            if (aToken) {
+                formData.append('email', email);
+                targetPath = '/article';
+            } else {
+                formData.append('email', docEmail);
+                targetPath = '/doctor-article';
+            }
             formData.append('article_title', articleTitle)
             formData.append('article_content', articleContent)
             formData.append('article_image', image);
 
-            const result = await articleService.addArticle(formData, aToken)
+            const token = dToken || aToken
+
+            const result = await articleService.addArticle(formData, token)
             if (result) {
-                // toast.success('Create Article Successful')
-                navigate('/article')
+                navigate(targetPath)
                 await Swal.fire({
                     position: "top-end",
                     title: t("article.add.success"),

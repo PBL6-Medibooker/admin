@@ -93,7 +93,6 @@ const SpecialityList = () => {
                 ? prevSelected.filter((specId) => specId !== id)
                 : [...prevSelected, id]
         );
-        console.log(selectedSpecialityIds)
     };
 
     const openDeleteModal = () => {
@@ -291,9 +290,9 @@ const SpecialityList = () => {
                     visible: {
                         opacity: 1,
                         transition: {
-                            staggerChildren: 0.15, // Delay between each child's animation
-                            duration: 0.6,        // Overall duration of the container animation
-                            ease: "easeInOut",    // Smooth easing
+                            staggerChildren: 0.15,
+                            duration: 0.6,
+                            ease: "easeInOut",
                         },
                     },
                 }}

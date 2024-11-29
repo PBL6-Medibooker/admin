@@ -48,10 +48,13 @@ import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
 import UpdateAppointment from "./pages/Doctor/UpdateAppointment";
 import Test from "./pages/Test";
 import './config-translation'
-import Loading from "./pages/Loading";
 import UserAppointments from "./pages/Account/UserAppointments";
 import DoctorArticleList from "./pages/Doctor/article/DoctorArticleList";
-import DoctorCreateArticle from "./pages/Doctor/article/DoctorCreateArticle";
+import DoctorTrash from "./pages/Doctor/DoctorTrash";
+import DeletedArticle from "./pages/Doctor/article/DeletedArticle";
+import CreatePost from "./pages/Doctor/post/CreatePost";
+import PostList from "./pages/Doctor/post/PostList";
+import DeletedPost from "./pages/Doctor/post/DeletedPost";
 
 
 function App() {
@@ -116,9 +119,13 @@ function App() {
 
 
                     <Route path='/doctor-profile' element={<DoctorProfile/>} />
+                    <Route path='/doctor-trash' element={<DoctorTrash/>} />
+                    <Route path='/doctor-atrash' element={<DeletedArticle/>} />
+                    <Route path='/doctor-ptrash' element={<DeletedPost/>} />
                     <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
+                    <Route path='/doctor-create-post' element={<CreatePost/>} />
+                    <Route path='/doctor-post' element={<PostList/>} />
                     <Route path='/doctor-article' element={<DoctorArticleList/>} />
-                    <Route path='/doctor-create-article' element={<DoctorCreateArticle/>} />
                     <Route path='/doctor-appointments' element={<DoctorAppointments/>} />
                     <Route path='/update-appointment-of-doctor/:id' element={<UpdateAppointment/>} />
 

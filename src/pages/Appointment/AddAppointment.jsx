@@ -141,7 +141,6 @@ const AddAppointment = () => {
             type_service,
         });
         if (!user_id || !doctor_id || !datePicker.time?.start_time || !datePicker.time?.end_time || !health_issue) {
-            // toast.warn('Please fill out all required fields before proceeding.');
             await Swal.fire({
                 position: "top-end",
                 title: t("appointment.add.warn"),
@@ -166,7 +165,6 @@ const AddAppointment = () => {
             if (response) {
                 console.log(response)
                 navigate(`/add-insurance/${response._id}`);
-                // toast.success('Booking Appointment Successful');
             } else {
                 await Swal.fire({
                     position: "top-end",
@@ -186,20 +184,22 @@ const AddAppointment = () => {
     useEffect(() => {
         if(aToken){
             findAllSpecialities()
+            getAccountList()
+            getDoctorAccountList()
         }
     }, [aToken]);
 
-    useEffect(() => {
-        if (aToken) {
-            getDoctorAccountList();
-        }
-    }, [aToken]);
-
-    useEffect(() => {
-        if (aToken) {
-            getAccountList();
-        }
-    }, [aToken]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //
+    //     }
+    // }, [aToken]);
+    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //
+    //     }
+    // }, [aToken]);
 
     return  (
         <div className='m-5 w-[90vw] h-[100vh]'>
@@ -370,7 +370,7 @@ const AddAppointment = () => {
                     >
                         <button
                             type="button"
-                            onClick={() => navigate('/all-appointment')}
+                            onClick={() => navigate(aToken ? '/all-appointment' : '/doctor-appointments')}
                             className="bg-gray-300 px-6 py-3 text-sm text-black text-center rounded-full hover:bg-gray-400 transition-all"
                         >
                             <i className="fas fa-arrow-left mr-2"></i> {t("appointment.add.back")}

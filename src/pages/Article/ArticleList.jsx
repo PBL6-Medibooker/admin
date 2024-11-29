@@ -99,7 +99,6 @@ const ArticleList = () => {
     };
 
 
-
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
         columnHelper.accessor("article_image", {
@@ -118,7 +117,7 @@ const ArticleList = () => {
     ];
 
     const table = useReactTable({
-        data: data || [],
+        data: data.reverse() || [],
         columns,
         state: {globalFilter},
         getFilteredRowModel: getFilteredRowModel(),

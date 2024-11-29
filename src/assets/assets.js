@@ -21,6 +21,8 @@ import admin from './admin.svg'
 import upload_icon from './upload_icon.png'
 import chat from './chat.svg'
 import news from './news.svg'
+import profile from './profile.svg'
+import trash from './trash.svg'
 
 export const assets = {
     add_icon,
@@ -45,5 +47,7 @@ export const assets = {
     admin,
     upload_icon,
     chat,
-    news
+    news,
+    profile,
+    trash
 }
