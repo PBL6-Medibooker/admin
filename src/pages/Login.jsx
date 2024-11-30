@@ -3,6 +3,7 @@ import {AdminContext} from "../context/AdminContext.jsx";
 import axios from "axios";
 import {toast} from "react-toastify";
 import {DoctorContext} from "../context/DoctorContext";
+import Swal from "sweetalert2";
 
 
 const Login = () => {
@@ -13,7 +14,6 @@ const Login = () => {
 
     const {setAToken, backendUrl} = useContext(AdminContext)
     const {setDToken} = useContext(DoctorContext)
-
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
@@ -29,7 +29,7 @@ const Login = () => {
                 // }
                 const result = await axios.post(backendUrl + '/acc/login', {email, password});
 
-                if( result.data.role === 'admin'){
+                if (result.data.role === 'admin') {
                     console.log(result)
                     localStorage.setItem('aToken', result.data.token)
                     setAToken(result.data.token);
@@ -40,14 +40,14 @@ const Login = () => {
 
             } else {
                 const result = await axios.post(backendUrl + '/acc/login', {email, password});
-               if(result.data.verified){
-                   console.log(result)
-                   localStorage.setItem('dToken', result.data.token)
-                   setDToken(result.data.token);
-                   console.log(result.data.token)
-               } else {
-                   toast.error('This Only For Doctor Only')
-               }
+                if (result.data.verified) {
+                    console.log(result)
+                    localStorage.setItem('dToken', result.data.token)
+                    setDToken(result.data.token);
+                    console.log(result.data.token)
+                } else {
+                    toast.error('This Only For Doctor Only')
+                }
             }
 
         } catch (e) {

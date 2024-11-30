@@ -20,7 +20,7 @@ const DoctorArticleList = () => {
     const {t} = useTranslation()
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 3,
+        pageSize: 4,
     })
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()

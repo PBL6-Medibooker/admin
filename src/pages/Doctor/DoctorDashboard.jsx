@@ -1,19 +1,21 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
-import {CalendarDays, Newspaper} from "lucide-react";
+import {CalendarDays, Newspaper, MessageSquareText} from "lucide-react";
 import * as appointmentService from "../../service/AppointmentService";
 import {DoctorContext} from "../../context/DoctorContext";
 import {useTranslation} from "react-i18next";
 import Error from "../../components/Error";
 import * as articleService from "../../service/ArticleService";
 import {useQuery} from "@tanstack/react-query";
+import * as forumService from "../../service/ForumService";
 
 const DoctorDashboard = () => {
-    const {dToken, docId, getDoctorData, doctorData} = useContext(DoctorContext);
+    const {dToken, docId, getDoctorData, doctorData, docEmail} = useContext(DoctorContext);
     const [data, setData] = useState([]);
     const [appointments, setAppointments] = useState(0);
     const [articles, setArticles] = useState(0);
+    const [posts, setPosts] = useState(0);
     const {t} = useTranslation();
 
     const fetchDoctorArticles = async () => {
@@ -42,24 +44,43 @@ const DoctorDashboard = () => {
             console.log(e)
         }
     }
+
+    const fetchPostsByEmail = async () => {
+        try {
+            const response = await forumService.getAllPostByEmail(docEmail, dToken);
+            return response.filter(post => post.is_deleted === false);
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+            throw new Error("Failed to fetch posts");
+        }
+    };
+
+
+    const { data: postList = [], isLoading:isPostLoading } = useQuery({
+        queryKey: ["postsByEmail", docEmail],
+        queryFn: fetchPostsByEmail,
+    });
+
+
     useEffect(() => {
         if (dToken) {
-            getDoctorData();
+            getDoctorData()
             getDoctorAppointments()
         }
     }, [dToken, docId]);
 
     useEffect(() => {
-        if (!isLoading) {
-            setArticles(dArticles.length);
+        if (!isLoading && !isPostLoading) {
+            setArticles(dArticles.length)
+            setPosts(postList.length)
         }
-    }, [dArticles, isLoading]);
+    }, [dArticles, isLoading, isPostLoading]);
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
                 <motion.div
-                    className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8'
+                    className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8'
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
@@ -68,7 +89,10 @@ const DoctorDashboard = () => {
                               value={appointments}
                               color='#6366F1'/>
                     <StatCard name={t("doctor.dashboard.ta")} to={'/doctor-article'} icon={Newspaper} value={articles}
-                              color='#6366F1'/>
+                              color='#FACC15'/>
+
+                    <StatCard name={t("doctor.dashboard.tp")} to={'/doctor-post'} icon={MessageSquareText} value={posts}
+                              color='#EF4444'/>
                 </motion.div>
 
                 {/* CHARTS */}

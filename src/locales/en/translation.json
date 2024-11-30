@@ -464,7 +464,9 @@
       "da": "Deleted Article",
       "dp": "Deleted Topic",
       "tap": "Total Appointment",
-      "ta": "Total Article"
+      "ta": "Total Article",
+      "tp": "Total Post"
+
     },
     "profile": {
       "success": "Updated Doctor Information",
@@ -475,9 +477,17 @@
       "dob": "Date of birth",
       "save": "Save",
       "edit": "Edit",
+      "change": "Change Password",
       "spec": "Speciality",
       "region": "City",
-      "bio": "Bio"
+      "bio": "Bio",
+      "old": "Old Password",
+      "new": "New Password",
+      "cnew": "Confirm new password",
+      "wpass": "Check your old password again!",
+      "csuccess": "Change Password Successful!",
+      "strong": "Password not strong enough!",
+      "match": "Check confirm password!"
     },
     "sidebar": {
       "dashboard": "Dashboard",

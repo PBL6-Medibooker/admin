@@ -23,6 +23,8 @@ import chat from './chat.svg'
 import news from './news.svg'
 import profile from './profile.svg'
 import trash from './trash.svg'
+import close from './eye-close.png'
+import open from './eye-open.png'
 
 export const assets = {
     add_icon,
@@ -49,5 +51,7 @@ export const assets = {
     chat,
     news,
     profile,
-    trash
+    trash,
+    close,
+    open
 }

@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 
 const PostList = () => {
     const { t } = useTranslation();
-    const { dToken, docEmail } = useContext(DoctorContext);
+    const { dToken, docEmail, logout } = useContext(DoctorContext);
     const [open, setOpen] = useState(false);
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -34,10 +34,29 @@ const PostList = () => {
         }
     };
 
+
     const { data: postList = [], isLoading, isError, refetch } = useQuery({
         queryKey: ["postsByEmail", docEmail],
         queryFn: fetchPostsByEmail,
+        // onError: (error) => {
+        //     if (error.response?.status === 401 && error.response?.data?.logout) {
+        //
+        //         Swal.fire({
+        //             icon: "warning",
+        //             title: "Session expired",
+        //             text: "You will be logged out.",
+        //             timer: 2000,
+        //             showConfirmButton: false,
+        //         }).then(() => {
+        //             logout();
+        //             navigate('/');
+        //         });
+        //     } else {
+        //         console.error("Error fetching posts:", error.response?.data?.error || error.message);
+        //     }
+        // },
     });
+
 
     const openDeleteModal = (id) => {
         setOpen(true);

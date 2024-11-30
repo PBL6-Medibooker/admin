@@ -471,7 +471,8 @@
       "da": "Bài báo đã xoá",
       "dp": "Bài đăng đã xoá",
       "tap": "Danh sách cuộc hẹn",
-      "ta": "Danh sách bài viết"
+      "ta": "Danh sách bài viết",
+      "tp": "Danh sách bài đăng"
     },
     "profile": {
       "success": "Cập nhật thông tin bác sĩ thành công!",
@@ -482,9 +483,19 @@
       "dob": "Ngày sinh",
       "save": "Hoàn tất",
       "edit": "Chỉnh sửa",
+      "change": "Đổi mật khẩu",
       "spec": "Chuyên khoa",
       "region": "Thành phố",
-      "bio": "Mô tả"
+      "bio": "Mô tả",
+      "old": "Mật khẩu cũ",
+      "new": "Mật khẩu mới",
+      "cnew": "Xác nhận mật khẩu",
+      "wpass": "Mật khẩu cũ không chính xác!",
+      "csuccess": "Thay đổi mật khẩu thành công!",
+      "strong": "Mật khẩu mới không đủ mạnh!",
+      "match": "Kiểm tra lại phần xác nhận mật khẩu!"
+
+
     },
     "sidebar": {
       "dashboard": "Trang chủ",

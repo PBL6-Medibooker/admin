@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 import Error from "../components/Error";
 import * as appointmentService from "../service/AppointmentService";
 import * as articleService from "../service/ArticleService";
+import Swal from "sweetalert2";
 
 export const DoctorContext = createContext();
 
@@ -15,20 +16,33 @@ const DoctorContextProvider = (props) => {
     const [docId, setDocId] = useState('')
     const [docEmail, setDocEmail] = useState('')
 
-
     const getDoctorData = async () => {
         try {
             const result = await accountService.getDoctorProfile(dToken);
-            console.log(result)
+
             if (result.success) {
-                setDoctorData(result.profileData)
-                setDocId(result.profileData._id)
-                setDocEmail(result.profileData.email)
+                setDoctorData(result.profileData);
+                setDocId(result.profileData._id);
+                setDocEmail(result.profileData.email);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+
+            if (error.response?.data?.logout) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Session expired",
+                    text: "You will be logged out.",
+                    timer: 2000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    logout()
+                });
+            } else {
+                console.log("Error fetching doctor data:", error);
+            }
         }
     };
+
 
     const {
         data: doctorAppointments = [],
@@ -66,11 +80,18 @@ const DoctorContextProvider = (props) => {
     });
 
 
+    const logout = () => {
+        dToken && setDToken("");
+        dToken && localStorage.removeItem("dToken");
+    };
+
+
+
 
     const value = {
         backendUrl, dToken, setDToken, getDoctorData,
         docId, doctorData, doctorAppointments, isDoctorAppointmentsLoading,
-        reFetchDA, docEmail, dArticles, fetchDoctorArticles
+        reFetchDA, docEmail, dArticles, fetchDoctorArticles, logout
     }
 
     return(

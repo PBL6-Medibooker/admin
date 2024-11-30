@@ -49,19 +49,12 @@ const DoctorTrash = () => {
         queryFn: fetchPostsByEmail,
     });
 
-    //
-    // const fetchData = async () =>{
-    //     const result =  fetchData()
-    //     setData(result)
-    // }
-
     useEffect(() => {
         if(dToken){
-            // fetchDoctorArticles()
             setTotal(dArticles.length)
             setTotalPost(postList.length)
         }
-    }, [dToken, dArticles]);
+    }, [dToken, dArticles, postList, totalPost]);
 
     if (isLoading) {
         return (

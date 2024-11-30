@@ -9,6 +9,8 @@ import {useTranslation} from "react-i18next";
 import {useQuery} from "@tanstack/react-query";
 import * as regionService from "../../service/RegionService";
 import * as specialityService from "../../service/SpecialityService";
+import bcrypt from 'bcryptjs';
+import validator from "validator";
 
 const DoctorProfile = () => {
     const {dToken} = useContext(DoctorContext);
@@ -19,7 +21,18 @@ const DoctorProfile = () => {
 
     const [image, setImage] = useState(false);
     const [docId, setDocId] = useState('')
-    const {t} = useTranslation()
+    const {t} = useTranslation();
+    const [isChangePassword, setIsChangePassword] = useState(false);
+    const [oldPass, setOldPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [checkNewPass, setCheckNewPass] = useState('');
+    const [hashPass, setHashPass] = useState('');
+    const [isOldPassShaking, setIsOldPassShaking] = useState(false);
+    const [isNewPassShaking, setIsNewPassShaking] = useState(false);
+    const [isMatchPassShaking, setIsMatchPassShaking] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+
 
     const getDoctorData = async () => {
         try {
@@ -29,13 +42,14 @@ const DoctorProfile = () => {
                 setDoctorData(result.profileData)
                 setDocId(result.profileData._id)
                 setInitialDoctorData(result.profileData)
+                setHashPass(result.profileData.password)
             }
         } catch (e) {
             console.log(e);
         }
     };
 
-    const {data: regionData, isLoading} = useQuery(
+    const {data: regionData} = useQuery(
         {
             queryKey: ["regions"],
             queryFn: async () => {
@@ -75,7 +89,7 @@ const DoctorProfile = () => {
                 icon: "error",
                 showConfirmButton: false,
                 timer: 1500
-            });
+            })
         }
     }
     const isObjectEqual = (obj1, obj2) => {
@@ -94,7 +108,7 @@ const DoctorProfile = () => {
     };
 
 
-    const checkDataChange = () =>{
+    const checkDataChange = () => {
         const originalData = {
             region: initialDoctorData.region_id?.name,
             speciality: initialDoctorData.speciality_id.name,
@@ -104,7 +118,7 @@ const DoctorProfile = () => {
         const updatedData = {
             region: doctorData.region_id?.name,
             speciality: doctorData.speciality_id.name,
-            bio:doctorData.bio
+            bio: doctorData.bio
         }
 
         // const hasRegionChanged = originalData.region !== updatedData.region
@@ -115,6 +129,75 @@ const DoctorProfile = () => {
         return !isObjectEqual(originalData, updatedData);
 
     }
+
+    const showAlert = async (titleKey, icon = "warning") => {
+        await Swal.fire({
+            position: "top-end",
+            title: t(titleKey),
+            icon: icon,
+            showConfirmButton: false,
+            timer: 1500,
+            backdrop: false,
+            width: '500px',
+            customClass: {
+                popup: 'bg-white text-black p-4 rounded-lg shadow-md max-w-xs',
+                title: 'text-lg font-semibold',
+                icon: 'w-12 h-12',
+            }
+        });
+    };
+
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible); // Toggle visibility
+    }
+
+    const changePassword = async () => {
+        const match = await bcrypt.compare(oldPass, hashPass);
+        console.log(match)
+
+        if (!match) {
+            setIsOldPassShaking(true);
+            setTimeout(() => setIsOldPassShaking(false), 500);
+            await showAlert("doctor.profile.wpass");
+            return;
+        }
+
+        if (!validator.isStrongPassword(newPass)) {
+            setIsNewPassShaking(true);
+            setTimeout(() => setIsNewPassShaking(false), 500);
+            await showAlert("doctor.profile.strong");
+            return;
+        }
+
+        if (newPass !== checkNewPass) {
+            setIsMatchPassShaking(true);
+            setTimeout(() => setIsMatchPassShaking(false), 500);
+            await showAlert("doctor.profile.match");
+            return;
+        }
+
+        try {
+            const data ={
+                email: doctorData.email,
+                new_password: newPass,
+            }
+            const result = accountService.changePassword(data,dToken)
+            if(result.email){
+                setIsChangePassword(false)
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("doctor.profile.csuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
 
     const updateDoctorProfile = async () => {
 
@@ -202,48 +285,65 @@ const DoctorProfile = () => {
                                 whileHover={{scale: 1.02}}
                                 transition={{duration: 0.2}}
                     >
-                        {isEdit ? (
-                            <label htmlFor="image" className="inline-block relative cursor-pointer">
-                                <div className='w-100 h-80'>
-                                    <div className='w-100 h-80'>
+                        {
+                            isChangePassword ?
+                                <div className='w-[300px] h-[200px] bg-green-600'>
+                                    <img
+                                        className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
+                                        src={assets.admin_logo}
+                                        alt="profile"
+                                    />
+                                </div>
+                                : (
+                                    <>
+                                        {isEdit ? (
+                                                <label htmlFor="image" className="inline-block relative cursor-pointer">
+                                                <div className='w-100 h-80'>
+                                                <div className='w-100 h-80'>
+                                                    <img
+                                                        className="h-full w-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
+                                                        src={image ? URL.createObjectURL(image) : doctorData.profile_image}
+                                                        alt="profile"
+                                                    />
+                                                </div>
+
+                                                {!image && (
+                                                    <motion.div
+                                                        className="absolute w-100 h-80 inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg"
+                                                        whileHover={{opacity: 0.8}}
+                                                        transition={{duration: 0.3}}
+                                                    >
+                                                        <img
+                                                            className="w-10 opacity-75"
+                                                            src={assets.upload_icon}
+                                                            alt="upload icon"
+                                                        />
+                                                    </motion.div>
+                                                )}
+                                            </div>
+
+                                            <input
+                                                onChange={handleImageChange}
+                                                type="file"
+                                                id="image"
+                                                hidden
+                                            />
+                                        </label>
+                                    ) :
+                                    (
+                                        <div className='w-100 h-80'>
                                         <img
-                                            className="h-full w-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                            src={image ? URL.createObjectURL(image) : doctorData.profile_image}
+                                            className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
+                                            src={doctorData.profile_image}
                                             alt="profile"
                                         />
                                     </div>
+                                    )
+                                }
+                            </>)
 
-                                    {!image && (
-                                        <motion.div
-                                            className="absolute w-100 h-80 inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg"
-                                            whileHover={{opacity: 0.8}}
-                                            transition={{duration: 0.3}}
-                                        >
-                                            <img
-                                                className="w-10 opacity-75"
-                                                src={assets.upload_icon}
-                                                alt="upload icon"
-                                            />
-                                        </motion.div>
-                                    )}
-                                </div>
+                        }
 
-                                <input
-                                    onChange={handleImageChange}
-                                    type="file"
-                                    id="image"
-                                    hidden
-                                />
-                            </label>
-                        ) : (
-                            <div className='w-100 h-80'>
-                                <img
-                                    className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                    src={doctorData.profile_image}
-                                    alt="profile"
-                                />
-                            </div>
-                        )}
                     </motion.div>
 
 
@@ -251,146 +351,225 @@ const DoctorProfile = () => {
                         className="flex-3 border w-[50vw] border-stone-100 rounded-lg p-8 py-7 bg-white"
                         variants={fadeIn}
                     >
-                        <p className="flex items-center w-full gap-3 text-3xl font-medium text-gray-700">
-                            {isEdit ? (
-                                <motion.input
-                                    whileHover={{scale: 1.05}}
-                                    type="text"
-                                    className="border border-gray-300 rounded-md px-2 py-1 text-2xl font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={doctorData.username}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            username: e.target.value,
-                                        }))
-                                    }
-                                />
-                            ) : (
-                                doctorData.username
-                            )}
-                        </p>
-                        <hr className='bg-zinc-400 h-[1px] border-none mt-2'/>
-                        <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.contact")}</p>
+                        {
+                            isChangePassword ? <>
+                                <motion.div
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    transition={{delay: 0.6, duration: 0.5}}
+                                    className="mb-6"
+                                >
+                                    <label htmlFor="health-issue"
+                                           className="block text-lg font-medium text-primary mb-2">
+                                        {t("doctor.profile.old")}
+                                    </label>
+                                    <motion.div className="flex items-center space-x-3 relative">
+                                        <motion.input
+                                            id="old-pass"
+                                            value={oldPass}
+                                            onChange={(e) => setOldPass(e.target.value)}
+                                            className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isOldPassShaking ? 'shake' : ''}`}
+                                            required
+                                            aria-required="true"
+                                            type={isPasswordVisible ? 'text' : 'password'}
+                                            transition={{duration: 0.4}}
+                                        />
+                                        <motion.img
+                                            id='eye-icon'
+                                            src={isPasswordVisible ? assets.open : assets.close}
+                                            alt="close"
+                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            onClick={togglePasswordVisibility}
+                                        />
+                                    </motion.div>
 
 
-                        <p className="text-gray-600 flex gap-1 font-medium mt-4">
-                            Email:
-                            <span className="text-gray-800">
+                                </motion.div>
+
+
+                                <motion.div
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    transition={{delay: 0.6, duration: 0.5}}
+                                    className="mb-6"
+                                >
+                                    <label htmlFor="health-issue"
+                                           className="block text-lg font-medium text-primary mb-2">
+                                        {t("doctor.profile.new")}
+                                    </label>
+                                    <input
+                                        id="health-issue"
+                                        value={newPass}
+                                        onChange={(e) => setNewPass(e.target.value)}
+                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
+                                        required
+                                        aria-required="true"
+                                    />
+                                </motion.div>
+
+                                <motion.div
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    transition={{delay: 0.6, duration: 0.5}}
+
+                                    className="mb-6"
+                                >
+                                    <label htmlFor="health-issue"
+                                           className="block text-lg font-medium text-primary mb-2">
+                                        {t("doctor.profile.cnew")}
+                                    </label>
+                                    <input
+                                        id="health-issue"
+                                        disabled={!newPass}
+                                        value={checkNewPass}
+                                        onChange={(e) => setCheckNewPass(e.target.value)}
+                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isMatchPassShaking ? 'shake' : ''}`}
+                                        required
+                                        aria-required="true"
+                                    />
+                                </motion.div>
+
+                            </> : <>
+                                <p className="flex items-center w-full gap-3 text-3xl font-medium text-gray-700">
+                                    {isEdit ? (
+                                        <motion.input
+                                            whileHover={{scale: 1.05}}
+                                            type="text"
+                                            className="border border-gray-300 rounded-md px-2 py-1 text-2xl font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+                                            value={doctorData.username}
+                                            onChange={(e) =>
+                                                setDoctorData((prev) => ({
+                                                    ...prev,
+                                                    username: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    ) : (
+                                        doctorData.username
+                                    )}
+                                </p>
+                                <hr className='bg-zinc-400 h-[1px] border-none mt-2'/>
+                                <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.contact")}</p>
+
+
+                                <p className="text-gray-600 flex gap-1 font-medium mt-4">
+                                    Email:
+                                    <span className="text-gray-800">
                             <span className="bg-transparent w-full outline-none">
                                {doctorData.email}
                             </span>
                         </span>
-                        </p>
+                                </p>
 
 
-                        <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            {t("doctor.profile.phone")}:
-                            {isEdit ? (
-                                <motion.input
-                                    whileHover={{scale: 1.05}}
-                                    type="text"
-                                    className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={doctorData.phone || ''}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            phone: e.target.value,
-                                        }))
-                                    }
-                                />
-                            ) : (
-                                <span className="text-gray-800">{doctorData.phone || 'N/A'}</span>
-                            )}
-                        </p>
+                                <p className="flex gap-3 text-gray-600 font-medium mt-4">
+                                    {t("doctor.profile.phone")}:
+                                    {isEdit ? (
+                                        <motion.input
+                                            whileHover={{scale: 1.05}}
+                                            type="text"
+                                            className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                                            value={doctorData.phone || ''}
+                                            onChange={(e) =>
+                                                setDoctorData((prev) => ({
+                                                    ...prev,
+                                                    phone: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    ) : (
+                                        <span className="text-gray-800">{doctorData.phone || 'N/A'}</span>
+                                    )}
+                                </p>
 
-                        <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            {t("doctor.profile.address")}:
-                            {isEdit ? (
-                                <motion.input
-                                    whileHover={{scale: 1.05}}
-                                    type="text"
-                                    className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={doctorData.address || ''}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            address: e.target.value,
-                                        }))
-                                    }
-                                />
-                            ) : (
-                                <span className="text-gray-800">{doctorData.address || 'N/A'}</span>
-                            )}
-                        </p>
+                                <p className="flex gap-3 text-gray-600 font-medium mt-4">
+                                    {t("doctor.profile.address")}:
+                                    {isEdit ? (
+                                        <motion.input
+                                            whileHover={{scale: 1.05}}
+                                            type="text"
+                                            className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
+                                            value={doctorData.address || ''}
+                                            onChange={(e) =>
+                                                setDoctorData((prev) => ({
+                                                    ...prev,
+                                                    address: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    ) : (
+                                        <span className="text-gray-800">{doctorData.address || 'N/A'}</span>
+                                    )}
+                                </p>
 
 
-                        <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.basic")}</p>
+                                <p className='text-neutral-500 underline mt-3'>{t("doctor.profile.basic")}</p>
 
-                        <p className="flex gap-3 text-black font-medium mt-4">
-                            {t("doctor.profile.spec")}:
-                            {isEdit ? (
-                                <motion.div
-                                    initial={{opacity: 0.8}}
-                                    whileHover={{scale: 1.05, opacity: 1}}
-                                    whileFocus={{scale: 1.1, borderColor: "blue"}}
-                                    className="relative"
-                                >
-                                    <select
-                                        className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                                        onChange={(e) =>
-                                            setDoctorData((prev) => ({
-                                                ...prev,
-                                                speciality_id: {name: e.target.value},
-                                            }))
-                                        }
-                                        value={doctorData.speciality_id?.name || ""}
-                                    >
-                                        {specData?.map((spec) => (
-                                            <option key={spec._id} value={spec.name}>
-                                                {spec.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </motion.div>
-                            ) : (
-                                <span className="text-gray-800">{doctorData.speciality_id?.name || 'N/A'}</span>
-                            )}
-                        </p>
+                                <p className="flex gap-3 text-black font-medium mt-4">
+                                    {t("doctor.profile.spec")}:
+                                    {isEdit ? (
+                                        <motion.div
+                                            initial={{opacity: 0.8}}
+                                            whileHover={{scale: 1.05, opacity: 1}}
+                                            whileFocus={{scale: 1.1, borderColor: "blue"}}
+                                            className="relative"
+                                        >
+                                            <select
+                                                className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                                onChange={(e) =>
+                                                    setDoctorData((prev) => ({
+                                                        ...prev,
+                                                        speciality_id: {name: e.target.value},
+                                                    }))
+                                                }
+                                                value={doctorData.speciality_id?.name || ""}
+                                            >
+                                                {specData?.map((spec) => (
+                                                    <option key={spec._id} value={spec.name}>
+                                                        {spec.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </motion.div>
+                                    ) : (
+                                        <span className="text-gray-800">{doctorData.speciality_id?.name || 'N/A'}</span>
+                                    )}
+                                </p>
 
-                        <p className="flex gap-3 text-black font-medium mt-4">
-                            {t("doctor.profile.region")}:
-                            {isEdit ? (
-                                <motion.div
-                                    initial={{opacity: 0.8}}
-                                    whileHover={{scale: 1.05, opacity: 1}}
-                                    whileFocus={{scale: 1.1, borderColor: "blue"}}
-                                    className="relative"
-                                >
-                                    <select
-                                        className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                                        onChange={(e) =>
-                                            setDoctorData((prev) => ({
-                                                ...prev,
-                                                region_id: {name: e.target.value},
-                                            }))
-                                        }
-                                        value={doctorData.region_id?.name || ""}
-                                    >
-                                    {regionData.map((region) => (
-                                            <option key={region._id} value={region.name}>
-                                                {region.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </motion.div>
-                            ) : (
-                                <span className="text-gray-800">{doctorData.region_id?.name || "N/A"}</span>
-                            )}
-                        </p>
+                                <p className="flex gap-3 text-black font-medium mt-4">
+                                    {t("doctor.profile.region")}:
+                                    {isEdit ? (
+                                        <motion.div
+                                            initial={{opacity: 0.8}}
+                                            whileHover={{scale: 1.05, opacity: 1}}
+                                            whileFocus={{scale: 1.1, borderColor: "blue"}}
+                                            className="relative"
+                                        >
+                                            <select
+                                                className="border rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                                                onChange={(e) =>
+                                                    setDoctorData((prev) => ({
+                                                        ...prev,
+                                                        region_id: {name: e.target.value},
+                                                    }))
+                                                }
+                                                value={doctorData.region_id?.name || ""}
+                                            >
+                                                {regionData.map((region) => (
+                                                    <option key={region._id} value={region.name}>
+                                                        {region.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </motion.div>
+                                    ) : (
+                                        <span className="text-gray-800">{doctorData.region_id?.name || "N/A"}</span>
+                                    )}
+                                </p>
 
-                        <p className="text-gray-600 gap-3 flex font-medium mt-4">
-                            {t("doctor.profile.dob")}:
-                            <span className="text-gray-800">
+                                <p className="text-gray-600 gap-3 flex font-medium mt-4">
+                                    {t("doctor.profile.dob")}:
+                                    <span className="text-gray-800">
                             {isEdit ? (
                                 <motion.input
                                     whileHover={{scale: 1.05}}
@@ -415,53 +594,83 @@ const DoctorProfile = () => {
                                 </motion.span>
                             )}
                         </span>
-                        </p>
+                                </p>
 
-                        <p className="flex gap-3 text-gray-600 font-medium mt-4">
-                            {t("doctor.profile.bio")}:
-                            {isEdit ? (
-                                <motion.textarea
-                                    rows={5}
-                                    whileHover={{scale: 1.025}}
-                                    className="border rounded px-2 py-1 w-[40vw] focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={doctorData.bio || ''}
-                                    onChange={(e) =>
-                                        setDoctorData((prev) => ({
-                                            ...prev,
-                                            bio: e.target.value,
-                                        }))
-                                    }
-                                />
-                            ) : (
-                                <span className="text-gray-800">{doctorData.bio || 'N/A'}</span>
-                            )}
-                        </p>
+                                <p className="flex gap-3 text-gray-600 font-medium mt-4">
+                                    {t("doctor.profile.bio")}:
+                                    {isEdit ? (
+                                        <motion.textarea
+                                            rows={5}
+                                            whileHover={{scale: 1.025}}
+                                            className="border rounded px-2 py-1 w-[40vw] focus:outline-none focus:ring-2 focus:ring-primary"
+                                            value={doctorData.bio || ''}
+                                            onChange={(e) =>
+                                                setDoctorData((prev) => ({
+                                                    ...prev,
+                                                    bio: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    ) : (
+                                        <span className="text-gray-800">{doctorData.bio || 'N/A'}</span>
+                                    )}
+                                </p>
+                            </>
+                        }
 
 
-                        <motion.div
-                            className="flex justify-end gap-2 mt-5"
-                            variants={fadeIn}
-                        >
-                            {isEdit ? (
-                                <motion.button
-                                    onClick={() => updateDoctorProfile()}
-                                    className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"
-                                    whileHover={{scale: 1.05}}
-                                    whileTap={{scale: 0.95}}
-                                >
-                                    {t("doctor.profile.save")}
-                                </motion.button>
-                            ) : (
-                                <motion.button
-                                    onClick={() => setIsEdit(true)}
-                                    className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"
-                                    whileHover={{scale: 1.05}}
-                                    whileTap={{scale: 0.95}}
-                                >
-                                    {t("doctor.profile.edit")}
-                                </motion.button>
-                            )}
-                        </motion.div>
+                        {
+                            !isChangePassword && <motion.div
+                                className="flex justify-end gap-2 mt-5"
+                                variants={fadeIn}
+                            >
+                                {isEdit ? (
+                                    <motion.button
+                                        onClick={() => updateDoctorProfile()}
+                                        className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.save")}
+                                    </motion.button>
+                                ) : (
+                                    <motion.button
+                                        onClick={() => setIsEdit(true)}
+                                        className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.edit")}
+                                    </motion.button>
+                                )}
+
+                            </motion.div>
+                        }
+
+                        {
+                            isChangePassword ?
+                                <motion.div className='flex justify-end mt-3 mr-72'>
+                                    <motion.button
+                                        onClick={changePassword}
+                                        className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.save")}
+                                    </motion.button>
+                                </motion.div>
+                                :
+                                <motion.div className='flex justify-end mt-3'>
+                                    <motion.button
+                                        onClick={() => setIsChangePassword(!isChangePassword)}
+                                        className="text-primary text-sm transition-all italic"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.change")}
+                                    </motion.button>
+                                </motion.div>
+                        }
 
                     </motion.div>
                 </motion.div>

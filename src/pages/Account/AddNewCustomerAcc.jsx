@@ -6,6 +6,8 @@ import * as accountService from "../../service/AccountService";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
+import validator from "validator";
+
 
 
 const AddNewCustomerAcc = () => {
@@ -25,6 +27,17 @@ const AddNewCustomerAcc = () => {
         e.preventDefault();
 
         const formData = new FormData();
+
+        if (!validator.isStrongPassword(password)) {
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.addDoctor.message"),
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
 
         formData.append('email', email)
         formData.append('password', password)

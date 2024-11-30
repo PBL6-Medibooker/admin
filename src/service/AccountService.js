@@ -215,6 +215,7 @@ export const getDoctorProfile = async (authorization) => {
         return result.data;
     } catch (e) {
         console.error(e);
+        throw e;
     }
 };
 
@@ -236,3 +237,11 @@ export const getTopUsers = async ( aToken) => {
     }
 };
 
+export const changePassword = async (data,dToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + '/change-pass', data,{headers: {dToken}});
+        return result.data;
+    } catch (e) {
+        console.error(e);
+    }
+};
