@@ -24,7 +24,7 @@
   },
  "account": {
    "adashboard": {
-     "userAccount": "Tài khoản",
+     "userAccount": "Tài khoản người dùng",
      "verifiedDoctor": "Bác sĩ đã được xác minh",
      "unverifiedDoctor": "Bác sĩ chưa xác minh",
      "topDoctors": "Bác sĩ hàng đầu có nhiều lịch khám nhất",
@@ -481,6 +481,7 @@
       "address": "Địa chỉ",
       "basic": "THÔNG TIN CƠ BẢN",
       "dob": "Ngày sinh",
+      "cancel": "Huỷ",
       "save": "Hoàn tất",
       "edit": "Chỉnh sửa",
       "change": "Đổi mật khẩu",
@@ -493,9 +494,9 @@
       "wpass": "Mật khẩu cũ không chính xác!",
       "csuccess": "Thay đổi mật khẩu thành công!",
       "strong": "Mật khẩu mới không đủ mạnh!",
-      "match": "Kiểm tra lại phần xác nhận mật khẩu!"
-
-
+      "match": "Kiểm tra lại phần xác nhận mật khẩu!",
+      "forgot": "Quên mật khẩu?",
+      "rsuccess": "Mật khẩu của bạn đã được đặt lại! Vui lòng đăng nhập lại"
     },
     "sidebar": {
       "dashboard": "Trang chủ",
@@ -539,8 +540,9 @@
       "content": "Nội dung",
       "noData": "Chưa có bài đăng nào!",
       "delete": "Xoá bài đăng",
-      "date": "Ngày đăng"
-
+      "date": "Ngày đăng",
+      "ctitle": "Bài đăng có lượt tương tác nhiều nhất ",
+      "cc": "bình luận"
     }
   }
 }

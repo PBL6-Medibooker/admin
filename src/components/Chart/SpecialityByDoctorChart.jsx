@@ -87,7 +87,7 @@ const SpecialityByDoctorChart = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
         >
-            <h2 className='text-lg font-medium mb-4 text-gray-950'>{t("speciality.dashboard.dis")} </h2>
+            <h2 className='text-xl font-semibold text-gray-800 mb-4'>{t("speciality.dashboard.dis")} </h2>
             <div className='h-80'>
                 <ResponsiveContainer width={"100%"} height={"100%"}>
                     <PieChart>

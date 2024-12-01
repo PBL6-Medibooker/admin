@@ -5,6 +5,7 @@ import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
 import {EthernetPort} from "lucide-react";
 import {useTranslation} from "react-i18next";
+import PostMostComment from "../../components/Chart/PostMostComment";
 
 const ForumDashboard = () => {
 
@@ -46,7 +47,7 @@ const ForumDashboard = () => {
                 {/* CHARTS */}
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-
+                    <PostMostComment />
 
                 </div>
             </main>

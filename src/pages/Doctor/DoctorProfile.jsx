@@ -13,12 +13,11 @@ import bcrypt from 'bcryptjs';
 import validator from "validator";
 
 const DoctorProfile = () => {
-    const {dToken} = useContext(DoctorContext);
 
+    const {dToken, logout} = useContext(DoctorContext);
     const [doctorData, setDoctorData] = useState({});
     const [initialDoctorData, setInitialDoctorData] = useState({});
     const [isEdit, setIsEdit] = useState(false);
-
     const [image, setImage] = useState(false);
     const [docId, setDocId] = useState('')
     const {t} = useTranslation();
@@ -31,6 +30,8 @@ const DoctorProfile = () => {
     const [isNewPassShaking, setIsNewPassShaking] = useState(false);
     const [isMatchPassShaking, setIsMatchPassShaking] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+    const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
 
 
 
@@ -149,7 +150,15 @@ const DoctorProfile = () => {
 
 
     const togglePasswordVisibility = () => {
-        setIsPasswordVisible(!isPasswordVisible); // Toggle visibility
+        setIsPasswordVisible(!isPasswordVisible);
+    }
+
+    const togglePasswordVisibility2 = () => {
+        setIsNewPasswordVisible(!isNewPasswordVisible);
+    }
+
+    const togglePasswordVisibility3 = () => {
+        setIsCNewPasswordVisible(!isCNewPasswordVisible);
     }
 
     const changePassword = async () => {
@@ -230,7 +239,8 @@ const DoctorProfile = () => {
                 title: t("doctor.profile.success"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             })
 
             // formData.forEach((value, key) => {
@@ -239,6 +249,32 @@ const DoctorProfile = () => {
         } catch (e) {
             console.log(e);
             toast.error(e.message);
+        }
+    }
+
+    const resetPass = async () => {
+        try {
+            const result = await accountService.forgotPassword(doctorData.email, dToken);
+            if (result) {
+
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("doctor.profile.rsuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: false
+                })
+
+                setTimeout(() => {
+                    logout();
+                }, 3000);
+            } else {
+                toast.error(result.error)
+            }
+
+        } catch (e) {
+            console.log(e);
         }
     }
 
@@ -373,6 +409,7 @@ const DoctorProfile = () => {
                                             aria-required="true"
                                             type={isPasswordVisible ? 'text' : 'password'}
                                             transition={{duration: 0.4}}
+                                            tabIndex='1'
                                         />
                                         <motion.img
                                             id='eye-icon'
@@ -397,6 +434,7 @@ const DoctorProfile = () => {
                                            className="block text-lg font-medium text-primary mb-2">
                                         {t("doctor.profile.new")}
                                     </label>
+                                    <motion.div className="flex items-center space-x-3 relative">
                                     <input
                                         id="health-issue"
                                         value={newPass}
@@ -404,7 +442,16 @@ const DoctorProfile = () => {
                                         className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
                                         required
                                         aria-required="true"
+                                        tabIndex='2'
                                     />
+                                    <motion.img
+                                        id='eye-icon'
+                                        src={isNewPasswordVisible ? assets.open : assets.close}
+                                        alt="close"
+                                        className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                        onClick={togglePasswordVisibility2}
+                                    />
+                                    </motion.div>
                                 </motion.div>
 
                                 <motion.div
@@ -418,15 +465,28 @@ const DoctorProfile = () => {
                                            className="block text-lg font-medium text-primary mb-2">
                                         {t("doctor.profile.cnew")}
                                     </label>
-                                    <input
-                                        id="health-issue"
-                                        disabled={!newPass}
-                                        value={checkNewPass}
-                                        onChange={(e) => setCheckNewPass(e.target.value)}
-                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isMatchPassShaking ? 'shake' : ''}`}
-                                        required
-                                        aria-required="true"
-                                    />
+                                    <motion.div className="flex items-center space-x-3 relative">
+
+                                        <input
+                                            id="health-issue"
+                                            disabled={!newPass}
+                                            value={checkNewPass}
+                                            onChange={(e) => setCheckNewPass(e.target.value)}
+                                            className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isMatchPassShaking ? 'shake' : ''}`}
+                                            required
+                                            aria-required="true"
+                                            tabIndex='3'
+                                        />
+
+                                        <motion.img
+                                            id='eye-icon'
+                                            src={isCNewPasswordVisible ? assets.open : assets.close}
+                                            alt="close"
+                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            onClick={togglePasswordVisibility3}
+                                        />
+
+                                    </motion.div>
                                 </motion.div>
 
                             </> : <>
@@ -660,7 +720,7 @@ const DoctorProfile = () => {
                                     </motion.button>
                                 </motion.div>
                                 :
-                                <motion.div className='flex justify-end mt-3'>
+                                <motion.div className='flex justify-end mt-3 gap-2'>
                                     <motion.button
                                         onClick={() => setIsChangePassword(!isChangePassword)}
                                         className="text-primary text-sm transition-all italic"
@@ -668,6 +728,15 @@ const DoctorProfile = () => {
                                         whileTap={{scale: 0.95}}
                                     >
                                         {t("doctor.profile.change")}
+                                    </motion.button>
+
+                                    <motion.button
+                                        onClick={resetPass}
+                                        className="text-primary text-sm transition-all italic"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.forgot")}
                                     </motion.button>
                                 </motion.div>
                         }

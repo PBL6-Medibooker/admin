@@ -11,6 +11,8 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {assets} from "../../assets/assets";
 import isEqual from 'lodash.isequal';
+import ViewProofModal from "./ViewProofModal";
+import {SquareCheckBig} from "lucide-react"
 
 
 const UpdateDocInfoAcc = () => {
@@ -18,7 +20,7 @@ const UpdateDocInfoAcc = () => {
     const {aToken} = useContext(AdminContext);
     const navigate = useNavigate();
     const {t} = useTranslation();
-    const [isVerify, setIsVerify] = useState(true);
+    const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(false);
     const [email, setEmail] = useState('');
     const [proof, setProof] = useState(null);
@@ -31,10 +33,12 @@ const UpdateDocInfoAcc = () => {
         region: '',
     });
     const [account, setAccount] = useState(null);
-    // Reference to store initial account data
+
     const initialAccountRef = useRef(null);
     const [listModal, setListModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [proofModal, setProofModal] = useState(false);
+
 
 
     const getAllProvinces = async () => {
@@ -60,7 +64,7 @@ const UpdateDocInfoAcc = () => {
                 setAccount(result);
                 setProof(result.proof)
                 setEmail(result.email);
-                // setIsVerify(result.verified);
+                setIsVerify(result.verified);
                 if (!initialAccountRef.current) {
                     initialAccountRef.current = result;
                 }
@@ -206,6 +210,7 @@ const UpdateDocInfoAcc = () => {
     useEffect(() => {
         const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address
             && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
+            && isVerify
             ;
         setIsFormValid(isValid);
     }, [account, docData]);
@@ -217,18 +222,6 @@ const UpdateDocInfoAcc = () => {
             getAllProvinces()
         }
     }, [aToken]);
-
-    // useEffect(() => {
-    //     if (aToken) {
-    //
-    //     }
-    // }, [aToken]);
-    //
-    // useEffect(() => {
-    //     if (aToken) {
-    //
-    //     }
-    // }, [aToken]);
 
 
     return (
@@ -269,9 +262,11 @@ const UpdateDocInfoAcc = () => {
                 transition={{duration: 0.7}}
             >
                 <div className="flex justify-between items-center gap-6 mb-8 text-gray-500">
+
                     <div className='flex items-center gap-6 text-gray-500'>
                         <label htmlFor="doc-img">
-                            <img
+                            <motion.img
+                                whileHover={{ scale: 1.1 }}
                                 className="w-24 h-24 bg-gray-100 rounded-full cursor-pointer object-cover"
                                 src={image ? URL.createObjectURL(image) : account?.profile_image || assets.patients_icon}
                                 alt="Upload Area"
@@ -289,15 +284,22 @@ const UpdateDocInfoAcc = () => {
                     </div>
 
                     <div className="flex flex-col ">
-                        {account?.proof ? (
-                            // <iframe
-                            //     src={account.proof}
-                            //     width="100%"
-                            //     height="600px">
-                            // </iframe>
+                        <div className='flex justify-end'>
+                            <SquareCheckBig color="#16d079"/>
+                        </div>
 
-                            <span
-                                className="text-green-600 font-medium">{t("account.updateDocInfo.uploaded")}</span>
+                        {account?.proof ? (
+                            <motion.button
+                                type="button"
+                                onClick={() => setProofModal(true)}
+                                className='bg-red-700 px-10 py-3 mt-4 text-white rounded-full'
+                                whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(0,0,0,0.2)'}}
+                                whileTap={{scale: 0.95}}
+                                transition={{duration: 0.2}}
+                            >
+                                {t("account.updateDocInfo.uploaded")}
+                            </motion.button>
+
                         ) : (
                             <div className='flex flex-col'>
                                 <label className="text-sm font-medium mb-2"
@@ -310,14 +312,17 @@ const UpdateDocInfoAcc = () => {
                                 />
                             </div>
                         )}
+
                     </div>
+
+
                 </div>
 
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                     <div className="flex flex-col gap-2">
-                        <label className="text-sm text-gray-950 font-medium flex items-center gap-1">
+                    <label className="text-sm text-gray-950 font-medium flex items-center gap-1">
     <span className="text-primary">
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -446,7 +451,7 @@ const UpdateDocInfoAcc = () => {
                             className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                             type="text"
                             placeholder="Customer Address"
-                            required
+                            required={account?.address === "none"}
                         />
                     </div>
 
@@ -619,32 +624,54 @@ const UpdateDocInfoAcc = () => {
                 </div>
 
                 <div className="flex justify-end gap-4 mt-8">
-                    <button
+                    <motion.button
                         type="button"
                         onClick={() => navigate('/verified-doc-account')}
-                        className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-red-600 transition"
+                        className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md transition"
+                        whileHover={{
+                            scale: 1.05,
+                            backgroundColor: "#DC2626",
+                            boxShadow: "0px 4px 15px rgba(220, 38, 38, 0.3)"
+                        }}
+                        whileTap={{scale: 0.95}}
+                        initial={{opacity: 0, y: 10}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.3}}
                     >
                         {t("account.updateDocInfo.back")}
-                    </button>
+                    </motion.button>
                     {
-                        isFormValid
-                            ? <button
+                        isFormValid ? (
+                            <motion.button
                                 type="submit"
                                 className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
+                                initial={{opacity: 0, y: -10}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.3}}
                             >
                                 {t("account.updateDocInfo.save")}
-                            </button>
-                            : <button
+                            </motion.button>
+                        ) : (
+                            <motion.button
                                 type="submit"
-                                className="bg-amber-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                                className="bg-amber-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-amber-500 transition"
+                                whileHover={{scale: 1.05, backgroundColor: "#F59E0B"}}
+                                whileTap={{scale: 0.95}}
+                                initial={{opacity: 0, y: -10}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.3}}
                             >
                                 {t("account.updateDocInfo.verify")}
-                            </button>
+                            </motion.button>
+                        )
                     }
                 </div>
             </motion.form>
 
             <ActiveHourListModal open={listModal} onClose={() => setListModal(false)} id={id}/>
+            <ViewProofModal open={proofModal} onClose={()=> setProofModal(false)} proof={proof}/>
         </div>
 
     )

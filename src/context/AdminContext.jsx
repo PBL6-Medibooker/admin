@@ -26,10 +26,16 @@ const AdminContextProvider = (props) => {
         }
     });
 
+    const logout = () => {
+        aToken && setAToken("");
+        aToken && localStorage.removeItem("aToken");
+    };
+
+
 
 
     const value = {
-        backendUrl, aToken, setAToken, verifiedDoctor, isLoading
+        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout
     }
 
     return (

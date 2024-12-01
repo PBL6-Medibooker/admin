@@ -9,22 +9,21 @@ import {
     getFilteredRowModel, getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import {AdminContext} from "../../../context/AdminContext";
-import {useNavigate} from "react-router-dom";
+import {ArchiveRestore} from "lucide-react";
 import {useTranslation} from "react-i18next";
 import * as forumService from "../../../service/ForumService";
 import Error from "../../../components/Error";
 import {useQuery} from "@tanstack/react-query";
 import Loader from "../../../components/Loader";
 import {DoctorContext} from "../../../context/DoctorContext";
+import Swal from "sweetalert2";
 
 const DeletedPost = () => {
     const {dToken, docEmail} = useContext(DoctorContext);
     const columnHelper = createColumnHelper();
     const [selectedPostId, setSelectedPostId] = useState('');
-    const [globalFilter, setGlobalFilter] = useState("");
+    const [globalFilter, setGlobalFilter] = useState('');
     const [open, setOpen] = useState(false);
-
     const {t} = useTranslation();
 
 
@@ -43,9 +42,18 @@ const DeletedPost = () => {
         queryFn: fetchPostsByEmail,
     });
 
-    const openDeleteModal = (id) => {
-        setOpen(true)
-        setSelectedPostId(id)
+    const openDeleteModal = async (id) => {
+        if(selectedPostId.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.warn"),
+                backdrop: false
+            });
+        } else {
+            setOpen(true)
+            setSelectedPostId(id)
+        }
     };
 
 
@@ -63,6 +71,55 @@ const DeletedPost = () => {
             header: t("doctor.post.date")
         })
     ];
+
+    const permanentDeletePost = async () => {
+        try {
+            console.log(selectedPostId)
+            await forumService.permanentDelete(selectedPostId, dToken);
+            await refetch();
+            setSelectedPostId('');
+            setOpen(false);
+            await Swal.fire({
+                position: "top-end",
+                title: t("forum.list.dsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error(error.message);
+            alert("Error deleting posts: " + error.message);
+        }
+    };
+
+
+    const restorePost = async () =>{
+        if (selectedPostId?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("forum.list.rwarn"),
+            });
+            return;
+        }
+        try {
+            await forumService.restorePost(selectedPostId, dToken);
+            await refetch();
+            setSelectedPostId('');
+            setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("forum.list.rsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     const table = useReactTable({
         data: postList || [],
         columns,
@@ -72,6 +129,7 @@ const DeletedPost = () => {
         getPaginationRowModel: getPaginationRowModel(),
         initialState: {pagination: {pageSize: 7}}
     });
+
 
     if (isLoading) {
         return (
@@ -103,33 +161,40 @@ const DeletedPost = () => {
                     <h1 className="text-lg max-w-[50vw] text-primary lg:text-2xl font-medium">
                         {t("doctor.dashboard.dp")}
                     </h1>
-                    <div className="flex gap-1">
-                        <button
-                            // onClick={restorePost}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">
-                            <FaTrashRestoreAlt/>{t("forum.list.put")}
-                        </button>
+                    <div className="flex gap-3 mr-3">
+                        <motion.button
+                            onClick={restorePost}
+                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer"
+                            whileHover={{scale: 1.1}}
+                            whileTap={{scale: 0.9}}>
+                            <ArchiveRestore/> {t("forum.list.put")}
+                        </motion.button>
 
-                        <button
-                            onClick={openDeleteModal}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
+                        <motion.button
+                            onClick={() => openDeleteModal(selectedPostId)}
+                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer"
+                            whileHover={{scale: 1.1}}
+                            whileTap={{scale: 0.9}}>
                             {t("forum.list.dp")}
-                        </button>
+                        </motion.button>
 
                     </div>
                 </div>
 
 
-                <div className="mt-5">
+                <motion.div
+                    className="mt-5 w-full"
+                    initial={{opacity: 0, y: -20}}
+                    animate={{opacity: 1, y: 0}}
+                    transition={{duration: 0.5}}>
                     <input
                         type="text"
                         placeholder={t("forum.list.search")}
                         value={globalFilter || ""}
                         onChange={(e) => setGlobalFilter(e.target.value)}
-                        className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                        className="w-[20vw] p-3 border border-gray-300 rounded mb-4 focus:ring focus:ring-blue-300"
                     />
-                </div>
-
+                </motion.div>
 
 
                 <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
@@ -162,8 +227,10 @@ const DeletedPost = () => {
                                     exit={{y: 10, opacity: 0}}
                                 >
                                     <td className="p-2">
-                                        <input type="checkbox" checked={selectedPostId.includes(row.original._id)}
-                                               onChange={() => setSelectedPostId(row.original._id)}/>
+                                        <input type="checkbox"
+                                               checked={selectedPostId === row.original._id}
+                                               onChange={() => setSelectedPostId(row.original._id)}
+                                        />
                                     </td>
                                     {row.getVisibleCells().map((cell) => (
                                         <td key={cell.id} className="p-2"
@@ -195,7 +262,7 @@ const DeletedPost = () => {
                                 <div className="flex gap-4 mt-6">
 
                                     <button
-                                        // onClick={softDeletePost}
+                                        onClick={permanentDeletePost}
                                         className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">
                                         {t("forum.list.confirm")}
                                     </button>

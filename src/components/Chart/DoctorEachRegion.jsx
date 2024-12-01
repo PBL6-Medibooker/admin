@@ -45,7 +45,7 @@ const DoctorEachRegion = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
         >
-            <h2 className="text-lg font-medium mb-4 text-black font-bold">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 {t("region.dashboard.ctitle")}
             </h2>
 

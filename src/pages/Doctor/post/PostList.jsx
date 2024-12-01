@@ -154,8 +154,9 @@ const PostList = () => {
 
                     return (
                         <motion.div
+                            whileHover={{ color: "#4A90E2" }}
                             key={item._id}
-                            className="flex w-full mb-5 h-[100px] gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
+                            className="flex w-full rounded-[5px] mb-5 h-[100px] gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 20 }}
@@ -163,8 +164,8 @@ const PostList = () => {
                         >
                             <div className="flex-1 ml-4 text-lg text-zinc-600">
                                 <motion.p
-                                    className="text-neutral-800 font-semibold cursor-default"
                                     whileHover={{ color: "#4A90E2" }}
+                                    className="text-neutral-800 font-semibold cursor-default"
                                     transition={{ duration: 0.3 }}
                                 >
                                     {item.post_title}
@@ -194,7 +195,7 @@ const PostList = () => {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => openDeleteModal(item._id)}
-                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"
+                                        className="text-sm text-stone-500 text-center mr-4 sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"
                                     >
                                         {t("doctor.post.delete")}
                                     </motion.button>

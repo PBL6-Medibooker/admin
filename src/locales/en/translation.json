@@ -475,9 +475,10 @@
       "address": "Address",
       "basic": "BASIC INFORMATION",
       "dob": "Date of birth",
+      "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
-      "change": "Change Password",
+      "change": "Change password",
       "spec": "Speciality",
       "region": "City",
       "bio": "Bio",
@@ -487,7 +488,9 @@
       "wpass": "Check your old password again!",
       "csuccess": "Change Password Successful!",
       "strong": "Password not strong enough!",
-      "match": "Check confirm password!"
+      "match": "Check confirm password!",
+      "forgot": "Forgot password?",
+      "rsuccess": "Your password has been successfully reset! Please login again!"
     },
     "sidebar": {
       "dashboard": "Dashboard",
@@ -532,7 +535,9 @@
       "content": "Content",
       "noData": "No post found!",
       "delete": "Delete Topic",
-      "date": "Date published"
+      "date": "Date published",
+      "ctitle": "Top 5 Most Comment Post",
+      "cc": "comments"
     }
   }
 }

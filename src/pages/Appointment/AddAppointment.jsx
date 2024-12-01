@@ -1,20 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {useContext, useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import * as accountService from "../../service/AccountService";
 import * as appointmentService from "../../service/AppointmentService";
-import { AdminContext } from "../../context/AdminContext";
-import { toast } from "react-toastify";
+import {AdminContext} from "../../context/AdminContext";
+import {toast} from "react-toastify";
 import 'react-calendar/dist/Calendar.css';
 import DatePicker from "../../components/DatePickerCustom/DatePicker";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import * as specialityService from "../../service/SpecialityService";
-import { FaArrowCircleRight } from "react-icons/fa";
+import {FaArrowCircleRight} from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import {DoctorContext} from "../../context/DoctorContext";
 
 
 const AddAppointment = () => {
-    const { aToken } = useContext(AdminContext);
+    const {aToken} = useContext(AdminContext);
+    const {dToken, docId} = useContext(DoctorContext);
 
     const [datePicker, setDatePicker] = useState({
         date: null,
@@ -35,7 +37,7 @@ const AddAppointment = () => {
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
     const [specialities, setSpecialities] = useState([]);
     const [filteredDoctors, setFilteredDoctors] = useState([]);
-    const {t}= useTranslation();
+    const {t} = useTranslation();
 
     const [fullyBookedHours, setFullyBookedHours] = useState([
         // {
@@ -77,15 +79,19 @@ const AddAppointment = () => {
 
     const getActiveHourList = async () => {
         try {
-           if(id){
-               const response = await accountService.getAccountActiveHourList(id, aToken);
-               console.log(response)
+            if (id) {
+                const response = await accountService.getAccountActiveHourList(id, aToken);
+                console.log(response)
 
-               const { active_hours, booked, fully_booked } = response;
+                const {active_hours, booked, fully_booked} = response;
 
-               setFullyBookedHours(fully_booked);
-               // console.log('Fully Booked:', fully_booked);
-           }
+                setFullyBookedHours(fully_booked);
+                // console.log('Fully Booked:', fully_booked);
+            } else {
+                const response = await accountService.getAccountActiveHourList(docId, dToken);
+                const {active_hours, booked, fully_booked} = response;
+                setFullyBookedHours(fully_booked);
+            }
         } catch (error) {
             console.log(error)
         }
@@ -104,6 +110,21 @@ const AddAppointment = () => {
         );
         setFilteredDoctors(filteredDoctors);
     };
+    const getDoctorActiveHour = async() => {
+        try {
+            const result = await accountService.getAccDetailsById(docId, dToken);
+            if (result) {
+                await getActiveHourList();
+                setDoctorActiveHours(result.active_hours);
+                console.log(result);
+                setDoctor(result);
+                console.log("Fetched account details:", result);
+            }
+        } catch (error) {
+            console.log("Error fetching account details:", error);
+            toast.error("Could not load account details.");
+        }
+    }
     const handleDoctorSelect = async (e) => {
         const selectedDoctorId = e.target.value;
         setDoctorId(selectedDoctorId);
@@ -129,18 +150,16 @@ const AddAppointment = () => {
     };
 
     const bookingAppointment = async () => {
-        setError('');
-
         console.log("Form data being submitted:", {
             user_id,
-            doctor_id,
+            doctor_id: dToken ? docId : doctor_id,
             appointment_day: datePicker.dayOfWeek + ' ' + datePicker.date,
             appointment_time_start: datePicker.time.start_time,
             appointment_time_end: datePicker.time.end_time,
             health_issue,
             type_service,
         });
-        if (!user_id || !doctor_id || !datePicker.time?.start_time || !datePicker.time?.end_time || !health_issue) {
+        if (aToken && (!user_id || !doctor_id || !datePicker.time?.start_time || !datePicker.time?.end_time || !health_issue)) {
             await Swal.fire({
                 position: "top-end",
                 title: t("appointment.add.warn"),
@@ -153,7 +172,7 @@ const AddAppointment = () => {
         try {
             const payload = {
                 user_id,
-                doctor_id,
+                doctor_id: dToken ? docId : doctor_id,
                 appointment_day: datePicker.dayOfWeek + ' ' + datePicker.date,
                 appointment_time_start: datePicker.time?.start_time,
                 appointment_time_end: datePicker.time?.end_time,
@@ -172,7 +191,8 @@ const AddAppointment = () => {
                     icon: "warning",
                     showConfirmButton: false,
                     timer: 1500
-                });            }
+                });
+            }
 
         } catch (error) {
             console.error('Error creating appointment:', error.response?.data || error.message);
@@ -182,12 +202,13 @@ const AddAppointment = () => {
 
 
     useEffect(() => {
-        if(aToken){
+        if (aToken || dToken) {
             findAllSpecialities()
             getAccountList()
             getDoctorAccountList()
+            getDoctorActiveHour()
         }
-    }, [aToken]);
+    }, [aToken, dToken]);
 
     // useEffect(() => {
     //     if (aToken) {
@@ -201,24 +222,24 @@ const AddAppointment = () => {
     //     }
     // }, [aToken]);
 
-    return  (
+    return (
         <div className='m-5 w-[90vw] h-[100vh]'>
             <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, y: 50}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
                 className="flex justify-between items-center mb-6"
             >
                 <p className="text-xl text-primary lg:text-2xl font-semibold mb-4">
                     {t("appointment.add.title")}
                 </p>
+
             </motion.div>
 
-
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{delay: 0.2, duration: 0.5}}
                 className="m-5 w-full max-w-4xl mx-auto"
             >
                 <div className="bg-white px-8 py-8 border rounded-xl shadow-xl w-full max-h-[80vh] overflow-y-auto">
@@ -251,70 +272,71 @@ const AddAppointment = () => {
                         </div>
                     </motion.div>
 
-                    <motion.div
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        transition={{delay: 0.4, duration: 0.5}}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
-                    >
-                        <div className="mb-6">
-                            <select
-                                id="user-select"
-                                value={spec_id}
-                                onChange={handleSpecialitySelect}
-                                className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                required
-                                aria-required="true"
-                            >
-                                <option value="" disabled className="text-gray-400">
-                                    {t("appointment.add.selectp")}
-                                </option>
-                                {specialities?.map((speciality) => (
-                                    <option key={speciality._id} value={speciality._id}>
-                                        {speciality.name}
+                    {
+                        dToken ? '' : <motion.div
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{delay: 0.4, duration: 0.5}}
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
+                        >
+                            <div className="mb-6">
+                                <select
+                                    id="user-select"
+                                    value={spec_id}
+                                    onChange={handleSpecialitySelect}
+                                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    required
+                                    aria-required="true"
+                                >
+                                    <option value="" disabled className="text-gray-400">
+                                        {t("appointment.add.selectp")}
                                     </option>
-                                ))}
-                            </select>
-                        </div>
-                    </motion.div>
-
-
-                    <motion.div
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        transition={{delay: 0.5, duration: 0.5}}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
-                    >
-                        <div className="mb-6">
-                            {/*<label htmlFor="doctor-select" className="block text-lg font-medium text-gray-700 mb-2">*/}
-                            {/*    Select Doctor*/}
-                            {/*</label>*/}
-                            <select
-                                id="doctor-select"
-                                value={doctor_id}
-                                onChange={handleDoctorSelect}
-                                className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                required
-                                aria-required="true"
-                            >
-                                <option value="" disabled className="text-gray-400">
-                                    {t("appointment.add.selectd")}
-                                </option>
-                                {filteredDoctors?.length > 0 ? (
-                                    filteredDoctors.map((doctor) => (
-                                        <option key={doctor._id} value={doctor._id}>
-                                            {doctor.username}
+                                    {specialities?.map((speciality) => (
+                                        <option key={speciality._id} value={speciality._id}>
+                                            {speciality.name}
                                         </option>
-                                    ))
-                                ) : (
-                                    <option value="" disabled>
-                                        {t("appointment.add.option")}
-                                    </option>
-                                )}
-                            </select>
+                                    ))}
+                                </select>
+                            </div>
+                        </motion.div>
+                    }
 
-                        </div>
-                    </motion.div>
+
+                    {
+                        dToken ? '' : <motion.div
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{delay: 0.5, duration: 0.5}}
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
+                        >
+                            <div className="mb-6">
+                                <select
+                                    id="doctor-select"
+                                    value={doctor_id}
+                                    onChange={handleDoctorSelect}
+                                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    required
+                                    aria-required="true"
+                                >
+                                    <option value="" disabled className="text-gray-400">
+                                        {t("appointment.add.selectd")}
+                                    </option>
+                                    {filteredDoctors?.length > 0 ? (
+                                        filteredDoctors.map((doctor) => (
+                                            <option key={doctor._id} value={doctor._id}>
+                                                {doctor.username}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option value="" disabled>
+                                            {t("appointment.add.option")}
+                                        </option>
+                                    )}
+                                </select>
+
+                            </div>
+                        </motion.div>
+                    }
 
 
                     <motion.div
@@ -328,7 +350,7 @@ const AddAppointment = () => {
                             schedule={doctor ? doctor.active_hours : null}
                             onChange={setDatePicker}
                             placeholder={t("appointment.add.date")}
-                            disabled={!(user_id && doctor)}
+                            disabled={dToken ? !(docId && user_id) : !(user_id && doctor)}
                             onFocus={(e) => {
                                 handleFocus("time");
                             }}

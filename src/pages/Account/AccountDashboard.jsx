@@ -29,7 +29,6 @@ const AccountDashboard = () => {
 
     }
 
-
     const getDoctorAccountList = async () => {
         try {
             const result = await accountService.findAll(false, false, true, aToken);
@@ -54,23 +53,12 @@ const AccountDashboard = () => {
     useEffect(() => {
         if (aToken) {
             setTotalDoctors(verifiedDoctor.length);
-
             // getDoctorAccountList();
             getAccountList();
             getDoctorUnverifyAccountList();
 
         }
     }, [aToken]);
-
-    // useEffect(() => {
-    //     if (aToken) {
-    //     }
-    // }, [aToken]);
-    //
-    // useEffect(() => {
-    //     if (aToken) {
-    //     }
-    // }, [aToken]);
 
 
     return (
@@ -89,21 +77,19 @@ const AccountDashboard = () => {
 
                     <StatCard name={t('account.adashboard.verifiedDoctor')}
                               to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
-                              color='#6366F1'/>
+                              color='#10B981'/>
 
                     <StatCard name={t('account.adashboard.unverifiedDoctor')}
                               to={'/doc-account'} icon={UserRoundSearch} value={totalUnDoctors}
-                              color='#6366F1'/>
+                              color='#FACC15'/>
 
                 </motion.div>
 
                 {/* CHARTS */}
 
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mt-2'>
                     <TopDoctorChart/>
                     <TopUsers/>
-
                 </div>
             </main>
         </div>

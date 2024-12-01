@@ -12,7 +12,6 @@ import * as forumService from "../../service/ForumService";
 
 const DoctorDashboard = () => {
     const {dToken, docId, getDoctorData, doctorData, docEmail} = useContext(DoctorContext);
-    const [data, setData] = useState([]);
     const [appointments, setAppointments] = useState(0);
     const [articles, setArticles] = useState(0);
     const [posts, setPosts] = useState(0);

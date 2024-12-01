@@ -36,8 +36,8 @@ const AddInsuranceByAppointmentId = () => {
             const data = await appointmentService.addInsurance(payload, id, aToken)
             if (data) {
                 console.log(data)
-                // toast.success('Booking completed');
-                navigate('/all-appointment')
+                const path = aToken ? '/all-appointment' : 'doctor-appointments'
+                navigate(path)
                 await Swal.fire({
                     position: "top-end",
                     title: t("appointment.add.insurance.success"),

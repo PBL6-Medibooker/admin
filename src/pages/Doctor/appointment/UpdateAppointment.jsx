@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import * as appointmentService from "../../service/AppointmentService";
-import * as accountService from "../../service/AccountService";
+import * as appointmentService from "../../../service/AppointmentService";
+import * as accountService from "../../../service/AccountService";
 import {toast} from "react-toastify";
 import {motion} from "framer-motion";
-import {DoctorContext} from "../../context/DoctorContext";
+import {DoctorContext} from "../../../context/DoctorContext";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
 import AddAndUpdateInsuranceByDoctor from "./AddAndUpdateInsuranceByDoctor";

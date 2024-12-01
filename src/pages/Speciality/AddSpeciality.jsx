@@ -105,7 +105,7 @@ const AddSpeciality = () => {
             exit={{ opacity: 0 }}
         >
             <motion.h1
-                className="flex justify-items-start ml-5 text-3xl font-bold text-primary mt-4"
+                className="flex justify-items-start ml-5 text-2xl font-bold text-primary mt-4"
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
@@ -114,7 +114,7 @@ const AddSpeciality = () => {
             </motion.h1>
 
             <motion.div
-                className="flex justify-center items-center w-full h-screen bg-gray-50"
+                className="flex justify-center items-center w-full mt-4 bg-gray-50"
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5 }}

@@ -43,9 +43,9 @@ import PostListByForum from "./pages/Forum/PostListByForum";
 import PostSpeciality from "./pages/Forum/PostSpeciality";
 import PostDetails from "./pages/Forum/PostDetails";
 import DoctorProfile from "./pages/Doctor/DoctorProfile";
-import DoctorAppointments from "./pages/Doctor/DoctorAppointments";
+import DoctorAppointments from "./pages/Doctor/appointment/DoctorAppointments";
 import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
-import UpdateAppointment from "./pages/Doctor/UpdateAppointment";
+import UpdateAppointment from "./pages/Doctor/appointment/UpdateAppointment";
 import Test from "./pages/Test";
 import './config-translation'
 import UserAppointments from "./pages/Account/UserAppointments";

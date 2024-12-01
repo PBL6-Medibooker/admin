@@ -87,3 +87,24 @@ export const getAllPostByEmail = async (email,dToken) => {
     }
 }
 
+export const getTop5MostCommentPost = async (aToken) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/get-top-post',{headers: {
+            Authorization: `Bearer ${aToken}`
+            }})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const getTop5MostCommentUser= async (aToken) => {
+    try {
+        const result = await axios.get(REST_API_BASE_URL + '/get-top-user-comment',{headers: {
+                Authorization: `Bearer ${aToken}`
+            }})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

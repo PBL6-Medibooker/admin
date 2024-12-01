@@ -1,19 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {DoctorContext} from "../../context/DoctorContext.jsx";
-import {AppContext} from "../../context/AppContext.jsx";
-import {assets} from "../../assets/assets.js";
-import * as appointmentService from "../../service/AppointmentService";
+import {DoctorContext} from "../../../context/DoctorContext.jsx";
+import {AppContext} from "../../../context/AppContext.jsx";
+import {assets} from "../../../assets/assets.js";
+import * as appointmentService from "../../../service/AppointmentService";
 import {useNavigate} from "react-router-dom";
 import {motion} from "framer-motion";
 import MUIDataTable from "mui-datatables";
-import Modal from "../../components/Modal/Modal";
+import Modal from "../../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import {toast} from "react-toastify";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
 import {useQuery} from "@tanstack/react-query";
-import Error from "../../components/Error";
-import Loader from "../../components/Loader";
+import Error from "../../../components/Error";
+import Loader from "../../../components/Loader";
 
 
 const DoctorAppointments = () => {
@@ -32,11 +32,8 @@ const DoctorAppointments = () => {
         try {
             const data = await appointmentService.softDeleteAppointment(id, dToken);
             if (data){
-                // toast.success('The Appointment has been cancelled');
-                // await getDoctorAppointments();
                 reFetchDA()
                 setOpen(false);
-
                 await Swal.fire({
                     position: "top-end",
                     title: t("appointment.list.mcancel"),
@@ -50,20 +47,6 @@ const DoctorAppointments = () => {
             console.log(e);
         }
     }
-
-    //
-    // const getDoctorAppointments = async () =>{
-    //     try {
-    //         console.log(docId)
-    //         const data = await appointmentService.getAppointmentByDoctor(false,docId, dToken)
-    //         if(data){
-    //             console.log(data)
-    //             setAppointments(data.reverse())
-    //         }
-    //     }catch (e) {
-    //         console.log(e)
-    //     }
-    // }
 
 
     const columns = [

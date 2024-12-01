@@ -1,38 +1,36 @@
 import React, {useContext} from 'react';
-import {Doughnut} from 'react-chartjs-2';
-import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js';
-import {motion} from 'framer-motion';
-import {useTranslation} from 'react-i18next';
-import {useQuery} from "@tanstack/react-query";
-import * as accountService from "../../service/AccountService";
+import {motion} from "framer-motion";
+import {Doughnut} from "react-chartjs-2";
+import {useTranslation} from "react-i18next";
 import {AdminContext} from "../../context/AdminContext";
+import {useQuery} from "@tanstack/react-query";
+import * as forumService from "../../service/ForumService";
 import Loader from "../Loader";
-ChartJS.register(ArcElement, Tooltip, Legend);
 
-const TopUsers = () => {
+const PostMostComment = () => {
+
     const {t} = useTranslation();
     const {aToken} = useContext(AdminContext)
 
 
-    const {data = [], isLoading, refetch} = useQuery({
-        queryKey: ["data"],
+    const {data = [], isLoading} = useQuery({
+        queryKey: ["top5mostcomments"],
         queryFn: async () => {
             try {
-                const data = await accountService.getTopUsers(aToken);
-                console.log('user', data)
+                const data = await forumService.getTop5MostCommentPost(aToken);
                 return data;
             } catch (e) {
                 console.error(e);
-                throw new Error("Failed to load appointments");
+                throw new Error("Failed to load");
             }
         }
     });
 
     const chartData = {
-        labels: data?.data?.map(name => name.userDetails.username),
+        labels: data?.data?.map(name => name.post_title),
         datasets: [{
-            label: t("account.adashboard.label"),
-            data: data?.data?.map(value => value.appointmentCount),
+            label: t("doctor.post.cc"),
+            data: data?.data?.map(value => value.commentCount),
             backgroundColor: [
                 'rgb(255, 99, 132)',
                 'rgb(54, 162, 235)',
@@ -41,7 +39,7 @@ const TopUsers = () => {
                 'rgb(153, 102, 255)',
             ],
 
-            hoverOffset: 4,
+            hoverOffset: 5,
         }],
     };
 
@@ -78,7 +76,7 @@ const TopUsers = () => {
             >
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-semibold text-gray-800">
-                        {t("account.adashboard.topUsers")}
+                        {t("doctor.post.ctitle")}
                     </h2>
                 </div>
 
@@ -92,4 +90,4 @@ const TopUsers = () => {
     );
 };
 
-export default TopUsers;
+export default PostMostComment;

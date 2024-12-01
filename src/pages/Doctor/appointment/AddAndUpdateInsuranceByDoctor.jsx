@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
-import * as appointmentService from "../../service/AppointmentService";
+import * as appointmentService from "../../../service/AppointmentService";
 import Swal from "sweetalert2";
 import {toast} from "react-toastify";
-import ModalInsuranceMedium from "../../components/Modal/ModalInsuranceMedium";
-import {DoctorContext} from "../../context/DoctorContext";
+import ModalInsuranceMedium from "../../../components/Modal/ModalInsuranceMedium";
+import {DoctorContext} from "../../../context/DoctorContext";
 
 const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
     const { dToken } = useContext(DoctorContext);
