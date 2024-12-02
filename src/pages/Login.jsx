@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { DoctorContext } from "../context/DoctorContext";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import * as accountService from "../service/AccountService";
+
 
 const Login = () => {
     const [state, setState] = useState('Admin');
@@ -18,25 +20,59 @@ const Login = () => {
         event.preventDefault();
         try {
             if (state === 'Admin') {
-                const result = await axios.post(backendUrl + '/acc/login', { email, password });
-                if (result.data.role === 'admin') {
-                    localStorage.setItem('aToken', result.data.token);
-                    setAToken(result.data.token);
+                // const result = await axios.post(backendUrl + '/acc/login', { email, password });
+                const result = await accountService.login(email, password);
+                if (result.role === 'admin') {
+                    localStorage.setItem('aToken', result.token);
+                    setAToken(result.token);
                 } else {
-                    toast.error('This is for Admin Only');
+                    // toast.error('This is for Admin Only');
+
+                    await Swal.fire({
+                        position: "top-end",
+                        title:'This is for Admin Only',
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        backdrop: false,
+                        width: '400px',
+                    });
                 }
             } else {
-                const result = await axios.post(backendUrl + '/acc/login', { email, password });
-                if (result.data.verified) {
-                    localStorage.setItem('dToken', result.data.token);
-                    setDToken(result.data.token);
+                const result = await accountService.login(email, password);
+                if (result.verified) {
+                    localStorage.setItem('dToken', result.token);
+                    setDToken(result.token);
                 } else {
-                    toast.error('This is for Doctor Only');
+                    await Swal.fire({
+                        position: "top-end",
+                        title:'This is for Doctor Only',
+                        icon: "error",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        backdrop: false,
+                        width: '400px',
+                    });
                 }
             }
         } catch (e) {
-            console.error("Login error:", e);
-            toast.error("An error occurred during login.");
+            if (e.response?.data.error) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: e.response?.data.error + '&nbsp;' + '!!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    backdrop: false,
+                    width: '400px',
+                    customClass: {
+                        popup: 'bg-white text-black p-4 rounded-lg shadow-md max-w-xs',
+                        title: 'text-lg font-semibold',
+                    }
+                })
+            } else {
+                console.log("Error:", e);
+            }
         }
     };
 
@@ -127,7 +163,7 @@ const Login = () => {
                         className="text-primary italic cursor-pointer"
                         onClick={() => setState('Admin')}
                     >
-                        Forgot password?
+                        Forgot password ?
                     </span>
                 </motion.div>
             </motion.div>

@@ -34,5 +34,10 @@ input.shake {
     box-shadow: 0 0 4px #ff0000; /* Red shadow for invalid input */
 }
 
+@property --border-angle {
+    inherits: false;
+    initial-value: 0deg;
+    syntax: '<angle>';
+}
 
 

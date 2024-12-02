@@ -3,7 +3,18 @@ import axios from "axios";
 
 const REST_API_BASE_URL = "http://localhost:4000/acc";
 
-
+export const login = async (email, password) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + "/login", {
+            email,
+            password
+        })
+        return result.data
+    } catch (e) {
+        console.log(e)
+        throw e
+    }
+}
 export const findAll = async (user, hidden_state, verified, aToken) => {
     try {
         const result = await axios.post(REST_API_BASE_URL + "/acc-list", {
@@ -219,7 +230,7 @@ export const getDoctorProfile = async (authorization) => {
     }
 };
 
-export const getTopDoctors = async ( aToken) => {
+export const getTopDoctors = async (aToken) => {
     try {
         const result = await axios.get(REST_API_BASE_URL + '/top-doctor', {headers: {aToken}});
         return result.data;
@@ -228,7 +239,7 @@ export const getTopDoctors = async ( aToken) => {
     }
 };
 
-export const getTopUsers = async ( aToken) => {
+export const getTopUsers = async (aToken) => {
     try {
         const result = await axios.get(REST_API_BASE_URL + '/top-users', {headers: {aToken}});
         return result.data;
@@ -237,9 +248,9 @@ export const getTopUsers = async ( aToken) => {
     }
 };
 
-export const changePassword = async (data,dToken) => {
+export const changePassword = async (data, dToken) => {
     try {
-        const result = await axios.post(REST_API_BASE_URL + '/change-pass', data,{headers: {dToken}});
+        const result = await axios.post(REST_API_BASE_URL + '/change-pass', data, {headers: {dToken}});
         return result.data;
     } catch (e) {
         console.error(e);

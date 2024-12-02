@@ -34,7 +34,6 @@ const DoctorProfile = () => {
     const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
 
 
-
     const getDoctorData = async () => {
         try {
             const result = await accountService.getDoctorProfile(dToken);
@@ -187,12 +186,12 @@ const DoctorProfile = () => {
         }
 
         try {
-            const data ={
+            const data = {
                 email: doctorData.email,
                 new_password: newPass,
             }
-            const result = accountService.changePassword(data,dToken)
-            if(result.email){
+            const result = accountService.changePassword(data, dToken)
+            if (result.email) {
                 setIsChangePassword(false)
                 await Swal.fire({
                     position: "top-end",
@@ -334,49 +333,49 @@ const DoctorProfile = () => {
                                     <>
                                         {isEdit ? (
                                                 <label htmlFor="image" className="inline-block relative cursor-pointer">
-                                                <div className='w-100 h-80'>
+                                                    <div className='w-100 h-80'>
+                                                        <div className='w-100 h-80'>
+                                                            <img
+                                                                className="h-full w-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
+                                                                src={image ? URL.createObjectURL(image) : doctorData.profile_image}
+                                                                alt="profile"
+                                                            />
+                                                        </div>
+
+                                                        {!image && (
+                                                            <motion.div
+                                                                className="absolute w-100 h-80 inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg"
+                                                                whileHover={{opacity: 0.8}}
+                                                                transition={{duration: 0.3}}
+                                                            >
+                                                                <img
+                                                                    className="w-10 opacity-75"
+                                                                    src={assets.upload_icon}
+                                                                    alt="upload icon"
+                                                                />
+                                                            </motion.div>
+                                                        )}
+                                                    </div>
+
+                                                    <input
+                                                        onChange={handleImageChange}
+                                                        type="file"
+                                                        id="image"
+                                                        hidden
+                                                    />
+                                                </label>
+                                            ) :
+                                            (
                                                 <div className='w-100 h-80'>
                                                     <img
-                                                        className="h-full w-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                                        src={image ? URL.createObjectURL(image) : doctorData.profile_image}
+                                                        className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
+                                                        src={doctorData.profile_image}
                                                         alt="profile"
                                                     />
                                                 </div>
-
-                                                {!image && (
-                                                    <motion.div
-                                                        className="absolute w-100 h-80 inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg"
-                                                        whileHover={{opacity: 0.8}}
-                                                        transition={{duration: 0.3}}
-                                                    >
-                                                        <img
-                                                            className="w-10 opacity-75"
-                                                            src={assets.upload_icon}
-                                                            alt="upload icon"
-                                                        />
-                                                    </motion.div>
-                                                )}
-                                            </div>
-
-                                            <input
-                                                onChange={handleImageChange}
-                                                type="file"
-                                                id="image"
-                                                hidden
-                                            />
-                                        </label>
-                                    ) :
-                                    (
-                                        <div className='w-100 h-80'>
-                                        <img
-                                            className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                            src={doctorData.profile_image}
-                                            alt="profile"
-                                        />
-                                    </div>
-                                    )
-                                }
-                            </>)
+                                            )
+                                        }
+                                    </>)
 
                         }
 
@@ -435,22 +434,22 @@ const DoctorProfile = () => {
                                         {t("doctor.profile.new")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
-                                    <input
-                                        id="health-issue"
-                                        value={newPass}
-                                        onChange={(e) => setNewPass(e.target.value)}
-                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
-                                        required
-                                        aria-required="true"
-                                        tabIndex='2'
-                                    />
-                                    <motion.img
-                                        id='eye-icon'
-                                        src={isNewPasswordVisible ? assets.open : assets.close}
-                                        alt="close"
-                                        className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
-                                        onClick={togglePasswordVisibility2}
-                                    />
+                                        <input
+                                            id="health-issue"
+                                            value={newPass}
+                                            onChange={(e) => setNewPass(e.target.value)}
+                                            className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
+                                            required
+                                            aria-required="true"
+                                            tabIndex='2'
+                                        />
+                                        <motion.img
+                                            id='eye-icon'
+                                            src={isNewPasswordVisible ? assets.open : assets.close}
+                                            alt="close"
+                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            onClick={togglePasswordVisibility2}
+                                        />
                                     </motion.div>
                                 </motion.div>
 
@@ -729,7 +728,7 @@ const DoctorProfile = () => {
                                     >
                                         {t("doctor.profile.change")}
                                     </motion.button>
-
+                                    |
                                     <motion.button
                                         onClick={resetPass}
                                         className="text-primary text-sm transition-all italic"
