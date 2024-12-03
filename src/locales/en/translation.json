@@ -47,6 +47,7 @@
       "page": "Page",
       "goToPage": "Go to page",
       "deleteNoti": "No account selected for deletion!",
+      "restoreNoti": "No account selected for restoration!",
       "successDelete": "Account Deleted",
       "confirmDelete": "Confirm Delete",
       "pCD": "Are you sure you want to delete?",

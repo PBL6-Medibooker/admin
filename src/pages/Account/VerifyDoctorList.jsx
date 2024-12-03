@@ -17,6 +17,7 @@ import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
+import Pagination from "../../components/Pagination";
 
 const VerifyDoctorList = () => {
 
@@ -28,7 +29,7 @@ const VerifyDoctorList = () => {
     const [isVerify, setIsVerify] = useState(true);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const {aToken, isLoading, verifiedDoctor} = useContext(AdminContext);
+    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData} = useContext(AdminContext);
     const {t} = useTranslation();
 
 
@@ -73,6 +74,7 @@ const VerifyDoctorList = () => {
     const getAccountList = async () => {
         try {
             const result = await accountService.findAll(isUser, hiddenState, isVerify, aToken);
+            console.log(result)
             setData(result);
         } catch (e) {
             console.log(e.error);
@@ -97,12 +99,14 @@ const VerifyDoctorList = () => {
                 icon: "error",
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
+                backdrop: false
             });
             return;
         }
         try {
             await accountService.deleteSoftAccount(selectedAccountIds, aToken);
-            getAccountList();
+            // getAccountList();
+            rVerifyDoctorData()
             // toast.success(response.message);
             setSelectedAccountIds([]);
             setOpen(false);
@@ -111,7 +115,9 @@ const VerifyDoctorList = () => {
                 title: t("account.accountList.successDelete"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
+
             });
 
         } catch (error) {
@@ -119,13 +125,12 @@ const VerifyDoctorList = () => {
         }
     };
 
+    useEffect(() => {
+        if(aToken){
+            rVerifyDoctorData()
+        }
+    }, [aToken]);
 
-    //
-    // useEffect(() => {
-    //     if (aToken) {
-    //         getAccountList();
-    //     }
-    // }, [aToken, hiddenState]);
 
 
     if (isLoading) {
@@ -165,6 +170,76 @@ const VerifyDoctorList = () => {
                 />
             </div>
 
+
+            <motion.div
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: {opacity: 0},
+                    visible: {
+                        opacity: 1,
+                        transition: {
+                            staggerChildren: 0.15,
+                            duration: 0.6,
+                            ease: "easeInOut",
+                        },
+                    },
+                }}
+            >
+                {table.getRowModel().rows.length > 0 ? (
+                    table.getRowModel().rows.map((row) => {
+                        const item = row.original;
+                        return (
+                            <motion.div
+                                key={item._id}
+                                className="border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group"
+                                whileHover={{scale: 1.05, boxShadow: "0px 4px 10px rgba(0,0,0,0.2)"}}
+                                variants={{
+                                    hidden: {opacity: 0, y: 20},
+                                    visible: {opacity: 1, y: 0},
+                                }}
+                                transition={{duration: 0.3, ease: "easeOut"}}
+                                initial={{opacity: 0, scale: 0.9, y: 30}}
+                                animate={{opacity: 1, scale: 1, y: 0}}
+                            >
+                                <div
+                                    className="relative w-56 h-56 bg-indigo-50 group rounded-xl overflow-hidden cursor-pointer">
+                                    <img
+                                        className="w-full h-full object-cover transition-all duration-500 group-hover:opacity-80"
+                                        src={item.profile_image || assets.user_icon}
+                                        alt="Profile"
+                                    />
+
+                                    <button
+                                        onClick={() => navigate(`/update-doc-account/${item._id}`)}
+                                        className="absolute inset-0 flex items-center justify-center bg-primary/75 text-white text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    >
+                                        {t("speciality.list.edit")}
+                                    </button>
+                                </div>
+                                <div className="p-4">
+                                    <div className="flex justify-end">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedAccountIds.includes(item._id)}
+                                            onChange={() => toggleAccountSelection(item._id)}
+                                        />
+                                    </div>
+                                    <p className="text-neutral-800 text-lg font-bold">{item.username}</p>
+                                    <p className="text-zinc-600 text-sm">{item.speciality_id?.name}</p>
+                                </div>
+                            </motion.div>
+                        );
+                    })
+                ) : (
+                    <div className="max-h-[90h] w-[90vw]">
+                        <img className="w-[50vw]" src={assets.no_data} alt="No records"/>
+                    </div>
+                )}
+            </motion.div>
+
+
             <AnimatePresence>
                 {open && (
                     <Modal open={open} onClose={() => setOpen(false)}>
@@ -189,59 +264,88 @@ const VerifyDoctorList = () => {
                     </Modal>
                 )}
             </AnimatePresence>
-            <motion.div
-                className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5 ml-5 pb-5"
-                initial="hidden"
-                animate="visible"
-                variants={{
-                    hidden: {opacity: 0},
-                    visible: {
-                        opacity: 1,
-                        transition: {
-                            staggerChildren: 0.15,
-                            duration: 0.6,
-                            ease: "easeInOut",
-                        },
-                    },
-                }}
-            >
-                {verifiedDoctor.length > 0 ?
-                    (verifiedDoctor?.map((item, index) => (
-                        <div key={item._id} className='flex flex-col relative w-[250px] h-[350px] gap-2.5'>
-                            <div className='relative w-full h-[240px] rounded-[15px] '>
-                        <span className='absolute bottom-0 left-[50%] w-[20px] h-[20px]
-                        rounded-[50%] bg-transparent shadow-custom6'></span>
-                                <span className='absolute bottom-[70px] left-0 w-[20px] h-[20px]
-                        rounded-[50%] bg-transparent shadow-custom6'></span>
+            {/*  <motion.div*/}
+            {/*      className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5 ml-5 pb-5"*/}
+            {/*      initial="hidden"*/}
+            {/*      animate="visible"*/}
+            {/*      variants={{*/}
+            {/*          hidden: {opacity: 0},*/}
+            {/*          visible: {*/}
+            {/*              opacity: 1,*/}
+            {/*              transition: {*/}
+            {/*                  staggerChildren: 0.15,*/}
+            {/*                  duration: 0.6,*/}
+            {/*                  ease: "easeInOut",*/}
+            {/*              },*/}
+            {/*          },*/}
+            {/*      }}*/}
+            {/*  >*/}
+            {/*      {verifiedDoctor.length > 0 ? (*/}
+            {/*          verifiedDoctor.map((item) => (*/}
+            {/*              <div*/}
+            {/*                  key={item._id}*/}
+            {/*                  className="flex flex-col relative w-[250px] h-[350px] gap-2.5"*/}
+            {/*              >*/}
+            {/*                  /!* Image Container *!/*/}
+            {/*                  <div*/}
+            {/*                      className="relative w-full h-[240px] rounded-[15px] bg-indigo-50 cursor-pointer*/}
+            {/*            transition-all duration-500 hover:opacity-80"*/}
+            {/*                  >*/}
+            {/*<span*/}
+            {/*    className="absolute bottom-0 left-[50%] w-[20px] h-[20px]*/}
+            {/*            rounded-full bg-transparent shadow-custom6"*/}
+            {/*></span>*/}
+            {/*                      <span*/}
+            {/*                          className="absolute bottom-[70px] left-0 w-[20px] h-[20px]*/}
+            {/*            rounded-full bg-transparent shadow-custom6"*/}
+            {/*                      ></span>*/}
+            {/*                      <img*/}
+            {/*                          className="w-full h-full object-cover rounded-[15px]"*/}
+            {/*                          src={item.profile_image}*/}
+            {/*                          alt={`${item.username}'s profile`}*/}
+            {/*                      />*/}
+            {/*                  </div>*/}
 
-                                <div
-                                    className='relative w-full h-full  bg-indigo-50 group rounded-xl cursor-pointer'>
-                                    <img
-                                        className="w-full h-full object-cover rounded-[15px] transition-all duration-500 group-hover:opacity-80"
-                                        src={item.profile_image}
-                                        alt="pic"
-                                    />
-                                </div>
-                            </div>
-                            <div className='relative w-full h-[150px] rounded-[15px] bg-amber-400 rounded-tl-none'>
-                        <span className='absolute top-[-80px] h-[80px] bg-white w-[50%] border-t-[10px] border-white border-r-[10px] rounded-tr-[25px]
-                       '>
-                            <span
-                                className='absolute w-[25px] h-[25px] rounded-[50%] bg-transparent shadow-custom '></span>
-                            <span
-                                className='absolute bottom-0 right-[-25px] w-[25px] h-[25px] bg-transparent rounded-[50%] shadow-custom2 '></span>
-                        </span>
+            {/*                  /!* Info Container *!/*/}
+            {/*                  <div*/}
+            {/*                      className="relative w-full h-[150px] rounded-[15px] bg-white rounded-tl-none"*/}
+            {/*                  >*/}
+            {/*<span*/}
+            {/*    className="absolute top-[-80px] h-[80px] bg-white w-[50%]*/}
+            {/*            border-t-[10px] border-[#F8F9FD] border-r-[10px] rounded-tr-[25px]"*/}
+            {/*>*/}
+            {/*  <span*/}
+            {/*      className="absolute w-[25px] h-[25px] rounded-full bg-transparent shadow-custom5"*/}
+            {/*  ></span>*/}
+            {/*  <span*/}
+            {/*      className="absolute bottom-0 right-[-25px] w-[25px] h-[25px]*/}
+            {/*                bg-transparent rounded-full shadow-custom2"*/}
+            {/*  ></span>*/}
+            {/*</span>*/}
 
-                                <p>{item.username}</p>
-                            </div>
-                        </div>
-                    ))) : <div className='max-h-[90h] w-[90vw]'>
-                        <img className='w-[50vw]' src={assets.no_data} alt='no records'/>
-                    </div>
+            {/*                      /!* Doctor Details *!/*/}
+            {/*                      <div className="p-4">*/}
+            {/*                          <p className="text-lg font-semibold text-gray-800">*/}
+            {/*                              {item.username}*/}
+            {/*                          </p>*/}
+            {/*                          <p className="text-sm text-gray-600">*/}
+            {/*                              {item.speciality_id.name}*/}
+            {/*                          </p>*/}
+            {/*                      </div>*/}
+            {/*                  </div>*/}
+            {/*              </div>*/}
+            {/*          ))*/}
+            {/*      ) : (*/}
+            {/*          <div className="flex justify-center items-center w-full h-[90vh]">*/}
+            {/*              <img*/}
+            {/*                  className="max-w-[50vw]"*/}
+            {/*                  src={assets.no_data}*/}
+            {/*                  alt="No records available"*/}
+            {/*              />*/}
+            {/*          </div>*/}
+            {/*      )}*/}
+            {/*  </motion.div>*/}
 
-
-                }
-            </motion.div>
 
             {/*<motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"*/}
             {/*              initial={{opacity: 0}} animate={{opacity: 1}}>*/}
@@ -302,7 +406,7 @@ const VerifyDoctorList = () => {
             {/*</motion.table>*/}
 
             {/* Pagination */}
-            <div className="flex items-center justify-end gap-2 mt-4">
+            {verifiedDoctor.length > 0 && <div className="flex items-center justify-end gap-2 mt-4">
                 <button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
@@ -338,6 +442,8 @@ const VerifyDoctorList = () => {
                     />
                 </div>
             </div>
+                // <Pagination table={table} t={t}/>
+            }
         </motion.div>
     );
 };

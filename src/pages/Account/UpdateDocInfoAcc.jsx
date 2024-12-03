@@ -207,13 +207,13 @@ const UpdateDocInfoAcc = () => {
         setImage(file);
     };
 
-    useEffect(() => {
-        const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address
-            && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
-            && isVerify
-            ;
-        setIsFormValid(isValid);
-    }, [account, docData]);
+    // useEffect(() => {
+    //     const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address
+    //         && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
+    //         && isVerify
+    //         ;
+    //     setIsFormValid(isValid);
+    // }, [account, docData]);
 
     useEffect(() => {
         if (aToken) {
@@ -641,7 +641,7 @@ const UpdateDocInfoAcc = () => {
                         {t("account.updateDocInfo.back")}
                     </motion.button>
                     {
-                        isFormValid ? (
+                        isVerify ? (
                             <motion.button
                                 type="submit"
                                 className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"

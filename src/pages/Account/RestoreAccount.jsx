@@ -18,6 +18,9 @@ import Swal from "sweetalert2";
 import {useLocation} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import Loader from "../../components/Loader";
+import SearchInput from "../../components/SearchInput";
+import { motion } from "framer-motion";
+
 
 
 const RestoreAccount = () => {
@@ -64,13 +67,13 @@ const RestoreAccount = () => {
         }),
         columnHelper.accessor("phone", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header:  t("account.accountList.phone"),
+            header: t("account.accountList.phone"),
         })
 
 
     ];
     // const [data, setData] = useState([]);
-    const { data = [], isLoading, isError, refetch } = useQuery({
+    const {data = [], isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts", isVerify],
         queryFn: async () => {
             try {
@@ -133,34 +136,31 @@ const RestoreAccount = () => {
 
 
     const restoreDocAccount = async () => {
-        if (selectedAccountIds?.length === 0 && open) {
+        if (selectedAccountIds?.length === 0) {
             await Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: t("account.accountList.deleteNoti"),
+                text: t("account.accountList.restoreNoti"),
             });
             return;
         }
 
         try {
-            const response = await accountService.restoreAccount(selectedAccountIds, aToken);
-            if (response.message !== '') {
-                // getDeletedAccountList();
-                refetch();
-                // toast.success(response.message);
-                setSelectedAccountIds([]);
-                setOpen(false);
+            await accountService.restoreAccount(selectedAccountIds, aToken);
 
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("account.dvd.restore"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                toast.error('Error')
-            }
+            // getDeletedAccountList();
+            refetch();
+            setSelectedAccountIds([]);
+            setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.dvd.restore"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            });
 
         } catch (e) {
             toast.error(e.message);
@@ -168,11 +168,12 @@ const RestoreAccount = () => {
     }
 
     const permanentDeleteAccounts = async () => {
-        if (selectedAccountIds?.length === 0 ) {
+        if (selectedAccountIds?.length === 0) {
             await Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
+                backdrop: false
             });
             setOpen(false);
             return;
@@ -199,29 +200,29 @@ const RestoreAccount = () => {
     //         getDeletedAccountList();
     //     }
     // }, [aToken, hiddenState]);
-    //
-    // useEffect(() => {
-    //     if(aToken){
-    //         getDeletedUnverifiedAccountList()
-    //     }
-    // }, [aToken]);
+
+    useEffect(() => {
+        if(aToken){
+            refetch()
+        }
+    }, [aToken]);
 
     if (isLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-                <Loader />
+                <Loader/>
             </div>
         );
     }
 
     return (
-        <div className='m-5 max-h-[90h] w-[90vw] overflow-y-scroll'>
+        <div className='mb-5 mt-5 mr-5 pl-5 max-h-[90h] w-[90vw] overflow-y-scroll'>
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg lg:text-2xl text-primary font-medium'>{isVerify ? t("account.dvd.title"): t("account.dvd.utitle")}</h1>
+                <h1 className='text-lg lg:text-2xl text-primary font-medium'>{isVerify ? t("account.dvd.title") : t("account.dvd.utitle")}</h1>
                 <div className='flex gap-1'>
                     <button
                         onClick={restoreDocAccount}
-                        className='flex items-center gap-1 bg-emerald-400 px-10 py-3 mt-4 text-white rounded-full'>
+                        className='flex items-center gap-1 bg-green-600 px-10 py-3 mt-4 text-white rounded-full'>
                         <FaTrashRestoreAlt/> {t("account.dvd.putBack")}
                     </button>
 
@@ -235,33 +236,92 @@ const RestoreAccount = () => {
                 </div>
 
                 <Modal open={open} onClose={() => setOpen(false)}>
-                    <div className="text-center w-72">
-                        <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
-                        <div className="mx-auto my-4 w-60">
-                            <h3 className="text-lg font-bold text-gray-800">{t("account.accountList.confirmDelete")}</h3>
+                    <motion.div
+                        className="text-center w-72"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1, duration: 0.3 }}
+                        >
+                            <FaRegTrashAlt size={56} className="mx-auto text-red-500" />
+                        </motion.div>
+                        <motion.div
+                            className="mx-auto my-4 w-60"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.3 }}
+                        >
+                            <h3 className="text-lg font-bold text-gray-800">
+                                {t("account.accountList.confirmDelete")}
+                            </h3>
                             <p className="text-sm text-gray-600">
-                                {t("account.restore.pCD")} <strong
-                                className='text-red-500'>{t("account.restore.p")}</strong>?
+                                {t("account.restore.pCD")} <strong className="text-red-500">
+                                {t("account.restore.p")}
+                            </strong>?
                             </p>
-                        </div>
-                        <div className="flex gap-4 mt-6">
-                            <button
+                        </motion.div>
+                        <motion.div
+                            className="flex gap-4 mt-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3, duration: 0.3 }}
+                        >
+                            <motion.button
                                 className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
                                 onClick={permanentDeleteAccounts}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 {t("account.restore.deleteP")}
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
                                 className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                                 onClick={() => setOpen(false)}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                             >
                                 {t("account.accountList.cancel")}
-                            </button>
-                        </div>
-                    </div>
+                            </motion.button>
+                        </motion.div>
+                    </motion.div>
                 </Modal>
-            </div>
 
+
+                {/*<Modal open={open} onClose={() => setOpen(false)}>*/}
+                {/*    <div className="text-center w-72">*/}
+                {/*        <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>*/}
+                {/*        <div className="mx-auto my-4 w-60">*/}
+                {/*            <h3 className="text-lg font-bold text-gray-800">{t("account.accountList.confirmDelete")}</h3>*/}
+                {/*            <p className="text-sm text-gray-600">*/}
+                {/*                {t("account.restore.pCD")} <strong*/}
+                {/*                className='text-red-500'>{t("account.restore.p")}</strong>?*/}
+                {/*            </p>*/}
+                {/*        </div>*/}
+                {/*        <div className="flex gap-4 mt-6">*/}
+                {/*            <button*/}
+                {/*                className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"*/}
+                {/*                onClick={permanentDeleteAccounts}*/}
+                {/*            >*/}
+                {/*                {t("account.restore.deleteP")}*/}
+                {/*            </button>*/}
+                {/*            <button*/}
+                {/*                className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"*/}
+                {/*                onClick={() => setOpen(false)}*/}
+                {/*            >*/}
+                {/*                {t("account.accountList.cancel")}*/}
+                {/*            </button>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</Modal>*/}
+            </div>
+            <div>
+                <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} t={t}/>
+            </div>
             <table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse ">
                 <thead className="bg-gray-600">
                 {table.getHeaderGroups().map((headerGroup) => (

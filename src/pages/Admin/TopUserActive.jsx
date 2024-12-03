@@ -79,51 +79,52 @@ const TopUserActive = () => {
                      border rounded-full border-transparent animate-border'/>
                     <p>name</p>
                 </div>
-                    {/*<div*/}
-                    {/*    className='flex relative max-w-[300px] w-[300px] h-[400px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-amber-400'>*/}
-                    {/*    <div className='absolute inset-[10px] rounded-[10px] bg-gray-500  '>*/}
-                    {/*        <div*/}
-                    {/*            className='absolute w-[140px] h-[140px] bg-amber-400 rounded-br-[50%] transition-all duration-500 hover:w-full'>*/}
-                    {/*            <span*/}
-                    {/*                className=' absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4'></span>*/}
 
-                    {/*            <span*/}
-                    {/*                className='absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4'></span>*/}
-                    {/*            <div*/}
-                    {/*                className='flex justify-center items-center absolute inset-[10px] bg-gray-500 rounded-[50%]  rounded-tr-[10px]  rounded-bl-[10px] '>*/}
+                    <div
+                        className='flex relative max-w-[300px] w-[300px] h-[400px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-amber-400'>
+                        <div className='absolute inset-[10px] rounded-[10px] bg-gray-500  '>
+                            <div
+                                className='absolute w-[140px] h-[140px] bg-amber-400 rounded-br-[50%] transition-all duration-500 hover:w-full'>
+                                <span
+                                    className=' absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4'></span>
 
-                    {/*            </div>*/}
-                    {/*        </div>*/}
-                    {/*        <div className=''>*/}
-                    {/*            /!*content*!/*/}
-                    {/*        </div>*/}
+                                <span
+                                    className='absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4'></span>
+                                <div
+                                    className='flex justify-center items-center absolute inset-[10px] bg-gray-500 rounded-[50%]  rounded-tr-[10px]  rounded-bl-[10px] '>
 
-                    {/*    </div>*/}
+                                </div>
+                            </div>
+                            <div className=''>
+                                {/*content*/}
+                            </div>
 
-
-                    {/*</div>*/}
-
-
-                <div className='flex flex-col justify-between relative w-[320px] h-[400px] gap-2.5'>
-                    <div className='relative w-full h-[240px] bg-amber-400 rounded-[15px] '>
-                        <span className='absolute bottom-0 left-[50%] w-[20px] h-[20px]
-                        rounded-[50%] bg-transparent shadow-custom3'></span>
-
-                        <span className='absolute bottom-[70px] left-0 w-[20px] h-[20px]
-                        rounded-[50%] bg-transparent shadow-custom3'></span>
-
-                    </div>
-                    <div className='relative w-full h-[150px] rounded-[15px] bg-green-600 rounded-tl-none'>
-                        <span className='absolute top-[-80px] h-[80px] bg-green-600 w-[50%] border-t-[10px] border-[#F8F9FD] border-r-[10px] rounded-tr-[25px]
-                       '>
-                            <span
-                                className='absolute w-[25px] h-[25px] rounded-[50%] bg-transparent shadow-custom '></span>
-                            <span
-                                className='absolute bottom-0 right-[-25px] w-[25px] h-[25px] bg-transparent rounded-[50%] shadow-custom2 '></span>
-                        </span>
+                        </div>
                     </div>
 
-                </div>
+
+                {/*<div className='flex flex-col justify-between relative w-[320px] h-[400px] gap-2.5'>*/}
+                {/*    <div className='relative w-full h-[240px] bg-amber-400 rounded-[15px] '>*/}
+                {/*        <span className='absolute bottom-0 left-[50%] w-[20px] h-[20px]*/}
+                {/*        rounded-[50%] bg-transparent shadow-custom3'></span>*/}
+
+                {/*        <span className='absolute bottom-[70px] left-0 w-[20px] h-[20px]*/}
+                {/*        rounded-[50%] bg-transparent shadow-custom3'></span>*/}
+
+                {/*    </div>*/}
+                {/*    <div className='relative w-full h-[150px] rounded-[15px] bg-green-600 rounded-tl-none'>*/}
+                {/*        <span className='absolute top-[-80px] h-[80px] bg-green-600 w-[50%] border-t-[10px] border-[#F8F9FD] border-r-[10px] rounded-tr-[25px]*/}
+                {/*       '>*/}
+                {/*            <span*/}
+                {/*                className='absolute w-[25px] h-[25px] rounded-[50%] bg-transparent shadow-custom '>*/}
+                {/*            </span>*/}
+                {/*            <span*/}
+                {/*                className='absolute bottom-0 right-[-25px] w-[25px] h-[25px] bg-transparent rounded-[50%] shadow-custom2 '>*/}
+                {/*            </span>*/}
+                {/*        </span>*/}
+                {/*    </div>*/}
+
+                {/*</div>*/}
 
 
                 <div className='flex-1 bg-green-600'>

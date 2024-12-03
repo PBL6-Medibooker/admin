@@ -13,7 +13,7 @@ const AdminContextProvider = (props) => {
 
     const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
 
-    const { data: verifiedDoctor = [], isLoading, isError, refetch } = useQuery({
+    const { data: verifiedDoctor = [], isLoading, isError, refetch: rVerifyDoctorData } = useQuery({
         queryKey: ["verify"],
         queryFn: async () => {
             try {
@@ -35,7 +35,7 @@ const AdminContextProvider = (props) => {
 
 
     const value = {
-        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout
+        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout,rVerifyDoctorData
     }
 
     return (
