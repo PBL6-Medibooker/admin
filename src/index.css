@@ -30,8 +30,8 @@
 }
 
 input.shake {
-    animation: shake 0.5s ease-in-out 0s 1; /* 0.5s duration, 1 iteration */
-    box-shadow: 0 0 4px #ff0000; /* Red shadow for invalid input */
+    animation: shake 0.5s ease-in-out 0s 1;
+    box-shadow: 0 0 4px #ff0000;
 }
 
 @property --border-angle {

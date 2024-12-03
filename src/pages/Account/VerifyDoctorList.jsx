@@ -28,31 +28,40 @@ const VerifyDoctorList = () => {
     const [isVerify, setIsVerify] = useState(true);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const { aToken, isLoading, verifiedDoctor } = useContext(AdminContext);
+    const {aToken, isLoading, verifiedDoctor} = useContext(AdminContext);
     const {t} = useTranslation();
 
 
     const columns = [
-        columnHelper.accessor("_id", { id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No" }),
+        columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
         columnHelper.accessor("profile_image", {
-            cell: (info) => <img className="rounded-full w-10 h-10 object-cover" src={info?.getValue() || assets.user_icon} alt="..." />,
+            cell: (info) => <img className="rounded-full w-10 h-10 object-cover"
+                                 src={info?.getValue() || assets.user_icon} alt="..."/>,
             header: t("account.verified.profile")
         }),
-        columnHelper.accessor("username", { cell: (info) => <span>{info?.getValue()}</span>, header:t("account.verified.username") }),
-        columnHelper.accessor("role", { cell: (info) => <span>{info?.getValue()}</span>, header:t("account.verified.role") }),
-        columnHelper.accessor("email", { cell: (info) => <span>{info?.getValue()}</span>, header: "Email" }),
-        columnHelper.accessor("phone", { cell: (info) => <span>{info?.getValue()}</span>, header:t("account.verified.phone")})
+        columnHelper.accessor("username", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("account.verified.username")
+        }),
+        columnHelper.accessor("role", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("account.verified.role")
+        }),
+        columnHelper.accessor("email", {cell: (info) => <span>{info?.getValue()}</span>, header: "Email"}),
+        columnHelper.accessor("phone", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("account.verified.phone")
+        })
     ];
     const [data, setData] = useState([]);
     const table = useReactTable({
-        // data: data || [],
         data: verifiedDoctor || [],
         columns,
-        state: { globalFilter },
+        state: {globalFilter},
         getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        initialState: { pagination: { pageSize: 7 } }
+        initialState: {pagination: {pageSize: 7}}
     });
 
     const toggleAccountSelection = (id) => {
@@ -122,7 +131,7 @@ const VerifyDoctorList = () => {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-                <Loader />
+                <Loader/>
             </div>
         );
     }
@@ -149,7 +158,7 @@ const VerifyDoctorList = () => {
                 <input
 
                     type="text"
-                    placeholder= {t("account.verified.search")}
+                    placeholder={t("account.verified.search")}
                     value={globalFilter || ""}
                     onChange={(e) => setGlobalFilter(e.target.value)}
                     className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
@@ -180,64 +189,117 @@ const VerifyDoctorList = () => {
                     </Modal>
                 )}
             </AnimatePresence>
+            <motion.div
+                className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5 ml-5 pb-5"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: {opacity: 0},
+                    visible: {
+                        opacity: 1,
+                        transition: {
+                            staggerChildren: 0.15,
+                            duration: 0.6,
+                            ease: "easeInOut",
+                        },
+                    },
+                }}
+            >
+                {verifiedDoctor.length > 0 ?
+                    (verifiedDoctor?.map((item, index) => (
+                        <div key={item._id} className='flex flex-col relative w-[250px] h-[350px] gap-2.5'>
+                            <div className='relative w-full h-[240px] rounded-[15px] '>
+                        <span className='absolute bottom-0 left-[50%] w-[20px] h-[20px]
+                        rounded-[50%] bg-transparent shadow-custom6'></span>
+                                <span className='absolute bottom-[70px] left-0 w-[20px] h-[20px]
+                        rounded-[50%] bg-transparent shadow-custom6'></span>
 
-            <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
-                          initial={{opacity: 0}} animate={{opacity: 1}}>
-                <thead className="bg-gray-600">
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
-                        <th className="p-2">
-                            <input
-                                type="checkbox"
-                                checked={table.getRowModel().rows.length > 0 && table.getRowModel().rows.every((row) => selectedAccountIds.includes(row.original._id))}
-                                onChange={(e) =>
-                                    setSelectedAccountIds(
-                                        e.target.checked ? table.getRowModel().rows.map((row) => row.original._id) : []
-                                    )
-                                }
-                            />
-                        </th>
-                        {headerGroup.headers.map((header) => (
-                            <th key={header.id}
-                                className="capitalize p-2">{flexRender(header.column.columnDef.header, header.getContext())}</th>
-                        ))}
-                    </tr>
-                ))}
-                </thead>
-                <tbody>
-                <AnimatePresence>
-                    {table.getRowModel().rows.length ? (
-                        table.getRowModel().rows.map((row, i) => (
-                            <motion.tr
-                                key={row.id}
-                                className={i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'}
-                                initial={{y: 10, opacity: 0}}
-                                animate={{y: 0, opacity: 1}}
-                                exit={{y: 10, opacity: 0}}
-                            >
-                                <td className="p-2">
-                                    <input type="checkbox" checked={selectedAccountIds.includes(row.original._id)}
-                                           onChange={() => toggleAccountSelection(row.original._id)}/>
-                                </td>
-                                {row.getVisibleCells().map((cell) => (
-                                    <td key={cell.id} className="p-2"
-                                        onClick={() => navigate(`/update-doc-account/${row.original._id}`)}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </td>
-                                ))}
-                            </motion.tr>
-                        ))
-                    ) : (
-                        <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
-                                   animate={{opacity: 1}}>
-                            <td colSpan={12}>No Doctor Account Found!</td>
-                        </motion.tr>
-                    )}
-                </AnimatePresence>
-                </tbody>
+                                <div
+                                    className='relative w-full h-full  bg-indigo-50 group rounded-xl cursor-pointer'>
+                                    <img
+                                        className="w-full h-full object-cover rounded-[15px] transition-all duration-500 group-hover:opacity-80"
+                                        src={item.profile_image}
+                                        alt="pic"
+                                    />
+                                </div>
+                            </div>
+                            <div className='relative w-full h-[150px] rounded-[15px] bg-amber-400 rounded-tl-none'>
+                        <span className='absolute top-[-80px] h-[80px] bg-white w-[50%] border-t-[10px] border-white border-r-[10px] rounded-tr-[25px]
+                       '>
+                            <span
+                                className='absolute w-[25px] h-[25px] rounded-[50%] bg-transparent shadow-custom '></span>
+                            <span
+                                className='absolute bottom-0 right-[-25px] w-[25px] h-[25px] bg-transparent rounded-[50%] shadow-custom2 '></span>
+                        </span>
+
+                                <p>{item.username}</p>
+                            </div>
+                        </div>
+                    ))) : <div className='max-h-[90h] w-[90vw]'>
+                        <img className='w-[50vw]' src={assets.no_data} alt='no records'/>
+                    </div>
 
 
-            </motion.table>
+                }
+            </motion.div>
+
+            {/*<motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"*/}
+            {/*              initial={{opacity: 0}} animate={{opacity: 1}}>*/}
+            {/*    <thead className="bg-gray-600">*/}
+            {/*    {table.getHeaderGroups().map((headerGroup) => (*/}
+            {/*        <tr key={headerGroup.id}>*/}
+            {/*            <th className="p-2">*/}
+            {/*                <input*/}
+            {/*                    type="checkbox"*/}
+            {/*                    checked={table.getRowModel().rows.length > 0 && table.getRowModel().rows.every((row) => selectedAccountIds.includes(row.original._id))}*/}
+            {/*                    onChange={(e) =>*/}
+            {/*                        setSelectedAccountIds(*/}
+            {/*                            e.target.checked ? table.getRowModel().rows.map((row) => row.original._id) : []*/}
+            {/*                        )*/}
+            {/*                    }*/}
+            {/*                />*/}
+            {/*            </th>*/}
+            {/*            {headerGroup.headers.map((header) => (*/}
+            {/*                <th key={header.id}*/}
+            {/*                    className="capitalize p-2">{flexRender(header.column.columnDef.header, header.getContext())}</th>*/}
+            {/*            ))}*/}
+            {/*        </tr>*/}
+            {/*    ))}*/}
+            {/*    </thead>*/}
+            {/*    <tbody>*/}
+            {/*    <AnimatePresence>*/}
+            {/*        {table.getRowModel().rows.length ? (*/}
+            {/*            table.getRowModel().rows.map((row, i) => (*/}
+            {/*                <motion.tr*/}
+            {/*                    key={row.id}*/}
+            {/*                    className={i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'}*/}
+            {/*                    initial={{y: 10, opacity: 0}}*/}
+            {/*                    animate={{y: 0, opacity: 1}}*/}
+            {/*                    exit={{y: 10, opacity: 0}}*/}
+            {/*                >*/}
+            {/*                    <td className="p-2">*/}
+            {/*                        <input type="checkbox" checked={selectedAccountIds.includes(row.original._id)}*/}
+            {/*                               onChange={() => toggleAccountSelection(row.original._id)}/>*/}
+            {/*                    </td>*/}
+            {/*                    {row.getVisibleCells().map((cell) => (*/}
+            {/*                        <td key={cell.id} className="p-2"*/}
+            {/*                            onClick={() => navigate(`/update-doc-account/${row.original._id}`)}>*/}
+            {/*                            {flexRender(cell.column.columnDef.cell, cell.getContext())}*/}
+            {/*                        </td>*/}
+            {/*                    ))}*/}
+            {/*                </motion.tr>*/}
+            {/*            ))*/}
+            {/*        ) : (*/}
+            {/*            <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}*/}
+            {/*                       animate={{opacity: 1}}>*/}
+            {/*                <td colSpan={12}>No Doctor Account Found!</td>*/}
+            {/*            </motion.tr>*/}
+            {/*        )}*/}
+            {/*    </AnimatePresence>*/}
+            {/*    </tbody>*/}
+
+
+            {/*</motion.table>*/}
 
             {/* Pagination */}
             <div className="flex items-center justify-end gap-2 mt-4">

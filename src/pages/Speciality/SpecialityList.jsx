@@ -9,7 +9,6 @@ import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/r
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {useQuery} from "@tanstack/react-query";
-import * as accountService from "../../service/AccountService";
 import {assets} from "../../assets/assets";
 
 

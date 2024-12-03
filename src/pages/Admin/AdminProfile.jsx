@@ -8,10 +8,12 @@ import {toast} from "react-toastify";
 import Swal from "sweetalert2";
 import bcrypt from "bcryptjs";
 import validator from "validator";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
+import Error from "../../components/Error";
 
 const AdminProfile = () => {
     const {aToken, logout} = useContext(AdminContext);
-    const [adminData, setAdminData] = useState({});
     const [isEdit, setIsEdit] = useState(false);
     const {t} = useTranslation();
     const [image, setImage] = useState(false);
@@ -19,7 +21,6 @@ const AdminProfile = () => {
     const [oldPass, setOldPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [checkNewPass, setCheckNewPass] = useState('');
-    const [hashPass, setHashPass] = useState('');
     const [isOldPassShaking, setIsOldPassShaking] = useState(false);
     const [isNewPassShaking, setIsNewPassShaking] = useState(false);
     const [isMatchPassShaking, setIsMatchPassShaking] = useState(false);
@@ -27,17 +28,44 @@ const AdminProfile = () => {
     const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
     const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
 
-    const getAdminData = async () => {
-        try {
-            const result = await accountService.getAdminProfile(aToken);
-            console.log(result)
-            if (result.success) {
-                setAdminData(result.adminData);
+    // const getAdminData = async () => {
+    //     try {
+    //         const result = await accountService.getAdminProfile(aToken);
+    //         console.log(result)
+    //         if (result.success) {
+    //             setAdminData(result.adminData);
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // };
+
+    const {data, isLoading, isError, refetch} = useQuery({
+        queryKey: ['admin'],
+        queryFn: async () => {
+            try {
+                const result = await accountService.getAdminProfile(aToken);
+                if (result.success) {
+                    return result.adminData;
+                } else {
+                    throw new Error(result.message || 'Failed to fetch admin profile');
+                }
+            } catch (error) {
+                throw new Error(error.message || 'An unexpected error occurred while fetching admin profile');
             }
-        } catch (e) {
-            console.log(e);
-        }
-    };
+        },
+        onError: (error) => {
+            console.error('Error:', error.message);
+        },
+        staleTime: 5 * 60 * 1000, // Cache data for 5 minutes to reduce unnecessary refetches
+        retry: 1,
+    });
+
+    const [adminData, setAdminData] = useState(data);
+
+    useEffect(() => {
+        console.log(adminData)
+    }, [adminData]);
 
     const showAlert = async (titleKey, icon = "warning") => {
         await Swal.fire({
@@ -70,7 +98,7 @@ const AdminProfile = () => {
     }
 
     const changePassword = async () => {
-        const match = await bcrypt.compare(oldPass, hashPass);
+        const match = await bcrypt.compare(oldPass, adminData.password);
         console.log(match)
 
         if (!match) {
@@ -161,8 +189,8 @@ const AdminProfile = () => {
             await accountService.updateCusAcc(formData, adminData._id, aToken);
 
             setIsEdit(false)
-            await getAdminData()
-
+            // await getAdminData()
+            refetch()
             await Swal.fire({
                 position: "top-end",
                 title: t("adminProfile.success"),
@@ -171,9 +199,9 @@ const AdminProfile = () => {
                 timer: 1500
             });
 
-            formData.forEach((value, key) => {
-                console.log(`${key}:${value}`);
-            });
+            // formData.forEach((value, key) => {
+            //     console.log(`${key}:${value}`);
+            // });
         } catch (e) {
             console.log(e);
             toast.error(e.message);
@@ -181,11 +209,11 @@ const AdminProfile = () => {
     }
 
 
-    useEffect(() => {
-        if (aToken) {
-            getAdminData();
-        }
-    }, [aToken]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getAdminData();
+    //     }
+    // }, [aToken]);
 
     const fadeIn = {
         hidden: {opacity: 0, y: 10},
@@ -196,6 +224,23 @@ const AdminProfile = () => {
         hidden: {opacity: 0, scale: 0.9},
         visible: {opacity: 1, scale: 1, transition: {duration: 0.3}},
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader/>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <Error/>
+            </div>
+        )
+    }
+
 
     return adminData && (
         <div>
@@ -325,22 +370,22 @@ const AdminProfile = () => {
                                         {t("doctor.profile.new")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
-                                    <input
-                                        id="health-issue"
-                                        value={newPass}
-                                        onChange={(e) => setNewPass(e.target.value)}
-                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
-                                        required
-                                        aria-required="true"
-                                        tabIndex='2'
-                                    />
-                                    <motion.img
-                                        id='eye-icon'
-                                        src={isNewPasswordVisible ? assets.open : assets.close}
-                                        alt="close"
-                                        className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
-                                        onClick={togglePasswordVisibility2}
-                                    />
+                                        <input
+                                            id="health-issue"
+                                            value={newPass}
+                                            onChange={(e) => setNewPass(e.target.value)}
+                                            className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isNewPassShaking ? 'shake' : ''}`}
+                                            required
+                                            aria-required="true"
+                                            tabIndex='2'
+                                        />
+                                        <motion.img
+                                            id='eye-icon'
+                                            src={isNewPasswordVisible ? assets.open : assets.close}
+                                            alt="close"
+                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            onClick={togglePasswordVisibility2}
+                                        />
                                     </motion.div>
                                 </motion.div>
 
@@ -356,23 +401,23 @@ const AdminProfile = () => {
                                         {t("doctor.profile.cnew")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
-                                    <input
-                                        id="health-issue"
-                                        disabled={!newPass}
-                                        value={checkNewPass}
-                                        onChange={(e) => setCheckNewPass(e.target.value)}
-                                        className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isMatchPassShaking ? 'shake' : ''}`}
-                                        required
-                                        aria-required="true"
-                                        tabIndex='3'
-                                    />
-                                    <motion.img
-                                        id='eye-icon'
-                                        src={isCNewPasswordVisible ? assets.open : assets.close}
-                                        alt="close"
-                                        className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
-                                        onClick={togglePasswordVisibility3}
-                                    />
+                                        <input
+                                            id="health-issue"
+                                            disabled={!newPass}
+                                            value={checkNewPass}
+                                            onChange={(e) => setCheckNewPass(e.target.value)}
+                                            className={`w-[400px] p-3 mt-2 border border-gray-300 rounded-lg shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${isMatchPassShaking ? 'shake' : ''}`}
+                                            required
+                                            aria-required="true"
+                                            tabIndex='3'
+                                        />
+                                        <motion.img
+                                            id='eye-icon'
+                                            src={isCNewPasswordVisible ? assets.open : assets.close}
+                                            alt="close"
+                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            onClick={togglePasswordVisibility3}
+                                        />
                                     </motion.div>
                                 </motion.div>
 
@@ -544,7 +589,7 @@ const AdminProfile = () => {
                                     >
                                         {t("doctor.profile.change")}
                                     </motion.button>
-                                   |
+                                    |
                                     <motion.button
                                         onClick={resetPass}
                                         className="text-primary text-sm transition-all italic"

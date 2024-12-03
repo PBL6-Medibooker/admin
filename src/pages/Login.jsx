@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { AdminContext } from "../context/AdminContext.jsx";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { DoctorContext } from "../context/DoctorContext";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import * as accountService from "../service/AccountService";
+import validator from 'validator'
 
 
 const Login = () => {
@@ -13,24 +13,41 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { setAToken, backendUrl } = useContext(AdminContext);
+    const { setAToken } = useContext(AdminContext);
     const { setDToken } = useContext(DoctorContext);
+
+    const checkEmail = async () =>{
+        if(!validator.isEmail(email)){
+            await Swal.fire({
+                position: "top-end",
+                title:'Please enter an email !',
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false,
+                width: '400px',
+            });
+            return false;
+        }
+        return true;
+    }
 
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         try {
+            const isEmail = await checkEmail();
+            if(!isEmail) return;
+            // await checkEmail()
             if (state === 'Admin') {
-                // const result = await axios.post(backendUrl + '/acc/login', { email, password });
                 const result = await accountService.login(email, password);
                 if (result.role === 'admin') {
                     localStorage.setItem('aToken', result.token);
                     setAToken(result.token);
                 } else {
-                    // toast.error('This is for Admin Only');
 
                     await Swal.fire({
                         position: "top-end",
-                        title:'This is for Admin Only',
+                        title:'This is for admin only',
                         icon: "error",
                         showConfirmButton: false,
                         timer: 1500,
@@ -46,7 +63,7 @@ const Login = () => {
                 } else {
                     await Swal.fire({
                         position: "top-end",
-                        title:'This is for Doctor Only',
+                        title:'This is for doctor only',
                         icon: "error",
                         showConfirmButton: false,
                         timer: 1500,
@@ -76,6 +93,30 @@ const Login = () => {
         }
     };
 
+    const effect = () => {
+        const labels = document.querySelectorAll("label");
+        labels.forEach((label) => {
+            label.innerHTML = label.innerText
+                .split("")
+                .map(
+                    (letter, i) =>
+                        `<span
+                        class="inline-block transform transition-all duration-500 ease-in-out
+                         delay-[${i * 50}ms] hover:text-primary hover:scale-125
+                         peer-valid:text-primary peer-focus:text-primary
+                         peer-valid:tracking-[0.15em] peer-focus:tracking-[0.15em]"
+                    >
+                        ${letter}
+                    </span>`
+                )
+                .join("");
+        });
+    };
+
+    useEffect(() => {
+        effect();
+    }, []);
+
     return (
         <motion.form
             onSubmit={onSubmitHandler}
@@ -87,54 +128,77 @@ const Login = () => {
         >
             <motion.div
                 className="flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-[#5E5E5E] text-sm shadow-lg"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.4 }}
+                initial={{scale: 0.9, opacity: 0}}
+                animate={{scale: 1, opacity: 1}}
+                transition={{duration: 0.4}}
             >
                 <motion.p
                     className="text-2xl font-semibold m-auto"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
+                    initial={{y: -20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.2, duration: 0.5}}
                 >
                     <span className="text-primary">{state}</span> Login
                 </motion.p>
-                <motion.div className="w-full" whileHover={{ scale: 1.02 }}>
-                    <p>Email</p>
+
+                <motion.div className="relative w-full mt-6" whileHover={{scale: 1.05}}>
                     <input
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
                         tabIndex="1"
-                        className="border border-[#DADADA] rounded w-full p-2 mt-1"
-                        type="email"
+                        className="peer bg-transparent border-b outline-none border-gray-300 w-full p-2 mt-1
+                        focus:border-primary focus:ring-2 focus:ring-primary
+                        transition-all duration-300"
+                        type="text"
                         required
                         autoFocus
                     />
+                    <label
+                        className="text-gray-500 absolute left-0 pt-2 pl-2 uppercase pointer-events-none
+                         peer-focus:text-primary peer-valid:text-primary
+                         peer-focus:-translate-y-6 peer-valid:-translate-y-6
+                         peer-focus:tracking-widest peer-valid:tracking-widest
+                         transition-all duration-300"
+                    >
+                        Email
+                    </label>
                 </motion.div>
-                <motion.div className="w-full" whileHover={{ scale: 1.02 }}>
-                    <p>Password</p>
+
+                <motion.div className="relative w-full mt-6" whileHover={{scale: 1.05}}>
                     <input
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                         tabIndex="2"
-                        className="border border-[#DADADA] rounded w-full p-2 mt-1"
+                        className="peer bg-transparent border-b outline-none border-gray-300 w-full p-2 mt-1
+                        focus:border-primary focus:ring-2 focus:ring-primary
+                        transition-all duration-300"
                         type="password"
                         required
                     />
+                    <label
+                        className="text-gray-500 absolute left-0 pt-2 pl-2 uppercase pointer-events-none
+                         peer-focus:text-primary peer-valid:text-primary
+                         peer-focus:-translate-y-6 peer-valid:-translate-y-6
+                         peer-focus:tracking-widest peer-valid:tracking-widest
+                         transition-all duration-300"
+                    >
+                        Password
+                    </label>
                 </motion.div>
                 <motion.button
                     type="submit"
-                    className="bg-primary text-white w-full py-2 rounded-md text-base"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="bg-primary text-white w-full py-2 rounded-md text-base
+                    hover:tracking-widest transition-all duration-500 uppercase"
+                    whileHover={{scale: 1.05}}
+                    whileTap={{scale: 0.95}}
                 >
                     Login
                 </motion.button>
                 <motion.div
                     className="flex justify-between gap-9"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    transition={{delay: 0.3}}
                 >
                     <span>
                         {state === "Admin" ? (
