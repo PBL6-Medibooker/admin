@@ -222,7 +222,8 @@
       "p": " Are you sure you want to delete?",
       "cancel": "Cancel",
       "message": "No speciality selected for deletion",
-      "success": "Deleted Speciality!"
+      "success": "Deleted Speciality!",
+      "filterAll": "All"
     },
     "add": {
       "name": "Speciality name already exists",

@@ -20,19 +20,14 @@ import Swal from "sweetalert2";
 
 const AccountList = () => {
     const columnHelper = createColumnHelper();
-
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
-
-
     const [isUser, setIsUser] = useState(true);
     const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(false);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
-
-
     const {aToken} = useContext(AdminContext);
 
     const columns = [

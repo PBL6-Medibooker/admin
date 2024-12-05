@@ -320,7 +320,7 @@ const RestoreAccount = () => {
                 {/*</Modal>*/}
             </div>
             <div>
-                <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} t={t}/>
+                <SearchInput globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} t={(t("account.accountList.search"))}/>
             </div>
             <table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse ">
                 <thead className="bg-gray-600">

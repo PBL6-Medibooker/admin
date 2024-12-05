@@ -46,7 +46,7 @@ const Sidebar = () => {
 
 
     return (
-        <div className='bg-white border-r'>
+        <div className='bg-white border-r h-[100vh]'>
             <motion.div
                 className={`relative z-10 transition-all duration-300 ease-in-out flex-shrink-0 ${
                     isSidebarOpen ? "w-64" : "w-20"

@@ -225,7 +225,8 @@
       "p": "Bạn có chắc chắn muốn xoá chuyên khoa không?",
       "cancel": "Huỷ",
       "message": "Không có chuyên khoa nào được chọn!",
-      "success": "Đã xoá chuyên khoa!"
+      "success": "Đã xoá chuyên khoa!",
+      "filterAll": "Tất cả chuyên khoa"
 
     },
     "add": {

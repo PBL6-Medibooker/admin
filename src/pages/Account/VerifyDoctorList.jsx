@@ -25,12 +25,12 @@ const VerifyDoctorList = () => {
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
-    const [isUser, setIsUser] = useState(false);
-    const [isVerify, setIsVerify] = useState(true);
-    const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData} = useContext(AdminContext);
+    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec} = useContext(AdminContext);
     const {t} = useTranslation();
+    const [filterValue, setFilterValue] = useState("");
+    const [filteredDoctors, setFilteredDoctors] = useState([]);
+
 
 
     const columns = [
@@ -54,9 +54,9 @@ const VerifyDoctorList = () => {
             header: t("account.verified.phone")
         })
     ];
-    const [data, setData] = useState([]);
     const table = useReactTable({
-        data: verifiedDoctor || [],
+        // data: verifiedDoctor || [],
+        data: filteredDoctors || [],
         columns,
         state: {globalFilter},
         getFilteredRowModel: getFilteredRowModel(),
@@ -73,13 +73,30 @@ const VerifyDoctorList = () => {
 
     const getAccountList = async () => {
         try {
-            const result = await accountService.findAll(isUser, hiddenState, isVerify, aToken);
-            console.log(result)
-            setData(result);
+            rVerifyDoctorData()
+            console.log(verifiedDoctor)
+            setFilteredDoctors(verifiedDoctor)
         } catch (e) {
             console.log(e.error);
         }
     };
+
+    const handleFilterChange = (event) => {
+        const selectedValue = event.target.value;
+        setFilterValue(selectedValue);
+
+        if (selectedValue) {
+            const filtered = verifiedDoctor.filter((doctor) =>
+                doctor.speciality_id?.name.toLowerCase() === selectedValue.toLowerCase()
+            );
+            console.log("Selected Value:", selectedValue);
+            console.log("Filtered Data:", filtered);
+            setFilteredDoctors(filtered);
+        } else {
+            setFilteredDoctors(verifiedDoctor);
+        }
+    };
+
 
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
@@ -127,9 +144,11 @@ const VerifyDoctorList = () => {
 
     useEffect(() => {
         if(aToken){
+            getAccountList()
             rVerifyDoctorData()
+            refetchSpec()
         }
-    }, [aToken]);
+    }, [aToken, verifiedDoctor]);
 
 
 
@@ -168,6 +187,22 @@ const VerifyDoctorList = () => {
                     onChange={(e) => setGlobalFilter(e.target.value)}
                     className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
                 />
+
+                <motion.div>
+                    <select
+                        className="px-4 py-2 border rounded-lg"
+                        value={filterValue}
+                        onChange={handleFilterChange}
+                    >
+                        <option value="">{t("speciality.list.filterAll")}</option>
+                        {specialities?.map((item) => (
+                            <option key={item._id} value={item.name}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
+                </motion.div>
+
             </div>
 
 

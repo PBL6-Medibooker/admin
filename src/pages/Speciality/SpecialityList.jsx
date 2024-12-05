@@ -24,7 +24,6 @@ const SpecialityList = () => {
     const location = useLocation();
     const {isDeleted} = location.state || ""
 
-    const {imageUpdated} = location.state || {};
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 8,
@@ -37,12 +36,11 @@ const SpecialityList = () => {
         if (isDeleted) {
             setHiddenState('true')
             const result = await specialityService.findAll(hiddenState, aToken)
-            // setImage(result.speciality_image)
             setSpecialities(result);
+
         } else {
             setHiddenState('no')
             const result = await specialityService.findAll(hiddenState, aToken)
-            // setImage(result.speciality_image)
             setSpecialities(result);
         }
     }
@@ -84,6 +82,7 @@ const SpecialityList = () => {
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
     );
+
 
 
     const toggleAccountSelection = (id) => {
@@ -299,113 +298,113 @@ const SpecialityList = () => {
                 <AnimatePresence>
                     {paginatedData.length > 0 ? (
 
-                            paginatedData?.map((item, index) => (
+                        paginatedData?.map((item, index) => (
 
-                                <div
-                                    className="flex relative max-w-56 h-[350px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-amber-400">
-                                    <div className="absolute inset-[10px] rounded-[10px] bg-gray-500">
-                                        <div
-                                            className="absolute w-[140px] h-[140px] bg-amber-400 rounded-br-[50%] transition-all duration-500 hover:w-full">
+                            <div
+                                className="flex relative max-w-56 h-[300px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-amber-400">
+                                <div className="absolute inset-[10px] rounded-[10px] bg-gray-500">
+                                    <div
+                                        className="absolute w-[140px] h-[140px] bg-amber-400 rounded-br-[50%] transition-all duration-500 hover:w-full">
             <span
                 className="absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4"></span>
-                                            <span
-                                                className="absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4">
+                                        <span
+                                            className="absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4">
 
                                             </span>
-                                            <div
-                                                className="flex justify-center items-center absolute inset-[10px] bg-gray-500 rounded-[50%] rounded-tr-[10px]
+                                        <div
+                                            className="flex justify-center items-center absolute inset-[10px] bg-gray-500 rounded-[50%] rounded-tr-[10px]
                                                  rounded-bl-[10px]">
-                                                <img
-                                                    className="w-full h-full object-cover rounded-[50%] transition-all duration-500 group-hover:opacity-80
+                                            <img
+                                                className="w-full h-full object-cover rounded-[50%] transition-all duration-500 group-hover:opacity-80
                                                     rounded-tr-[10px] rounded-bl-[10px] "
-                                                    src={`${item.speciality_image}?remove-bg=true`}
-                                                    alt="Speciality"
-                                                    style={{backgroundColor: "transparent"}}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="">
-                                            {/* content */}
+                                                src={`${item.speciality_image}?remove-bg=true`}
+                                                alt="Speciality"
+                                                style={{backgroundColor: "transparent"}}
+                                            />
                                         </div>
                                     </div>
+                                    <div className="">
+                                        {/* content */}
+                                    </div>
                                 </div>
+                            </div>
 
 
-                                // <motion.div
-                                //     className='border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group'
-                                //     // key={index} dung cai nay thi 3 item dau ko co hieu ung
-                        //     key={item._id}
-                        //     whileHover={{scale: 1.05, boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'}}
-                        //     variants={{
-                        //         hidden: {opacity: 0, y: 20},
-                        //         visible: {opacity: 1, y: 0}
-                        //     }}
-                        //     transition={{duration: 0.3, ease: "easeOut"}}
-                        //
-                        //     initial={{opacity: 0, scale: 0.9, y: 30}}
-                        //     animate={{opacity: 1, scale: 1, y: 0}}
-                        // >
-                        //     <div
-                        //         className='relative w-56 h-56  bg-indigo-50 group rounded-xl overflow-hidden cursor-pointer'>
-                        //         <img
-                        //             className="w-full h-full object-cover transition-all duration-500 group-hover:opacity-80"
-                        //             // src={`${item.speciality_image}?t=${new Date().getTime()}`}
-                        //             src={item.speciality_image}
-                        //             alt="Speciality"
-                        //         />
-                        //
-                        //
-                        //         <button
-                        //             onClick={() => navigate(`/get-speciality/${item._id}`)}
-                        //             className='absolute inset-0 flex items-center justify-center bg-primary/75 text-white text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
-                        //         >
-                        //             {t("speciality.list.edit")}
-                        //         </button>
-                        //     </div>
-                        //     <div className='p-4'>
-                        //         <div className='flex justify-end'>
-                        //             <input
-                        //                 type='checkbox'
-                        //                 checked={selectedSpecialityIds.includes(item._id)}
-                        //                 onChange={() => toggleAccountSelection(item._id)}
-                        //             />
-                        //         </div>
-                        //         <p className='text-neutral-800 text-lg font-medium'>{item.name}</p>
-                        //         <p className='text-zinc-600 text-sm'>{item.description}</p>
-                        //     </div>
-                        // </motion.div>
+                            // <motion.div
+                            //     className='border border-indigo-200 rounded-xl max-w-56 overflow-hidden cursor-pointer group'
+                            //     // key={index} dung cai nay thi 3 item dau ko co hieu ung
+                            //     key={item._id}
+                            //     whileHover={{scale: 1.05, boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'}}
+                            //     variants={{
+                            //         hidden: {opacity: 0, y: 20},
+                            //         visible: {opacity: 1, y: 0}
+                            //     }}
+                            //     transition={{duration: 0.3, ease: "easeOut"}}
+                            //
+                            //     initial={{opacity: 0, scale: 0.9, y: 30}}
+                            //     animate={{opacity: 1, scale: 1, y: 0}}
+                            // >
+                            //     <div
+                            //         className='relative w-56 h-56  bg-indigo-50 group rounded-xl overflow-hidden cursor-pointer'>
+                            //         <img
+                            //             className="w-full h-full object-cover transition-all duration-500 group-hover:opacity-80"
+                            //             // src={`${item.speciality_image}?t=${new Date().getTime()}`}
+                            //             src={item.speciality_image}
+                            //             alt="Speciality"
+                            //         />
+                            //
+                            //
+                            //         <button
+                            //             onClick={() => navigate(`/get-speciality/${item._id}`)}
+                            //             className='absolute inset-0 flex items-center justify-center bg-primary/75 text-white text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
+                            //         >
+                            //             {t("speciality.list.edit")}
+                            //         </button>
+                            //     </div>
+                            //     <div className='p-4'>
+                            //         <div className='flex justify-end'>
+                            //             <input
+                            //                 type='checkbox'
+                            //                 checked={selectedSpecialityIds.includes(item._id)}
+                            //                 onChange={() => toggleAccountSelection(item._id)}
+                            //             />
+                            //         </div>
+                            //         <p className='text-neutral-800 text-lg font-medium'>{item.name}</p>
+                            //         <p className='text-zinc-600 text-sm'>{item.description}</p>
+                            //     </div>
+                            // </motion.div>
                         ))
 
-                        ) : <div className='max-h-[90h] w-[90vw]'>
+                    ) : <div className='max-h-[90h] w-[90vw]'>
                         <img className='w-[50vw]' src={assets.no_data} alt='no records'/>
-        </div>
+                    </div>
 
-}
-</AnimatePresence>
-</motion.div>
+                    }
+                </AnimatePresence>
+            </motion.div>
 
-{/* Pagination */
-}
-{
-    paginatedData.length > 0 &&
-    <div className="flex items-center justify-end gap-2 mt-4">
-        <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
-        >
-            {"<"}
-        </button>
-        <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
-        >
-            {">"}
-        </button>
+            {/* Pagination */
+            }
+            {
+                paginatedData.length > 0 &&
+                <div className="flex items-center justify-end gap-2 mt-4">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md hover:bg-gray-200 transition-all duration-300"
+                    >
+                        {">"}
+                    </button>
 
-        <div className="flex items-center gap-1">
-            <span>{t("account.accountList.page")}</span>
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
                         <strong>
                             {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
                         </strong>

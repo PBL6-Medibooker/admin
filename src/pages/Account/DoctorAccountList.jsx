@@ -28,8 +28,9 @@ const DoctorAccountList = () => {
     const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const {aToken} = useContext(AdminContext);
+    const {aToken, specialities, refetchSpec} = useContext(AdminContext);
     const {t} = useTranslation();
+    const [filterValue, setFilterValue] = useState("");
 
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
@@ -80,6 +81,20 @@ const DoctorAccountList = () => {
         }
     };
 
+    // const handleFilterChange = (event) => {
+    //     const selectedValue = event.target.value;
+    //     setFilterValue(selectedValue);
+    //
+    //     if (selectedValue) {
+    //         const filtered = specialities.filter((spec) =>
+    //             spec.name.toLowerCase().includes(selectedValue.toLowerCase())
+    //         );
+    //         setFilterValue(filtered);
+    //     } else {
+    //         setFilterValue(specialities);
+    //     }
+    // };
+
     const openDeleteModal = async () => {
         if (selectedAccountIds?.length === 0) {
             await Swal.fire({
@@ -121,6 +136,7 @@ const DoctorAccountList = () => {
     useEffect(() => {
         if (aToken) {
             getAccountList();
+            refetchSpec();
         }
     }, [aToken, hiddenState]);
 
@@ -145,7 +161,7 @@ const DoctorAccountList = () => {
                 </div>
             </div>
 
-            <div className="mt-5">
+            <motion.div className="flex mt-5 gap-5">
                 <input
                     type="text"
                     placeholder={t("account.accountList.search")}
@@ -153,34 +169,35 @@ const DoctorAccountList = () => {
                     onChange={(e) => setGlobalFilter(e.target.value)}
                     className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
                 />
-            </div>
+
+            </motion.div>
 
 
 
-            <AnimatePresence>
-                {open && (
-                    <Modal open={open} onClose={() => setOpen(false)}>
-                        <motion.div className="text-center w-72" initial={{scale: 0.8, opacity: 0}}
-                                    animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
-                            <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
-                            <div className="mx-auto my-4 w-60">
-                                <h3 className="text-lg font-black text-gray-800">{t("account.accountList.confirmDelete")}</h3>
-                                <p className="text-sm text-gray-600">{t("account.accountList.pCD")}</p>
-                            </div>
-                            <div className="flex gap-4 mt-6">
-                                <button onClick={softDeleteAccounts}
-                                        className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">
-                                    {t("account.accountList.confirm")}
-                                </button>
-                                <button onClick={() => setOpen(false)}
-                                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">
-                                    {t("account.accountList.cancel")}
-                                </button>
-                            </div>
-                        </motion.div>
-                    </Modal>
-                )}
-            </AnimatePresence>
+    <AnimatePresence>
+        {open && (
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <motion.div className="text-center w-72" initial={{scale: 0.8, opacity: 0}}
+                            animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
+                    <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
+                    <div className="mx-auto my-4 w-60">
+                        <h3 className="text-lg font-black text-gray-800">{t("account.accountList.confirmDelete")}</h3>
+                        <p className="text-sm text-gray-600">{t("account.accountList.pCD")}</p>
+                    </div>
+                    <div className="flex gap-4 mt-6">
+                        <button onClick={softDeleteAccounts}
+                                className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150">
+                            {t("account.accountList.confirm")}
+                        </button>
+                        <button onClick={() => setOpen(false)}
+                                className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150">
+                            {t("account.accountList.cancel")}
+                        </button>
+                    </div>
+                </motion.div>
+            </Modal>
+        )}
+    </AnimatePresence>
 
             <motion.table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
                           initial={{opacity: 0}} animate={{opacity: 1}}>

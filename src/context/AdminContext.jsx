@@ -3,6 +3,7 @@ import {useQuery} from "@tanstack/react-query";
 import Error from "../components/Error";
 import Loader from "../components/Loader";
 import * as accountService from "../service/AccountService";
+import * as specialityService from "../service/SpecialityService";
 
 
 export const AdminContext = createContext();
@@ -31,11 +32,25 @@ const AdminContextProvider = (props) => {
         aToken && localStorage.removeItem("aToken");
     };
 
+    const {data: specialities, refetch: refetchSpec  } = useQuery({
+        queryKey: ['specList'],
+        queryFn: async () =>{
+            try {
+                const data = await specialityService.findAll(false, aToken)
+                return data;
+            } catch (e) {
+                console.error(e);
+                throw new Error("Failed to load");
+            }
+        }
+    })
+
 
 
 
     const value = {
-        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout,rVerifyDoctorData
+        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout,rVerifyDoctorData, specialities,
+        refetchSpec
     }
 
     return (

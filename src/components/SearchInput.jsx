@@ -10,7 +10,7 @@ const SearchInput = ({ globalFilter, setGlobalFilter, t }) => {
         >
             <motion.input
                 type="text"
-                placeholder={t("account.accountList.search")}
+                placeholder={t}
                 value={globalFilter || ""}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
