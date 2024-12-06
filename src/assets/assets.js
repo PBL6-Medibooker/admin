@@ -25,6 +25,7 @@ import profile from './profile.svg'
 import trash from './trash.svg'
 import close from './eye-close.png'
 import open from './eye-open.png'
+import ranking from './ranking.svg'
 
 export const assets = {
     add_icon,
@@ -53,5 +54,6 @@ export const assets = {
     profile,
     trash,
     close,
-    open
+    open,
+    ranking
 }

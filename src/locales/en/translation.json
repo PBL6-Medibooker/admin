@@ -541,5 +541,12 @@
       "ctitle": "Top 5 Most Comment Post",
       "cc": "comments"
     }
+  },
+  "admin": {
+    "dashboard": {
+      "latest": "Latest Bookings",
+      "noData": "No data available!",
+      "ranking": "Most Active Users"
+    }
   }
 }

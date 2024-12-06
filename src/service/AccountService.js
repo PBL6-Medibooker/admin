@@ -213,6 +213,7 @@ export const getAdminProfile = async (authorization) => {
         return result.data;
     } catch (e) {
         console.error(e);
+        throw e;
     }
 };
 

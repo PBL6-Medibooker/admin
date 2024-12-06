@@ -84,7 +84,6 @@ const SpecialityList = () => {
     );
 
 
-
     const toggleAccountSelection = (id) => {
         setSelectedSpecialityIds((prevSelected) =>
             prevSelected.includes(id)
@@ -301,30 +300,41 @@ const SpecialityList = () => {
                         paginatedData?.map((item, index) => (
 
                             <div
-                                className="flex relative max-w-56 h-[300px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-amber-400">
-                                <div className="absolute inset-[10px] rounded-[10px] bg-gray-500">
+                                className="flex relative max-w-56 h-[300px] rounded-[20px] rounded-tl-[70px] overflow-hidden"
+                                style={{
+                                    background: 'linear-gradient(to bottom, #00A6A9 0%, #0B5E87 50%)',
+                                }}>
+                                <div className="absolute inset-[10px] rounded-[10px] bg-blue-50">
                                     <div
-                                        className="absolute w-[140px] h-[140px] bg-amber-400 rounded-br-[50%] transition-all duration-500 hover:w-full">
-            <span
-                className="absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4"></span>
-                                        <span
-                                            className="absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom4">
+                                        className="absolute w-[140px] h-[140px] rounded-br-[50%] transition-all duration-500
+                                        {/*hover:w-full*/}
 
+                                        "
+                                        style={{
+                                            background: 'linear-gradient(to bottom, #00A6A9 0%, #0B5E87 50%)',
+                                        }}
+                                    >
+                                        <span
+                                            className="absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px]
+                                         bg-transparent shadow-custom9"
+                                        >
+                                        </span>
+                                        <span
+                                            className="absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom8">
                                             </span>
                                         <div
-                                            className="flex justify-center items-center absolute inset-[10px] bg-gray-500 rounded-[50%] rounded-tr-[10px]
+                                            className="flex justify-center items-center absolute inset-[10px] bg-blue-50 rounded-[50%] rounded-tr-[10px]
                                                  rounded-bl-[10px]">
                                             <img
                                                 className="w-full h-full object-cover rounded-[50%] transition-all duration-500 group-hover:opacity-80
                                                     rounded-tr-[10px] rounded-bl-[10px] "
                                                 src={`${item.speciality_image}?remove-bg=true`}
                                                 alt="Speciality"
-                                                style={{backgroundColor: "transparent"}}
                                             />
                                         </div>
                                     </div>
-                                    <div className="">
-                                        {/* content */}
+                                    <div className="text-center mt-48 text-black">
+                                        <p className='font-bold'>{item.name}</p>
                                     </div>
                                 </div>
                             </div>

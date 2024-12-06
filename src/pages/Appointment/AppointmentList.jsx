@@ -16,27 +16,10 @@ const AppointmentList = () => {
     const navigate = useNavigate();
     const {aToken} = useContext(AdminContext);
     const {calculateAge, separateDayAndDate, dateFormat} = useContext(AppContext);
-
     const [appointments, setAppointments] = useState([]);
     const [open, setOpen] = useState(false)
     const [id, setId] = useState('')
     const {t} = useTranslation()
-
-
-    // const cancelBooking = async () =>{
-    //     try {
-    //         const data = await appointmentService.cancelAppointment(id, aToken);
-    //         if (data.message){
-    //             toast.success(data.message);
-    //             await getAllAppointment();
-    //             setOpen(false);
-    //         }
-    //
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
-
 
     const cancelBooking = async () => {
         try {
@@ -65,6 +48,7 @@ const AppointmentList = () => {
             const data = await appointmentService.findAll(false, aToken);
             if (data) {
                 setAppointments(data.reverse());
+                console.log(data)
             }
         } catch (e) {
             console.log(e);
@@ -97,10 +81,10 @@ const AppointmentList = () => {
                     </span>
                     ),
                 customBodyRenderLite: (dataIndex) => (
-                    <div className="flex items-center gap-2">
+                    <div className="flex w-8 h-8 items-center gap-2">
                         <img
-                            className="w-8 rounded-full"
-                            src={appointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
+                            className="w-full h-full object-cover rounded-full"
+                            src={appointments[dataIndex]?.user_id?.profile_image ? appointments[dataIndex]?.user_id?.profile_image : assets.user_icon}
                             alt=""
                         />
                         <p>{appointments[dataIndex]?.user_id?.username}</p>

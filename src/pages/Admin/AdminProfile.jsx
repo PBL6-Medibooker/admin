@@ -47,17 +47,27 @@ const AdminProfile = () => {
                 const result = await accountService.getAdminProfile(aToken);
                 if (result.success) {
                     return result.adminData;
-                } else {
-                    throw new Error(result.message || 'Failed to fetch admin profile');
                 }
             } catch (error) {
-                throw new Error(error.message || 'An unexpected error occurred while fetching admin profile');
+                if (error.response.data.error === "Request not authorized") {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Session expired",
+                        text: "You will be logged out.",
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        logout()
+                    });
+                } else {
+                    console.log("Error fetching doctor data:", error);
+                }
             }
         },
         onError: (error) => {
             console.error('Error:', error.message);
         },
-        staleTime: 5 * 60 * 1000, // Cache data for 5 minutes to reduce unnecessary refetches
+        staleTime: 5 * 60 * 1000,
         retry: 1,
     });
 

@@ -151,7 +151,6 @@ const VerifyDoctorList = () => {
     }, [aToken, verifiedDoctor]);
 
 
-
     if (isLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
@@ -178,19 +177,18 @@ const VerifyDoctorList = () => {
                 </div>
             </div>
 
-            <div className="mt-5">
+            <div className="flex gap-4 mt-4 mb-4">
                 <input
-
                     type="text"
                     placeholder={t("account.verified.search")}
                     value={globalFilter || ""}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                    className="w-[20vw] p-3 border border-gray-300 rounded"
                 />
 
                 <motion.div>
                     <select
-                        className="px-4 py-2 border rounded-lg"
+                        className="w-[20vw] pr-3 pl-3 pt-4 pb-4 border border-gray-300 rounded"
                         value={filterValue}
                         onChange={handleFilterChange}
                     >

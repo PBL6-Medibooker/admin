@@ -18,7 +18,7 @@ const AdminProfile = () => {
     const getAdminData = async () => {
         try {
             const result = await accountService.getAdminProfile(aToken);
-            console.log(result)
+            // console.log(result)
             if (result.success) {
                 setAdminData(result.adminData);
             }

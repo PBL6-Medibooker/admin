@@ -4,6 +4,7 @@ import Error from "../components/Error";
 import Loader from "../components/Loader";
 import * as accountService from "../service/AccountService";
 import * as specialityService from "../service/SpecialityService";
+import * as appointmentService from "../service/AppointmentService";
 
 
 export const AdminContext = createContext();
@@ -45,12 +46,37 @@ const AdminContextProvider = (props) => {
         }
     })
 
+    // const {data: appointmentList,  isLoading:aListLoading, isError:aListError, refetch: refetchAList } = useQuery({
+    //     queryKey: ["active"],
+    //     queryFn: async () =>{
+    //         try {
+    //               return await appointmentService.findAll(false, aToken)
+    //         } catch (e) {
+    //             console.error(e);
+    //             throw new Error("Failed to load");
+    //         }
+    //     }
+    // })
+
+    const { data: appointmentList,  isLoading:aListLoading, isError:aListError, refetch: refetchAList } = useQuery({
+        queryKey: ["aList"],
+        queryFn: async () => {
+            try {
+                const response = await appointmentService.findAll(false, aToken);
+                return response || [];
+            } catch (error) {
+                console.error("Failed to fetch appointments:", error);
+                throw new Error("Failed to load appointments");
+            }
+        },
+        enabled: !!aToken,
+    });
 
 
 
     const value = {
         backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout,rVerifyDoctorData, specialities,
-        refetchSpec
+        refetchSpec, appointmentList, refetchAList, aListLoading, aListError
     }
 
     return (

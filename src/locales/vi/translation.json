@@ -546,6 +546,14 @@
       "ctitle": "Bài đăng có lượt tương tác nhiều nhất ",
       "cc": "bình luận"
     }
+  },
+  "admin": {
+    "dashboard": {
+      "latest": "Lịch khám mới nhất",
+      "noData": "Không có dữ liệu!",
+      "ranking": "Tài khoản hoạt động tích cực nhất"
+
+    }
   }
 }
 
