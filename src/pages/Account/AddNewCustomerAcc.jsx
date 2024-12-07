@@ -47,9 +47,9 @@ const AddNewCustomerAcc = () => {
         formData.append('profile_image', cusImg);
 
 
-        const response = await accountService.addAccount(formData, aToken);
+        await accountService.addAccount(formData, aToken);
 
-        if (response?.success) {
+
             navigate('/account')
             // toast.success('Add New Customer Account Successful');
 
@@ -58,12 +58,10 @@ const AddNewCustomerAcc = () => {
                 title: t("account.addNewCustomerAcc.success"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
-        } else {
-            console.log("Showing error toast");
-            toast.error('Error');
-        }
+
 
     };
 
