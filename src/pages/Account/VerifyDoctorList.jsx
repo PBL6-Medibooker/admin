@@ -18,6 +18,7 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
+import SearchInput from "../../components/SearchInput";
 
 const VerifyDoctorList = () => {
 
@@ -160,35 +161,52 @@ const VerifyDoctorList = () => {
     }
 
     return (
-        <motion.div className="m-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
+        <motion.div className="mr-5 mt-5 mb-5 pl-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
                     animate={{opacity: 1}} exit={{opacity: 0}}>
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("account.verified.title")}</h1>
-                <div className="flex gap-1">
+                <h1 className="text-lg text-primary lg:text-2xl font-medium">
+                    {t("account.verified.title")}
+                </h1>
+                <div className="flex gap-3 mr-5">
+                    <motion.button
+                        onClick={openDeleteModal}
+                        className="flex items-center gap-2 px-8 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                        whileHover={{
+                            scale: 1.1,
+                            boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                        }}
+                        whileTap={{scale: 0.95}}
+                        transition={{type: "spring", stiffness: 300}}
+                    >
+                        <FaRegTrashAlt/>
+                        {t("account.verified.delete")}
+                    </motion.button>
 
-                    <button onClick={openDeleteModal}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> {t("account.verified.delete")}
-                    </button>
-                    <button onClick={() => navigate('/restore-account', {state: {isVerify: true}})}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> {t("account.verified.restore")}
-                    </button>
+                    <motion.button
+                        onClick={() => navigate('/restore-account', {state: {isVerify: true}})}
+                        className="flex items-center gap-2 px-8 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-md"
+                        whileHover={{
+                            scale: 1.1,
+                            boxShadow: "0px 8px 20px rgba(128, 128, 128, 0.5)",
+                        }}
+                        whileTap={{scale: 0.95}}
+                        transition={{type: "spring", stiffness: 300}}
+                    >
+                        <FaRegTrashAlt/>
+                        {t("account.verified.restore")}
+                    </motion.button>
                 </div>
             </div>
 
+
             <div className="flex gap-4 mt-4 mb-4">
-                <input
-                    type="text"
-                    placeholder={t("account.verified.search")}
-                    value={globalFilter || ""}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="w-[20vw] p-3 border border-gray-300 rounded"
-                />
+
+                <SearchInput globalFilter={globalFilter} setGlobalFilter={setFilteredDoctors}
+                t={t("account.verified.search")}/>
 
                 <motion.div>
                     <select
-                        className="w-[20vw] pr-3 pl-3 pt-4 pb-4 border border-gray-300 rounded"
+                        className="w-[20vw] p-4 border border-gray-300 rounded"
                         value={filterValue}
                         onChange={handleFilterChange}
                     >
@@ -266,9 +284,30 @@ const VerifyDoctorList = () => {
                         );
                     })
                 ) : (
-                    <div className="max-h-[90h] w-[90vw]">
-                        <img className="w-[50vw]" src={assets.no_data} alt="No records"/>
-                    </div>
+                    <motion.div
+                        className="max-h-[90vh] w-[80vw] flex flex-col items-center justify-center"
+                        initial={{opacity: 0, y: 50}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.5, ease: "easeOut"}}
+                    >
+                        {/*                <motion.img*/}
+                        {/*  className="w-[50vw]"*/}
+                        {/*  src={assets.no_data}*/}
+                        {/*  alt="No records"*/}
+                        {/*  initial={{ opacity: 0, scale: 0.8 }}*/}
+                        {/*  animate={{ opacity: 1, scale: 1 }}*/}
+                        {/*  transition={{ duration: 0.5, delay: 0.3 }}*/}
+                        {/*/> */}
+
+                        <motion.p
+                            className="text-lg text-gray-500 font-bold mt-4"
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.5, delay: 0.5}}
+                        >
+                            {t("admin.dashboard.noData")}
+                        </motion.p>
+                    </motion.div>
                 )}
             </motion.div>
 
@@ -297,6 +336,49 @@ const VerifyDoctorList = () => {
                     </Modal>
                 )}
             </AnimatePresence>
+
+
+            {/* Pagination */}
+            {(filteredDoctors.length > 0 || verifiedDoctor.length > 0) && <div className="flex items-center justify-end gap-2 mt-4">
+                <button
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    className="px-2 py-1 border border-gray-400 rounded-md"
+                >
+                    {"<"}
+                </button>
+                <button
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    className="px-2 py-1 border border-gray-400 rounded-md"
+                >
+                    {">"}
+                </button>
+
+                <div className="flex items-center gap-1">
+                    <span>{t("account.verified.page")}</span>
+                    <strong>
+                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                    </strong>
+                </div>
+
+                <div className="flex items-center gap-1">
+                    | {t("account.verified.goToPage")}:
+                    <input
+                        type="number"
+                        defaultValue={table.getState().pagination.pageIndex + 1}
+                        onChange={(e) => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                            table.setPageIndex(page);
+                        }}
+                        className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
+                    />
+                </div>
+            </div>
+                // <Pagination table={table} t={t}/>
+            }
+
+
             {/*  <motion.div*/}
             {/*      className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-5 ml-5 pb-5"*/}
             {/*      initial="hidden"*/}
@@ -437,47 +519,9 @@ const VerifyDoctorList = () => {
 
 
             {/*</motion.table>*/}
-
-            {/* Pagination */}
-            {verifiedDoctor.length > 0 && <div className="flex items-center justify-end gap-2 mt-4">
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {"<"}
-                </button>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {">"}
-                </button>
-
-                <div className="flex items-center gap-1">
-                    <span>{t("account.verified.page")}</span>
-                    <strong>
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </strong>
-                </div>
-
-                <div className="flex items-center gap-1">
-                    | {t("account.verified.goToPage")}:
-                    <input
-                        type="number"
-                        defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            table.setPageIndex(page);
-                        }}
-                        className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
-                    />
-                </div>
-            </div>
-                // <Pagination table={table} t={t}/>
-            }
         </motion.div>
+
+
     );
 };
 

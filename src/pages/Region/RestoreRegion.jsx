@@ -14,6 +14,7 @@ import Modal from "../../components/Modal/Modal";
 import { FaTrashRestoreAlt } from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/CustomButton";
 
 const RestoreRegion = () => {
     const columnHelper = createColumnHelper();
@@ -145,19 +146,26 @@ const RestoreRegion = () => {
 
             <div className='flex justify-between items-center'>
                 <h1 className='text-lg text-primary lg:text-2xl font-medium'>{t("region.restore.title")}</h1>
-                <div className='flex gap-1'>
-                    <button
+                <div className='flex gap-4 mr-4'>
+
+
+                    <CustomButton
                         onClick={restoreRegion}
-                        className='flex items-center gap-1 bg-green-700 px-10 py-3 mt-4 text-white rounded-full cursor-pointer'>
-                       <FaTrashRestoreAlt/> {t("region.restore.put")}
-                    </button>
+                        label={t("region.restore.put")}
+                        icon={FaTrashRestoreAlt}
+                        bgColor="bg-green-600"
+                        hoverColor="rgba(22, 163, 74, 0.4)"
+                        shadowColor="rgba(22, 163, 74, 0.4)"
+                    />
 
-                    <button onClick={() => setOpen(true)}
-                        className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer'
-                    >
-                        <FaRegTrashAlt/> {t("region.restore.pd")}
-                    </button>
-
+                    <CustomButton
+                        onClick={() => setOpen(true)}
+                        label={t("region.restore.pd")}
+                        icon={FaRegTrashAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(255, 0, 0, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
 
 
                 </div>

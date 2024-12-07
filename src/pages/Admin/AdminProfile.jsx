@@ -219,11 +219,11 @@ const AdminProfile = () => {
     }
 
 
-    // useEffect(() => {
-    //     if (aToken) {
-    //         getAdminData();
-    //     }
-    // }, [aToken]);
+    useEffect(() => {
+        if (aToken) {
+            refetch();
+        }
+    }, [aToken]);
 
     const fadeIn = {
         hidden: {opacity: 0, y: 10},

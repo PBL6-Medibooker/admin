@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     createColumnHelper, flexRender,
     getCoreRowModel,
@@ -6,17 +6,17 @@ import {
     getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../../context/AdminContext";
+import {useNavigate} from "react-router-dom";
+import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
-import { FaRegTrashAlt } from "react-icons/fa";
+import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
-import { toast } from "react-toastify";
-import { LuMapPin } from "react-icons/lu";
-import { LuMapPinOff } from "react-icons/lu";
+import {toast} from "react-toastify";
+import {LuMapPin} from "react-icons/lu";
+import {LuMapPinOff} from "react-icons/lu";
 import AddRegion from "./AddRegion";
 import UpdateRegion from "./UpdateRegion";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import {
     useQuery,
     useMutation,
@@ -26,9 +26,12 @@ import {
 } from '@tanstack/react-query'
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/CustomButton";
+import {MapPinPlus} from "lucide-react"
+
 
 const RegionList = () => {
-    const { aToken } = useContext(AdminContext);
+    const {aToken} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
     const navigate = useNavigate();
 
@@ -40,7 +43,7 @@ const RegionList = () => {
     const [updateModal, setUpdateModal] = useState(false);
     const [regionId, setRegionId] = useState('');
     const [data, setData] = useState([]);
-    const {t}= useTranslation();
+    const {t} = useTranslation();
 
     // const members = useQuery({
     //     queryKey: [workSpace],
@@ -120,7 +123,7 @@ const RegionList = () => {
         }),
         columnHelper.accessor("name", {
             cell: (info) => <span>{info?.getValue()}</span>,
-            header:t("region.list.region"),
+            header: t("region.list.region"),
         })
     ];
 
@@ -149,7 +152,8 @@ const RegionList = () => {
                 icon: "warning",
                 title: "Oops...",
                 text: t("region.list.deleteNoti"),
-            });        } else {
+            });
+        } else {
             setOpen(true);
         }
     };
@@ -192,7 +196,6 @@ const RegionList = () => {
     };
 
 
-
     useEffect(() => {
         if (aToken) {
             getRegionList();
@@ -201,57 +204,69 @@ const RegionList = () => {
 
     return (
         <motion.div className='mb-5 mt-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    exit={{opacity: 0}}
+                    transition={{duration: 0.5}}
         >
 
             <div className="flex justify-between items-center">
                 <h1 className="text-xl text-primary lg:text-2xl font-semibold">{t("region.list.title")}</h1>
-                <div className="flex gap-2">
-                    <motion.button
+                <div className="flex gap-4 mt-4 mr-4">
+
+
+
+                    <CustomButton
                         onClick={() => setCreateModal(true)}
-                        className="flex items-center bg-green-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        + <LuMapPin className="ml-1" />
-                    </motion.button>
+                        label={''}
+                        icon={MapPinPlus}
+                        bgColor="bg-green-600"
+                        hoverColor="rgba(22, 163, 74, 0.4)"
+                        shadowColor="rgba(22, 163, 74, 0.4)"
+                    />
 
-                    <motion.button
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition duration-300"
+
+                    <CustomButton
                         onClick={openDeleteModal}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <FaRegTrashAlt />
-                        {t("region.list.delete")}
-                    </motion.button>
+                        label={t("region.list.delete")}
+                        icon={FaTrashRestoreAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
 
-                    <motion.button
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white transition duration-300"
+                    <CustomButton
                         onClick={() => navigate('/restore-region')}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <LuMapPinOff />
-                        {t("region.list.trash")}
-                    </motion.button>
+                        label={t("region.list.trash")}
+                        icon={LuMapPinOff}
+                        bgColor="bg-gray-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(0, 128, 255, 0.4)"
+                    />
+
+                    {/*<motion.button*/}
+                    {/*    className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-600 hover:bg-gray-700 text-white transition duration-300"*/}
+                    {/*    onClick={() => navigate('/restore-region')}*/}
+                    {/*    whileHover={{scale: 1.1}}*/}
+                    {/*    whileTap={{scale: 0.95}}*/}
+                    {/*>*/}
+                    {/*    <LuMapPinOff/>*/}
+                    {/*    {t("region.list.trash")}*/}
+                    {/*</motion.button>*/}
                 </div>
             </div>
 
             <motion.table
                 className="border border-gray-200 w-full mt-5 text-left text-white border-collapse rounded-lg shadow-md"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{duration: 0.5}}
             >
                 <thead className="bg-gray-700 text-white ">
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                         <th className="p-3 border-b border-gray-300">
-                            <input
+                        <input
                                 type="checkbox"
                                 checked={
                                     table.getRowModel().rows?.length > 0 &&
@@ -289,10 +304,10 @@ const RegionList = () => {
                             className={`${
                                 i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'
                             }`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
+                            transition={{duration: 0.3}}
                         >
                             <td className="p-3">
                                 <input
@@ -323,13 +338,14 @@ const RegionList = () => {
             </motion.table>
 
             {/* Pagination */}
-            <div className={`${table.getState().pagination.pageSize === 10 ? 'fixed bottom-0 left-0 ml-[1020px] w-[500px] right-0 z-10 p-4 ' : ''} flex items-center w-[500px] justify-end gap-2 h-12`}>
+            <div
+                className={`${table.getState().pagination.pageSize === 10 ? 'fixed bottom-0 left-0 ml-[1020px] w-[500px] right-0 z-10 p-4 ' : ''} flex items-center w-[500px] justify-end gap-2 h-12`}>
                 <motion.button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
                     className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{scale: 1.1}}
+                    whileTap={{scale: 0.95}}
                 >
                     {"<"}
                 </motion.button>
@@ -337,8 +353,8 @@ const RegionList = () => {
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
                     className="px-2 py-1 border border-gray-300 bg-transparent disabled:opacity-30"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{scale: 1.1}}
+                    whileTap={{scale: 0.95}}
                 >
                     {">"}
                 </motion.button>
@@ -362,11 +378,11 @@ const RegionList = () => {
                 </div>
             </div>
 
-            <AddRegion open={createModal} onClose={loadData} />
-            <UpdateRegion open={updateModal} onClose={loadData} id={regionId} />
+            <AddRegion open={createModal} onClose={loadData}/>
+            <UpdateRegion open={updateModal} onClose={loadData} id={regionId}/>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <div className="text-center w-72">
-                    <FaRegTrashAlt size={56} className="mx-auto text-red-500" />
+                    <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
                     <div className="mx-auto my-4 w-60">
                         <h3 className="text-lg font-black text-gray-800">{t("region.list.confirm")}</h3>
                         <p className="text-sm text-gray-600">{t("region.list.p")}</p>
@@ -375,16 +391,16 @@ const RegionList = () => {
                         <motion.button
                             className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
                             onClick={softDeleteRegions}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.1}}
+                            whileTap={{scale: 0.95}}
                         >
                             {t("region.list.delete")}
                         </motion.button>
                         <motion.button
                             className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                             onClick={() => setOpen(false)}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.1}}
+                            whileTap={{scale: 0.95}}
                         >
                             {t("region.list.cancel")}
                         </motion.button>

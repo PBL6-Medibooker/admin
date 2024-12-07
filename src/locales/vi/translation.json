@@ -291,6 +291,10 @@
       "p": "Bạn có muốn xoá thành phố đã chọn ",
       "dp": "vĩnh viễn",
       "ds": " Xoá thành công!"
+    },
+    "update": {
+      "title": "Cập nhật",
+      "sucess": "Cập nhật thành công!"
     }
   },
   "appointment": {

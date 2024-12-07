@@ -1,12 +1,12 @@
 import React, {useContext, useEffect} from 'react';
 import {useTranslation} from "react-i18next";
-import {AdminContext} from "../context/AdminContext";
+import {AdminContext} from "../../context/AdminContext";
 import {useQuery} from "@tanstack/react-query";
-import * as forumService from "../service/ForumService";
-import {assets} from "../assets/assets";
+import * as forumService from "../../service/ForumService";
+import {assets} from "../../assets/assets";
 import {forEach} from "react-bootstrap/ElementChildren";
-import Loader from "../components/Loader";
-import Error from "../components/Error";
+import Loader from "../Loader";
+import Error from "../Error";
 import {motion, AnimatePresence} from "framer-motion";
 
 
@@ -26,6 +26,13 @@ const TopUserActive = () => {
 
         }
     })
+
+    const colorSet = [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 206, 86)",
+        "rgb(75, 192, 192)"
+    ];
 
     useEffect(() => {
         if (aToken) {
@@ -71,31 +78,76 @@ const TopUserActive = () => {
                     <p className="font-semibold">{t("admin.dashboard.ranking")}</p>
                 </div>
 
-                <div className='flex w-full h-[327px] flex-col '>
-                    <div className='flex flex-col flex-1 items-center justify-center'>
-                        <div className='flex flex-col  items-center justify-center'>
-                            <div className='relative w-32 h-32'>
-                                <img
-                                    src={data?.data[0]?.userDetails?.profile_image}
-                                    alt='top1'
-                                    className='[background:linear-gradient(45deg,#e0e7ff,#d1d5db_50%,#e0e7ff)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.300/.48)_80%,_theme(colors.blue.400)_86%,_theme(colors.blue.300)_90%,_theme(colors.blue.400)_94%,_theme(colors.slate.300/.48))_border-box]
-                     border-[5px] rounded-full border-transparent animate-border'
-                                />
+                <div className="flex w-full border h-[327px] flex-col">
 
+                    <div className="flex flex-col flex-1 items-center justify-center">
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="relative w-32 h-32">
+                                <motion.img
+                                    src={data?.data[0]?.userDetails?.profile_image}
+                                    alt="top1"
+                                    className='[background:linear-gradient(45deg,#e0e7ff,#d1d5db_50%,#e0e7ff)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.300/.48)_80%,_theme(colors.red.400)_86%,_theme(colors.blue.300)_90%,_theme(colors.blue.400)_94%,_theme(colors.slate.300/.48))_border-box]
+            border-[5px] rounded-full border-transparent animate-border'
+                                    initial={{scale: 0}}
+                                    animate={{scale: 1}}
+                                    transition={{duration: 0.6, type: "spring", stiffness: 100}}
+                                />
                                 <div
-                                    className='absolute top-0 left-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white text-xs font-bold rounded-full -translate-x-1/2 translate-y-1/2'>
+                                    className="absolute top-0 left-0 w-6 h-6 flex items-center justify-center bg-primary text-white text-xs font-bold rounded-full -translate-x-1/2 translate-y-1/2">
                                     1
                                 </div>
                             </div>
-                            <p className='mt-1 text-lg font-medium text-gray-800'>
+                            <motion.p
+                                className="mt-1 text-lg font-bold text-primary"
+                                initial={{opacity: 0, y: -10}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{delay: 0.2, duration: 0.4}}
+                            >
                                 {data?.data[0]?.userDetails?.username}
-                            </p>
+                            </motion.p>
                         </div>
                     </div>
 
 
-                    <div className='flex-1 bg-green-600'>
-
+                    <div className="flex flex-1 mr-4 ml-4 gap-4 items-center justify-start">
+                        {data.data.slice(1, 5).map((item, index) => (
+                            <motion.div
+                                className="flex flex-col items-center justify-center"
+                                key={index}
+                                initial={{opacity: 0, x: -50}}
+                                animate={{opacity: 1, x: 0}}
+                                transition={{delay: 0.3 + index * 0.2, duration: 0.5}}
+                            >
+                                <div className="relative w-24 h-24">
+                                    <motion.img
+                                        src={item.userDetails?.profile_image}
+                                        alt="top1"
+                                        className="w-full h-full object-cover border-[2px] rounded-full border-transparent animate-border"
+                                        style={{
+                                            backgroundColor: colorSet[index],
+                                        }}
+                                        initial={{scale: 0}}
+                                        animate={{scale: 1}}
+                                        transition={{duration: 0.6, type: "spring", stiffness: 100}}
+                                    />
+                                    <div
+                                        style={{
+                                            backgroundColor: colorSet[index],
+                                        }}
+                                        className="absolute top-0 left-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white text-xs font-bold rounded-full -translate-x-1/2 translate-y-1/2">
+                                        {index + 2}
+                                    </div>
+                                </div>
+                                <motion.p
+                                    className="mt-1 text-lg font-medium text-gray-800"
+                                    initial={{opacity: 0, y: -10}}
+                                    animate={{opacity: 1, y: 0}}
+                                    transition={{delay: 0.5 + index * 0.2, duration: 0.4}}
+                                >
+                                    {item.userDetails?.username}
+                                </motion.p>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
 

@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { AdminContext } from "../context/AdminContext";
-import { assets } from "../assets/assets";
-import { AppContext } from "../context/AppContext";
+import { AdminContext } from "../../context/AdminContext";
+import { assets } from "../../assets/assets";
+import { AppContext } from "../../context/AppContext";
 import { motion, AnimatePresence } from "framer-motion";
-import Loader from "./Loader";
-import Error from "./Error";
+import Loader from "../Loader";
+import Error from "../Error";
 
 const AdminLatestBooking = () => {
     const { t } = useTranslation();

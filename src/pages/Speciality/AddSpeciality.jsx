@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import {ArrowBigLeft} from "lucide-react"
 
 const AddSpeciality = () => {
     const [specImg, setSpecImg] = useState(null);
@@ -198,11 +199,11 @@ const AddSpeciality = () => {
                         <motion.button
                             type="button"
                             onClick={() => navigate("/speciality")}
-                            className="bg-red-500 text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            className="flex items-center bg-red-500 text-white px-8 py-3 rounded-lg text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            {t("speciality.add.back")}
+                           <ArrowBigLeft/> {t("speciality.add.back")}
                         </motion.button>
                         <motion.button
                             type="submit"

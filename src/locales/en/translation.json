@@ -285,6 +285,10 @@
       "p": "Are you sure you want to delete",
       "dp": "permanently",
       "ds": "Delete Successful!"
+    },
+    "update": {
+      "title": "Update",
+      "sucess": "Update Region Name Success"
     }
   },
   "appointment": {

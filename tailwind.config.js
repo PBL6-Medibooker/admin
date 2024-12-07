@@ -8,14 +8,14 @@ module.exports = {
       colors: {
         primary: '#00A6A9',
         slate: {
-          200: '#e5e7eb', // Light Slate
-          300: '#d1d5db', // Slightly darker Slate
+          200: '#e5e7eb',
+          300: '#d1d5db',
         },
         pink: {
-          300: '#f9a8d4', // Lighter Pink
+          300: '#f9a8d4',
         },
         blue: {
-          200: '#bfdbfe', // Lighter Blue
+          200: '#bfdbfe',
         },
       },
       keyframes: {

@@ -20,6 +20,7 @@ import {useQuery} from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import SearchInput from "../../components/SearchInput";
 import { motion } from "framer-motion";
+import CustomButton from "../../components/CustomButton";
 
 
 
@@ -219,18 +220,25 @@ const RestoreAccount = () => {
         <div className='mb-5 mt-5 mr-5 pl-5 max-h-[90h] w-[90vw] overflow-y-scroll'>
             <div className='flex justify-between items-center'>
                 <h1 className='text-lg lg:text-2xl text-primary font-medium'>{isVerify ? t("account.dvd.title") : t("account.dvd.utitle")}</h1>
-                <div className='flex gap-1'>
-                    <button
-                        onClick={restoreDocAccount}
-                        className='flex items-center gap-1 bg-green-600 px-10 py-3 mt-4 text-white rounded-full'>
-                        <FaTrashRestoreAlt/> {t("account.dvd.putBack")}
-                    </button>
+                <div className='flex gap-4 mr-4'>
 
-                    <button
-                        className='flex items-center gap-1 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40'
-                        onClick={() => setOpen(true)}>
-                        <FaRegTrashAlt/> {t("account.dvd.dp")}
-                    </button>
+                    <CustomButton
+                        onClick={restoreDocAccount}
+                        label={t("account.dvd.putBack")}
+                        icon={FaTrashRestoreAlt}
+                        bgColor="bg-green-600"
+                        hoverColor="rgba(22, 163, 74, 0.4)"
+                        shadowColor="rgba(22, 163, 74, 0.4)"
+                    />
+
+                    <CustomButton
+                        onClick={() => setOpen(true)}
+                        label={t("account.dvd.dp")}
+                        icon={FaRegTrashAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(255, 0, 0, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
 
 
                 </div>

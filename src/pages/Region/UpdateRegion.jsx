@@ -4,7 +4,7 @@ import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
 import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
-
+import Swal from "sweetalert2";
 
 const UpdateRegion = ({open, onClose, id}) => {
 
@@ -33,26 +33,29 @@ const UpdateRegion = ({open, onClose, id}) => {
         try {
             await regionService.updateRegion(name, id, aToken);
             onClose();
-            toast.success('Update Region Name Success')
+            await Swal.fire({
+                position: "top-end",
+                title: t("region.update.success"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            });
         } catch (e) {
             console.log(e.message)
         }
         console.log('Province name:', name);
     };
 
-    const handleClearForm = () => {
-        setName('');
-    };
     return (
         <Modal open={open} onClose={onClose}>
             <form onSubmit={handleSubmit}>
-                <p className="mb-3 text-lg font-medium">Update Province Name</p>
+                <p className="text-lg text-primary font-bold lg:text-2xl">{t("region.update.title")}</p>
 
-                <div className="bg-white px-8 py-8 border rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll">
+                <div className="bg-white px-8 py-8 rounded w-full max-w-4xl max-h-[80vh] overflow-y-scroll">
                     <div className="flex flex-col lg:flex-row items-start gap-10 text-gray-600">
                         <div className="w-full lg:flex-1 flex flex-col gap-4">
                             <div className="flex flex-1 flex-col gap-1">
-                                <p>Enter province name</p>
                                 <input
                                     onChange={(e) => setName(e.target.value)}
                                     value={name}
@@ -69,7 +72,6 @@ const UpdateRegion = ({open, onClose, id}) => {
                     <div className="flex justify-end gap-3">
                         <button
                             onClick={() => {
-                                handleClearForm();
                                 onClose();
                             }}
                             type="button"
@@ -80,7 +82,7 @@ const UpdateRegion = ({open, onClose, id}) => {
 
                         <button
                             type="submit"
-                            className="bg-primary px-10 py-3 mt-4 text-white rounded-full"
+                            className="bg-primary px-7 py-3 mt-4 text-white rounded-full"
                         >
                             {t("region.add.save")}
                         </button>

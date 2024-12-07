@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import Error from "../components/Error";
 import Loader from "../components/Loader";
@@ -45,18 +45,6 @@ const AdminContextProvider = (props) => {
             }
         }
     })
-
-    // const {data: appointmentList,  isLoading:aListLoading, isError:aListError, refetch: refetchAList } = useQuery({
-    //     queryKey: ["active"],
-    //     queryFn: async () =>{
-    //         try {
-    //               return await appointmentService.findAll(false, aToken)
-    //         } catch (e) {
-    //             console.error(e);
-    //             throw new Error("Failed to load");
-    //         }
-    //     }
-    // })
 
     const { data: appointmentList,  isLoading:aListLoading, isError:aListError, refetch: refetchAList } = useQuery({
         queryKey: ["aList"],

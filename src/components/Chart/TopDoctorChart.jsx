@@ -96,7 +96,7 @@ const TopDoctorChart = () => {
             className='bg-white shadow-lg rounded-xl p-6 border border-gray-300 mb-8'
             initial={{opacity: 0, y: 20}}
             animate={{opacity: 1, y: 0}}
-            transition={{delay: 1}}
+            transition={{delay: 0.2}}
         >
             <div className='flex items-center justify-between mb-6'>
                 <h2 className='text-xl font-semibold text-gray-800'>{t("account.adashboard.topDoctors")}</h2>

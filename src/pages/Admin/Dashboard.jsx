@@ -6,8 +6,8 @@ import AppointmentChart from "../../components/Chart/AppointmentChart";
 import {useTranslation} from "react-i18next";
 import {AdminContext} from "../../context/AdminContext";
 import {useQuery} from "@tanstack/react-query";
-import TopUserActive from "../../components/TopUserActive";
-import AdminLatestBooking from "../../components/AdminLatestBooking";
+import TopUserActive from "../../components/DashBoard/TopUserActive";
+import AdminLatestBooking from "../../components/DashBoard/AdminLatestBooking";
 import Loader from "../../components/Loader";
 import Error from "../../components/Error";
 

@@ -180,7 +180,7 @@ const UpdateSpeciality = () => {
                         <motion.button
                             type="button"
                             onClick={() => navigate("/speciality")}
-                            className="bg-red-500 text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            className="bg-red-500 text-white px-8 py-3 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -188,7 +188,7 @@ const UpdateSpeciality = () => {
                         </motion.button>
                         <motion.button
                             type="submit"
-                            className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            className="bg-primary text-white px-8 py-3 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >

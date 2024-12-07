@@ -10,6 +10,7 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {useQuery} from "@tanstack/react-query";
 import {assets} from "../../assets/assets";
+import {ArchiveRestore} from "lucide-react"
 
 
 const SpecialityList = () => {
@@ -210,70 +211,87 @@ const SpecialityList = () => {
 
     return (
         <div className='m-5 h-full w-[90vw] overflow-y-scroll'>
-            <div className='flex justify-between items-center'>
-                <h1 className='text-lg text-primary lg:text-3xl font-medium'>{!isDeleted ? t("speciality.list.title") : t("speciality.restore.title")} </h1>
-                <div className='flex gap-3 mr-2'>
+            <div className="flex justify-between items-center">
+                <h1 className="text-lg text-primary lg:text-3xl font-medium">
+                    {!isDeleted ? t("speciality.list.title") : t("speciality.restore.title")}
+                </h1>
+                <div className="flex gap-4 mr-2">
+                    {isDeleted ? (
+                        <div className="flex gap-3">
 
-                    {
-                        isDeleted ? (
-                            <div className='flex gap-2'>
-                                <motion.button
-                                    onClick={restoreSpeciality}
-                                    className='bg-green-700 px-10 py-3 mt-4 text-white rounded-full'
-                                    whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(0,255,0,0.4)'}}
-                                    whileTap={{scale: 0.95}}
-                                    transition={{duration: 0.2}}
-                                >
-                                    Put Back
-                                </motion.button>
+                            <motion.button
+                                onClick={restoreSpeciality}
+                                className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                               <ArchiveRestore/> Put Back
+                            </motion.button>
 
-                                <motion.button
-                                    onClick={openDeleteModal}
-                                    className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer'
-                                    whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(255,0,0,0.4)'}}
-                                    whileTap={{scale: 0.95}}
-                                    transition={{duration: 0.2}}
-                                >
-                                    <FaRegTrashAlt/> Delete
-                                </motion.button>
-                            </div>
-                        ) : (
-                            <div className='flex gap-2'>
-                                <motion.button
-                                    onClick={() => navigate(`/add-speciality`)}
-                                    className='bg-primary px-10 py-3 mt-4 text-white rounded-full'
-                                    whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(0,0,0,0.2)'}}
-                                    whileTap={{scale: 0.95}}
-                                    transition={{duration: 0.2}}
-                                >
-                                    {t("speciality.list.add")}
-                                </motion.button>
+                            <motion.button
+                                onClick={openDeleteModal}
+                                className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <FaRegTrashAlt/>
+                                Delete
+                            </motion.button>
+                        </div>
+                    ) : (
+                        <div className="flex gap-4 mr-3">
 
-
-                                <motion.button
-                                    onClick={openDeleteModal}
-                                    className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer'
-                                    whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(255,0,0,0.4)'}}
-                                    whileTap={{scale: 0.95}}
-                                    transition={{duration: 0.2}}
-                                >
-                                    <FaRegTrashAlt/> {t("speciality.list.delete")}
-                                </motion.button>
-
-                                <motion.button
-                                    onClick={() => navigate('/speciality', {state: {isDeleted: true}})}
-                                    className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-gray-400/40 cursor-pointer'
-                                    whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(128,128,128,0.4)'}}
-                                    whileTap={{scale: 0.95}}
-                                    transition={{duration: 0.2}}
-                                >
-                                    <FaRegTrashAlt/> {t("speciality.list.trash")}
-                                </motion.button>
-                            </div>
-                        )
-                    }
+                            <motion.button
+                                onClick={() => navigate(`/add-speciality`)}
+                                className="bg-primary px-9 py-3 mt-4 text-white rounded-full flex justify-center items-center shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                {t("speciality.list.add")}
+                            </motion.button>
 
 
+                            <motion.button
+                                onClick={openDeleteModal}
+                                className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <FaRegTrashAlt/>
+                                {t("speciality.list.delete")}
+                            </motion.button>
+
+                            <motion.button
+                                onClick={() => navigate('/speciality', {state: {isDeleted: true}})}
+                                className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(128, 128, 128, 0.5)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <FaRegTrashAlt/>
+                                {t("speciality.list.trash")}
+                            </motion.button>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -299,45 +317,108 @@ const SpecialityList = () => {
 
                         paginatedData?.map((item, index) => (
 
-                            <div
-                                className="flex relative max-w-56 h-[300px] rounded-[20px] rounded-tl-[70px] overflow-hidden"
-                                style={{
-                                    background: 'linear-gradient(to bottom, #00A6A9 0%, #0B5E87 50%)',
-                                }}>
-                                <div className="absolute inset-[10px] rounded-[10px] bg-blue-50">
+                            <motion.div
+                                key={item._id}
+                                className="relative flex flex-col max-w-60 h-[320px] rounded-2xl overflow-hidden bg-gradient-to-b from-[#00A6A9] to-[#0B5E87] shadow-lg hover:shadow-2xl transition-all duration-300"
+                                whileHover={{scale: 1.05}}
+                                variants={{
+                                    hidden: {opacity: 0, y: 20},
+                                    visible: {opacity: 1, y: 0},
+                                }}
+                                transition={{duration: 0.3, ease: "easeOut"}}
+                                initial={{opacity: 0, scale: 0.9, y: 30}}
+                                animate={{opacity: 1, scale: 1, y: 0}}
+                            >
+                                <div
+                                    className="absolute inset-2 rounded-2xl bg-white flex flex-col items-center p-6 shadow-md">
                                     <div
-                                        className="absolute w-[140px] h-[140px] rounded-br-[50%] transition-all duration-500
-                                        {/*hover:w-full*/}
-
-                                        "
-                                        style={{
-                                            background: 'linear-gradient(to bottom, #00A6A9 0%, #0B5E87 50%)',
-                                        }}
-                                    >
-                                        <span
-                                            className="absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px]
-                                         bg-transparent shadow-custom9"
+                                        className="relative w-[140px] h-[140px] rounded-full overflow-hidden bg-gradient-to-b from-[#00A6A9] to-[#0B5E87] flex justify-center items-center shadow-lg">
+                                        <img
+                                            src={`${item.speciality_image}?remove-bg=true`}
+                                            alt="Speciality"
+                                            className="w-full h-full object-cover rounded-full transition-opacity duration-300 hover:opacity-90"
+                                        />
+                                        <button
+                                            onClick={() => navigate(`/get-speciality/${item._id}`)}
+                                            className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-semibold px-4 py-2 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"
                                         >
-                                        </span>
-                                        <span
-                                            className="absolute right-[-30px] top-0 w-[30px] h-[30px] rounded-tl-[30px] bg-transparent shadow-custom8">
-                                            </span>
-                                        <div
-                                            className="flex justify-center items-center absolute inset-[10px] bg-blue-50 rounded-[50%] rounded-tr-[10px]
-                                                 rounded-bl-[10px]">
-                                            <img
-                                                className="w-full h-full object-cover rounded-[50%] transition-all duration-500 group-hover:opacity-80
-                                                    rounded-tr-[10px] rounded-bl-[10px] "
-                                                src={`${item.speciality_image}?remove-bg=true`}
-                                                alt="Speciality"
-                                            />
-                                        </div>
+                                            {t("speciality.list.edit")}
+                                        </button>
                                     </div>
-                                    <div className="text-center mt-48 text-black">
-                                        <p className='font-bold'>{item.name}</p>
+
+                                    <div className="flex gap-2 mt-6 text-center items-center">
+                                        <p className="text-xl font-semibold text-gray-800 mb-2">{item.name}</p>
+
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedSpecialityIds.includes(item._id)}
+                                            onChange={() => toggleAccountSelection(item._id)}
+                                            className="text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mb-1"
+                                        />
+
+
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
+
+
+                            // <motion.div key={item._id}
+                            //     className="flex relative max-w-56 h-[300px] rounded-[20px] rounded-tl-[70px] overflow-hidden bg-gradient-to-b from-[#00A6A9] to-[#0B5E87]"
+                            //     whileHover={{scale: 1.05, boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'}}
+                            //     variants={{
+                            //         hidden: {opacity: 0, y: 20},
+                            //         visible: {opacity: 1, y: 0}
+                            //     }}
+                            //     transition={{duration: 0.3, ease: "easeOut"}}
+                            //
+                            //     initial={{opacity: 0, scale: 0.9, y: 30}}
+                            //     animate={{opacity: 1, scale: 1, y: 0}}>
+                            //     <div className="absolute inset-[10px] rounded-[10px] bg-blue-50">
+                            //
+                            //         <div className="absolute w-[140px] h-[140px] rounded-br-[50%] transition-all duration-500 bg-gradient-to-b from-[#00A6A9] to-[#0B5E87]"
+                            //         >
+                            //             <span
+                            //                 className="absolute bottom-[-30px] left-0 w-[30px] h-[30px] rounded-tl-[30px]
+                            //              bg-transparent shadow-custom9"
+                            //             >
+                            //             </span>
+                            //             <span
+                            //                 className="absolute right-[-30px] top-0 w-[30px] h-[30px]
+                            //                 rounded-tl-[30px]
+                            //                 bg-transparent shadow-custom8">
+                            //                 </span>
+                            //             <div
+                            //                 className="flex justify-center items-center absolute inset-[10px] bg-blue-50 rounded-[50%]
+                            //                 rounded-tr-[10px]
+                            //                      rounded-bl-[10px]
+                            //                       group">
+                            //                 <img
+                            //                     className="w-full h-full object-cover rounded-[50%] transition-all duration-500 group-hover:opacity-80
+                            //                         rounded-tr-[10px] rounded-bl-[10px]
+                            //                         "
+                            //                     src={`${item.speciality_image}?remove-bg=true`}
+                            //                     alt="Speciality"
+                            //                 />
+                            //
+                            //                 <button
+                            //                     onClick={() => navigate(`/get-speciality/${item._id}`)}
+                            //                     className='absolute inset-0 flex items-center justify-center bg-blue-50/75 text-black text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
+                            //                 >
+                            //                     {t("speciality.list.edit")}
+                            //                 </button>
+                            //             </div>
+                            //         </div>
+                            //         <div className="flex gap-2 justify-center mt-48 text-black">
+                            //             <p className='font-bold'>{item.name}</p>
+                            //             <input
+                            //                 type='checkbox'
+                            //                 checked={selectedSpecialityIds.includes(item._id)}
+                            //                 onChange={() => toggleAccountSelection(item._id)}
+                            //             />
+                            //
+                            //         </div>
+                            //     </div>
+                            // </motion.div>
 
 
                             // <motion.div
@@ -393,8 +474,7 @@ const SpecialityList = () => {
                 </AnimatePresence>
             </motion.div>
 
-            {/* Pagination */
-            }
+
             {
                 paginatedData.length > 0 &&
                 <div className="flex items-center justify-end gap-2 mt-4">
