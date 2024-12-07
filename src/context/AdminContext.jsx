@@ -13,7 +13,8 @@ const AdminContextProvider = (props) => {
     const [aToken, setAToken] = useState(localStorage.getItem('aToken')
         ? localStorage.getItem('aToken') : '');
 
-    const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
+    // const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
+    const backendUrl = import.meta.env?.BACKEND_URL || 'https://backend-nc0v.onrender.com';
 
     const { data: verifiedDoctor = [], isLoading, isError, refetch: rVerifyDoctorData } = useQuery({
         queryKey: ["verify"],

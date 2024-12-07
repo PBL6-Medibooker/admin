@@ -1,7 +1,8 @@
 import axios from "axios";
 
 
-const REST_API_BASE_URL = "http://localhost:4000/acc";
+// const REST_API_BASE_URL = "http://localhost:4000/acc";
+const REST_API_BASE_URL = "https://backend-nc0v.onrender.com/acc";
 
 export const login = async (email, password) => {
     try {
