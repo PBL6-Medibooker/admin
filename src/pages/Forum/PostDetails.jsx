@@ -18,6 +18,7 @@ const PostDetails = () => {
         post_content: '',
         speciality_name: ''
     });
+    const [cModal, setCModal] = useState(false);
 
 
     const openPostBySpecialityList = (value) => {
@@ -108,7 +109,8 @@ const PostDetails = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 text-gray-600">
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-lg text-primary font-medium">{t("forum.update.ptitle")}</label>
+                                    <label
+                                        className="text-lg text-primary font-medium">{t("forum.update.ptitle")}</label>
                                     <motion.input
                                         onChange={(e) => setPostData(prev => ({...prev, post_title: e.target.value}))}
                                         value={postData?.post_title}
@@ -122,7 +124,8 @@ const PostDetails = () => {
                                 </div>
 
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-lg text-primary font-medium">{t("forum.update.content")}</label>
+                                    <label
+                                        className="text-lg text-primary font-medium">{t("forum.update.content")}</label>
                                     <motion.textarea
                                         onChange={(e) => setPostData(prev => ({...prev, post_content: e.target.value}))}
                                         value={postData?.post_content}
@@ -133,13 +136,15 @@ const PostDetails = () => {
                                         whileFocus={{scale: 1.02}}
                                     />
                                 </div>
+
                             </div>
+
                         </div>
 
                         <div className="flex justify-end gap-8 mt-8">
                             <motion.button
                                 onClick={() => openPostBySpecialityList(postData.speciality_id.name)}
-                                className="bg-gray-300 px-8 py-2 text-lg text-gray-700 rounded-full hover:bg-gray-400 transition-all"
+                                className="bg-gray-300 px-8 py-2 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
                                 whileHover={{scale: 1.1}}
                             >
                                 {t("forum.update.back")}
@@ -147,12 +152,16 @@ const PostDetails = () => {
 
                             <motion.button
                                 type="submit"
-                                className="bg-primary px-8 py-2 text-lg text-white rounded-full hover:bg-primary-dark transition-all"
+                                className="bg-primary px-8 py-2 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                                 whileHover={{scale: 1.1}}
                             >
                                 {t("forum.update.save")}
                             </motion.button>
                         </div>
+                        <p className='cursor-pointer'
+                           onClick={() => setCModal(true)}>
+                            Bình luận
+                        </p>
                     </div>
                 </motion.form>
             </motion.div>

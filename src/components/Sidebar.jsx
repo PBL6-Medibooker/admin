@@ -69,7 +69,7 @@ const Sidebar = () => {
                     {aToken && (
                         <ul className="text-[#515151]">
                             {[
-                                { to: "/admin-dashboard", icon: assets.home_icon, label: t("sidebar.dashboard") },
+                                { to: "/", icon: assets.home_icon, label: t("sidebar.dashboard") },
                                 { to: "/account-dashboard", icon: assets.user_icon, label: t("sidebar.account"),
                                 isActive: isAccountActive()},
                                 { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality"),

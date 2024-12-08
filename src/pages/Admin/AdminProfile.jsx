@@ -27,6 +27,7 @@ const AdminProfile = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
     const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
+    const [adminData, setAdminData] = useState([]);
 
     // const getAdminData = async () => {
     //     try {
@@ -40,12 +41,14 @@ const AdminProfile = () => {
     //     }
     // };
 
-    const {data, isLoading, isError, refetch} = useQuery({
+    const {isLoading, isError, refetch} = useQuery({
         queryKey: ['admin'],
         queryFn: async () => {
             try {
                 const result = await accountService.getAdminProfile(aToken);
                 if (result.success) {
+                    console.log(result)
+                    setAdminData(result.adminData)
                     return result.adminData;
                 }
             } catch (error) {
@@ -71,11 +74,6 @@ const AdminProfile = () => {
         retry: 1,
     });
 
-    const [adminData, setAdminData] = useState(data);
-
-    useEffect(() => {
-        console.log(adminData)
-    }, [adminData]);
 
     const showAlert = async (titleKey, icon = "warning") => {
         await Swal.fire({
@@ -222,6 +220,7 @@ const AdminProfile = () => {
     useEffect(() => {
         if (aToken) {
             refetch();
+            console.log(aToken)
         }
     }, [aToken]);
 

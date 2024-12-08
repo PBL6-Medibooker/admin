@@ -450,7 +450,8 @@
       "dspec": "Bài Đăng Đã Xoá Của Chuyên Khoa",
       "pconfirm": "Xoá vĩnh viễn",
       "rsuccess": "Bài đăng được khôi phục!",
-      "rwarn": "Chưa chọn bài đăng để khôi phục!"
+      "rwarn": "Chưa chọn bài đăng để khôi phục!",
+      "edit": "Chỉnh sửa"
     },
     "update": {
       "success": "Cập nhật bài đăng thành công!",

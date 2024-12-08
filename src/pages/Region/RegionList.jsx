@@ -214,8 +214,6 @@ const RegionList = () => {
                 <h1 className="text-xl text-primary lg:text-2xl font-semibold">{t("region.list.title")}</h1>
                 <div className="flex gap-4 mt-4 mr-4">
 
-
-
                     <CustomButton
                         onClick={() => setCreateModal(true)}
                         label={''}
@@ -224,7 +222,6 @@ const RegionList = () => {
                         hoverColor="rgba(22, 163, 74, 0.4)"
                         shadowColor="rgba(22, 163, 74, 0.4)"
                     />
-
 
                     <CustomButton
                         onClick={openDeleteModal}

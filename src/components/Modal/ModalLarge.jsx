@@ -3,6 +3,14 @@ import { X } from 'react-feather';
 import { motion } from 'framer-motion';
 
 const Modal = ({ open, onClose, children }) => {
+    React.useEffect(() => {
+        if (open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [open]);
+
     return (
         // backdrop with motion for fade-in/out effect
         <motion.div
@@ -11,6 +19,7 @@ const Modal = ({ open, onClose, children }) => {
                 fixed inset-0 flex justify-center items-center transition-colors duration-300
                 ${open ? "visible bg-black/30" : "invisible"}
             `}
+            style={{ zIndex: 50 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: open ? 1 : 0 }}
             exit={{ opacity: 0 }}

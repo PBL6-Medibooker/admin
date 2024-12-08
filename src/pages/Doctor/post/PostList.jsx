@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 
 const PostList = () => {
     const { t } = useTranslation();
-    const { dToken, docEmail, logout } = useContext(DoctorContext);
+    const { dToken, docEmail } = useContext(DoctorContext);
     const [open, setOpen] = useState(false);
     const [pagination, setPagination] = useState({
         pageIndex: 0,

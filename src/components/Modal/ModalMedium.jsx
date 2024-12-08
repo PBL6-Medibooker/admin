@@ -2,6 +2,13 @@ import React from 'react';
 import { X } from "react-feather";
 
 const ModalMedium = ({ open, onClose, children }) => {
+    React.useEffect(() => {
+        if (open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [open]);
     return (
         // backdrop
         <div
@@ -10,6 +17,8 @@ const ModalMedium = ({ open, onClose, children }) => {
                 fixed inset-0 flex justify-center items-center transition-colors duration-300
                 ${open ? "visible bg-black/30" : "invisible"}
             `}
+            style={{ zIndex: 50 }}
+
         >
             {/* modal */}
             <div

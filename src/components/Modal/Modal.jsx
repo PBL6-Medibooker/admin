@@ -2,20 +2,28 @@ import React from 'react';
 import { X } from "react-feather";
 
 const Modal = ({ open, onClose, children }) => {
+    // de tranh item ko bi an boi backdrop
+    React.useEffect(() => {
+        if (open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [open]);
+
     return (
-        // backdrop
         <div
             onClick={onClose}
             className={`
                 fixed inset-0 flex justify-center items-center transition-colors duration-300
                 ${open ? "visible bg-black/30" : "invisible"}
             `}
+            style={{ zIndex: 50 }}
         >
-            {/* modal */}
             <div
                 onClick={(e) => e.stopPropagation()}
                 className={`
-                    bg-white rounded-xl  p-6 relative transition-transform duration-300
+                    bg-white rounded-xl p-6 relative transition-transform duration-300
                     ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
                 `}
             >
@@ -30,5 +38,6 @@ const Modal = ({ open, onClose, children }) => {
         </div>
     );
 };
+
 
 export default Modal;

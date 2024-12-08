@@ -443,7 +443,9 @@
       "dspec": "Deleted Post Of Speciality",
       "pconfirm": "Delete Permanent",
       "rsuccess": "Post Restored!",
-      "rwarn": "No post selected for restoration"
+      "rwarn": "No post selected for restoration",
+      "edit": "Edit"
+
     },
     "update": {
       "success": "Post Updated!",

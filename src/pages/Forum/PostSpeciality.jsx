@@ -17,7 +17,7 @@ const PostSpeciality = () => {
     });
 
     const getPostSpeciality = (value) => {
-        navigate('/post-list-by-spec', { state: { name: value, isDelete: false } });
+        navigate('/post-list-by-spec', {state: {name: value, isDelete: false}});
 
     }
     const findAllSpecialities = async () => {
@@ -54,7 +54,7 @@ const PostSpeciality = () => {
                 </h1>
             </div>
             <motion.div
-                className='w-[80vw] ml-5 mb-5 mr-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-5 pb-5'
+                className='w-[80vw] ml-5 mb-5 mr-5 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 pt-5 pb-5'
                 initial="hidden"
                 animate="visible"
                 variants={{
@@ -62,37 +62,47 @@ const PostSpeciality = () => {
                     visible: {opacity: 1, transition: {staggerChildren: 0.1}},
                 }}
             >
-                {
-                    paginatedData?.map((item, index) => (
+                {paginatedData?.map((item, index) => (
                     <motion.div
-                        className='border border-indigo-200 rounded-xl overflow-hidden cursor-pointer group shadow-md'
+                        className="border border-gray-200 bg-gradient-to-b from-[#00A6A9] to-[#0B5E87] rounded-xl overflow-hidden cursor-pointer group shadow-md hover:shadow-lg transition-all duration-300"
                         key={item._id}
-                        whileHover={{scale: 1.02, boxShadow: '0px 4px 10px rgba(0,0,0,0.2)'}}
-                        variants={{
-                            hidden: {opacity: 0, y: 20},
-                            visible: {opacity: 1, y: 0},
+                        whileHover={{
+                            scale: 1.05,
+                            boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.3)',
                         }}
-                        transition={{duration: 0.3}}
+                        variants={{
+                            hidden: { opacity: 0, y: 20 },
+                            visible: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.3 }}
                     >
-
-                        <div className='relative bg-indigo-50 group h-40 sm:h-48 lg:h-56'>
-                            <img
-                                className='w-full h-full object-cover transition-all duration-500 group-hover:opacity-80'
-                                src={item.speciality_image}
-                                alt='PostSpeciality'
-                            />
-                            <button
-                                onClick={() => getPostSpeciality(item.name)}
-                                className='absolute inset-0 flex items-center justify-center bg-primary/75 text-white text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
-                            >
-                                {t("forum.ps.see")}
-                            </button>
+                        {/* Image Section */}
+                        <div className="flex justify-center items-center h-full sm:h-48 w-full bg-gradient-to-b from-[#004d56] to-[#012f42] p-4">
+                            <div className="relative group w-40 h-40">
+                                <img
+                                    className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-110 group-hover:opacity-90"
+                                    src={item.speciality_image}
+                                    alt={item.name}
+                                />
+                                <button
+                                    onClick={() => getPostSpeciality(item.name)}
+                                    className="group-hover:scale-110 absolute inset-0 flex items-center justify-center rounded-full bg-black/50 text-white text-lg font-semibold py-2 px-4 opacity-0 group-hover:opacity-90 transition-opacity duration-300"
+                                >
+                                    {t("forum.ps.see")}
+                                </button>
+                            </div>
                         </div>
 
-
-                        <div className='p-4  bg-white'>
-                            <h3 className='text-primary text-center text-lg lg:text-2xl font-medium truncate'>{item.name}</h3>
+                        <div className="p-4 bg-white text-center">
+                            <h3 className="text-gray-950 text-lg lg:text-xl font-medium truncate">
+                                {item.name}
+                            </h3>
+                            <p className="text-sm text-gray-600 mt-1 truncate">
+                                {item.description}
+                            </p>
                         </div>
+
+                        <div className="w-full h-1 bg-gradient-to-r from-[#00A6A9] to-[#0B5E87]"></div>
                     </motion.div>
                 ))}
 
