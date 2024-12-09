@@ -316,7 +316,7 @@ const AdminProfile = () => {
                                             <div className='w-100 h-80'>
                                                 <img
                                                     className="w-full h-full object-cover bg-primary/80  sm:max-w-64 rounded-lg"
-                                                    src={adminData.profile_image}
+                                                    src={`${adminData.profile_image}?remove-bg=true`}
                                                     alt="profile"
                                                 />
                                             </div>

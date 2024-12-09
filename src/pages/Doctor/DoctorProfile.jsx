@@ -190,17 +190,16 @@ const DoctorProfile = () => {
                 email: doctorData.email,
                 new_password: newPass,
             }
-            const result = accountService.changePassword(data, dToken)
-            if (result.email) {
-                setIsChangePassword(false)
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("doctor.profile.csuccess"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
+            await accountService.changePassword(data, dToken)
+            setIsChangePassword(false)
+            await Swal.fire({
+                position: "top-end",
+                title: t("doctor.profile.csuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         } catch (e) {
             console.log(e)
         }
@@ -414,7 +413,7 @@ const DoctorProfile = () => {
                                             id='eye-icon'
                                             src={isPasswordVisible ? assets.open : assets.close}
                                             alt="close"
-                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                                             onClick={togglePasswordVisibility}
                                         />
                                     </motion.div>
@@ -442,12 +441,15 @@ const DoctorProfile = () => {
                                             required
                                             aria-required="true"
                                             tabIndex='2'
+                                            type={isNewPasswordVisible ? 'text' : 'password'}
+
+
                                         />
                                         <motion.img
                                             id='eye-icon'
                                             src={isNewPasswordVisible ? assets.open : assets.close}
                                             alt="close"
-                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                                             onClick={togglePasswordVisibility2}
                                         />
                                     </motion.div>
@@ -475,13 +477,15 @@ const DoctorProfile = () => {
                                             required
                                             aria-required="true"
                                             tabIndex='3'
+                                            type={isCNewPasswordVisible ? 'text' : 'password'}
+
                                         />
 
                                         <motion.img
                                             id='eye-icon'
                                             src={isCNewPasswordVisible ? assets.open : assets.close}
                                             alt="close"
-                                            className="w-[35px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                                             onClick={togglePasswordVisibility3}
                                         />
 

@@ -12,6 +12,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Card from "../../../components/Card";
 
 const PostList = () => {
     const { t } = useTranslation();
@@ -147,72 +148,129 @@ const PostList = () => {
                 </div>
             </div>
             <div className='mt-4'>
-                {paginatedData.length > 0 ? paginatedData.map((item, index) => {
-                    const totalComments = item.post_comments && item.post_comments.length > 0 ? item.post_comments.length : 0;
-                    const date = new Date(item.createdAt);
-                    const formattedDate = date.toLocaleDateString("en-GB");
+                {/*{paginatedData.length > 0 ? paginatedData.map((item, index) => {*/}
+                {/*    const totalComments = item.post_comments && item.post_comments.length > 0 ? item.post_comments.length : 0;*/}
+                {/*    const date = new Date(item.createdAt);*/}
+                {/*    const formattedDate = date.toLocaleDateString("en-GB");*/}
 
-                    return (
-                        <motion.div
-                            whileHover={{ color: "#4A90E2" }}
-                            key={item._id}
-                            className="flex w-full rounded-[5px] mb-5 h-[100px] gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 20 }}
-                            transition={{ duration: 0.5, delay: index * 0.05 }}
-                        >
-                            <div className="flex-1 ml-4 text-lg text-zinc-600">
-                                <motion.p
-                                    whileHover={{ color: "#4A90E2" }}
-                                    className="text-neutral-800 font-semibold cursor-default"
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    {item.post_title}
-                                </motion.p>
-                                <motion.p
-                                    className="text-xs text-black mt-10"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.3, delay: 0.2 }}
-                                >
-                                    {formattedDate}
-                                </motion.p>
-                            </div>
+                {/*    return (*/}
+                {/*        <motion.div*/}
+                {/*            whileHover={{ color: "#4A90E2" }}*/}
+                {/*            key={item._id}*/}
+                {/*            className="flex w-full rounded-[5px] mb-5 h-[100px] gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"*/}
+                {/*            initial={{ opacity: 0, y: 20 }}*/}
+                {/*            animate={{ opacity: 1, y: 0 }}*/}
+                {/*            exit={{ opacity: 0, y: 20 }}*/}
+                {/*            transition={{ duration: 0.5, delay: index * 0.05 }}*/}
+                {/*        >*/}
+                {/*            <div className="flex-1 ml-4 text-lg text-zinc-600">*/}
+                {/*                <motion.p*/}
+                {/*                    whileHover={{ color: "#4A90E2" }}*/}
+                {/*                    className="text-neutral-800 font-semibold cursor-default"*/}
+                {/*                    transition={{ duration: 0.3 }}*/}
+                {/*                >*/}
+                {/*                    {item.post_title}*/}
+                {/*                </motion.p>*/}
+                {/*                <motion.p*/}
+                {/*                    className="text-xs text-black mt-10"*/}
+                {/*                    initial={{ opacity: 0 }}*/}
+                {/*                    animate={{ opacity: 1 }}*/}
+                {/*                    transition={{ duration: 0.3, delay: 0.2 }}*/}
+                {/*                >*/}
+                {/*                    {formattedDate}*/}
+                {/*                </motion.p>*/}
+                {/*            </div>*/}
 
-                            <div className="flex flex-col justify-end gap-2">
+                {/*            <div className="flex flex-col justify-end gap-2">*/}
+                {/*                <motion.div*/}
+                {/*                    className='flex items-center gap-1 ml-36 mb-4'*/}
+                {/*                    initial={{ opacity: 0 }}*/}
+                {/*                    animate={{ opacity: 1 }}*/}
+                {/*                    transition={{ duration: 0.3, delay: 0.3 }}*/}
+                {/*                >*/}
+                {/*                    <MessageSquareText /> {totalComments}*/}
+                {/*                </motion.div>*/}
+
+                {/*                {!item.is_deleted && (*/}
+                {/*                    <motion.button*/}
+                {/*                        whileHover={{ scale: 1.05 }}*/}
+                {/*                        whileTap={{ scale: 0.95 }}*/}
+                {/*                        onClick={() => openDeleteModal(item._id)}*/}
+                {/*                        className="text-sm text-stone-500 text-center mr-4 sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"*/}
+                {/*                    >*/}
+                {/*                        {t("doctor.post.delete")}*/}
+                {/*                    </motion.button>*/}
+                {/*                )}*/}
+                {/*            </div>*/}
+                {/*        </motion.div>*/}
+                {/*    );*/}
+                {/*}) : (*/}
+                {/*    <motion.div*/}
+                {/*        className='text-lg text-center'*/}
+                {/*        initial={{ opacity: 0 }}*/}
+                {/*        animate={{ opacity: 1 }}*/}
+                {/*        transition={{ duration: 0.5 }}*/}
+                {/*    >*/}
+                {/*        <p className='text-lg text-primary'>{t("doctor.post.noData")}</p>*/}
+                {/*    </motion.div>*/}
+                {/*)}*/}
+
+                <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                        hidden: {opacity: 0},
+                        visible: {opacity: 1, transition: {staggerChildren: 0.1}},
+                    }}
+                >
+                    {table.getRowModel().rows.length ? (
+                        table.getRowModel().rows.map((row, i) => {
+                            const date = new Date(row.original.createdAt);
+                            const formattedDate = date.toLocaleDateString('en-GB');
+                            const totalComments =
+                                row.original.post_comments && row.original.post_comments.length > 0
+                                    ? row.original.post_comments.length
+                                    : 0;
+
+                            return (
                                 <motion.div
-                                    className='flex items-center gap-1 ml-36 mb-4'
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.3, delay: 0.3 }}
+                                    key={row.original._id}
+                                    initial={{opacity: 0, y: 20}}
+                                    animate={{opacity: 1, y: 0}}
+                                    exit={{opacity: 0, y: 20}}
+                                    transition={{duration: 0.3, delay: i * 0.1}}
                                 >
-                                    <MessageSquareText /> {totalComments}
+                                    <Card
+                                        id={row.original._id}
+                                        email={row.original.user_id?.email}
+                                        name={row.original.user_id?.username}
+                                        image={row.original.user_id?.profile_image}
+                                        content={row.original.post_content}
+                                        title={row.original.post_title}
+                                        date={formattedDate}
+                                        totalComments={totalComments}
+                                        // refetch={getAllPostBySpeciality}
+                                        value={row.original.name}
+                                    />
                                 </motion.div>
-
-                                {!item.is_deleted && (
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => openDeleteModal(item._id)}
-                                        className="text-sm text-stone-500 text-center mr-4 sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"
-                                    >
-                                        {t("doctor.post.delete")}
-                                    </motion.button>
-                                )}
-                            </div>
-                        </motion.div>
-                    );
-                }) : (
-                    <motion.div
-                        className='text-lg text-center'
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <p className='text-lg text-primary'>{t("doctor.post.noData")}</p>
-                    </motion.div>
-                )}
+                            );
+                        })
+                    ) : (
+                            <AnimatePresence>
+                                <motion.p
+                                    className="text-center h-32 text-blue-400 flex items-center justify-center col-span-full"
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    exit={{opacity: 0}}
+                                    transition={{duration: 0.5}}
+                                >
+                                    {t("forum.list.noData")}
+                                </motion.p>
+                            </AnimatePresence>
+                        )
+                    }
+                </motion.div>
             </div>
 
             {/* Pagination */}

@@ -1,11 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import React, {useContext, useState} from 'react';
+import {useNavigate, useParams} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import * as forumService from "../../service/ForumService";
 import {toast} from "react-toastify";
 import {motion} from "framer-motion";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import CommentModal from "./CommentModal";
+import {useQuery} from "@tanstack/react-query";
+import {MessageCircle} from 'lucide-react';
 
 
 const PostDetails = () => {
@@ -26,17 +29,31 @@ const PostDetails = () => {
 
     }
 
-    const getPostDetails = async () => {
-        try {
-            const result = await forumService.getPost(id, aToken)
-            if (result) {
-                console.log(result)
-                setPostData(result)
+    // const getPostDetails = async () => {
+    //     try {
+    //         const result = await forumService.getPost(id, aToken)
+    //         if (result) {
+    //             // console.log(result)
+    //             setPostData(result)
+    //         }
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+    //
+    const {isLoading, isError, refetch} = useQuery({
+        queryKey: ['postDetail'],
+        queryFn: async () => {
+            try {
+                const result = await forumService.getPost(id, aToken)
+                if (result) {
+                    setPostData(result)
+                }
+            } catch (e) {
+                console.log(e)
             }
-        } catch (e) {
-            console.log(e)
         }
-    }
+    })
     const updatePostInfo = async (event) => {
         event.preventDefault();
         try {
@@ -64,14 +81,14 @@ const PostDetails = () => {
     };
 
 
-    useEffect(() => {
-        if (aToken) {
-            getPostDetails()
-        }
-    }, [aToken]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getPostDetails()
+    //     }
+    // }, [aToken]);
 
     return (
-        <div className='className="mb-5 ml-5 mr-5 mt-1 w-[60vw] h-[100vh]'>
+        <div className='m-5 w-[60vw] h-[100vh]'>
             <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -158,13 +175,29 @@ const PostDetails = () => {
                                 {t("forum.update.save")}
                             </motion.button>
                         </div>
-                        <p className='cursor-pointer'
-                           onClick={() => setCModal(true)}>
-                            Bình luận
-                        </p>
+                        <motion.p
+                            className='flex items-center gap-1 justify-end text-black cursor-pointer mt-3 mr-2'
+                            onClick={() => setCModal(true)}
+                            initial={{opacity: 0, y: 10}}
+                            animate={{opacity: 1, y: 0}}
+                            whileHover={{color: "#00A6A9", textDecoration: "underline", scale: 1.02}}
+                            whileTap={{scale: 0.95}}
+                            transition={{duration: 0.3}}
+                        >
+                            <MessageCircle className="-scale-x-100"/>
+                            {t("forum.list.cs")}
+                        </motion.p>
                     </div>
                 </motion.form>
             </motion.div>
+
+            <CommentModal
+                open={cModal}
+                onClose={() => setCModal(false)}
+                comments={postData?.post_comments?.reverse()}
+                post_id={postData._id}
+                refetch={refetch}
+            />
         </div>
     );
 };

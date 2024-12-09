@@ -9,6 +9,8 @@ const ProofModal = ({ open, onClose, children }) => {
                 fixed inset-0 flex justify-center items-center transition-colors duration-300
                 ${open ? "visible bg-black/30" : "invisible"}
             `}
+            style={{ zIndex: 50 }}
+
         >
             {/* modal */}
             <div

@@ -88,7 +88,14 @@
       "rolec": "Change user role",
       "back": "Back",
       "save": "Save",
-      "noti": "Updated Customer Information"
+      "noti": "Updated Customer Information",
+      "crole": "Grant management rights",
+      "rsuccess": "Grant management rights sucessful!",
+      "aru": "Are you sure?",
+      "arut": "Do you want to grant admin access?",
+      "grant": "Grant",
+      "cancel": "Cancel",
+      "spec": "Select Speciality"
     },
     "user": {
       "confirmDelete": "Confirm Cancel Appointment",
@@ -444,7 +451,14 @@
       "pconfirm": "Delete Permanent",
       "rsuccess": "Post Restored!",
       "rwarn": "No post selected for restoration",
-      "edit": "Edit"
+      "edit": "Edit",
+      "commentDelete": "Are you sure you want to delete comment?",
+      "csuccess": "Comment Deleted!",
+      "close": "Back",
+      "comments": "Comment Section",
+      "noCData": "No Comment Yet!",
+      "cs": "Post Comment"
+
 
     },
     "update": {

@@ -184,9 +184,16 @@ const RestoreAccount = () => {
             if (response.message !== '') {
                 // getDeletedAccountList();
                 refetch();
-                toast.success(response.message);
+                // toast.success(response.message);
                 setSelectedAccountIds([]);
                 setOpen(false);
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("account.accountList.successDelete"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 toast.error('Error')
             }

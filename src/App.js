@@ -68,11 +68,11 @@ function App() {
             <div className='flex items-start'>
                 <Sidebar/>
                 <Routes>
-                    {/*<Route path='/' element={<></>} />*/}
+                    <Route path='/' element={<></>} />
                     {/*<Route path='/' element={<Test />} />*/}
                     {/*<Route path='/' element={<Loading />} />*/}
                     {/*<Route path='/admin-dashboard' element={<Dashboard/>}/>*/}
-                    <Route path='/' element={<Dashboard/>}/>
+                    <Route path='/admin-dashboard' element={<Dashboard/>}/>
                     {/*<Route path='/admin-profile' element={<AdminProfile/>}/>*/}
                     <Route path='/admin-profile' element={<AdminProfile/>}/>
 

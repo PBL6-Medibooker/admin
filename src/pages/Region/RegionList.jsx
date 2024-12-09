@@ -178,7 +178,8 @@ const RegionList = () => {
                 title: t("region.list.m"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);
@@ -203,7 +204,7 @@ const RegionList = () => {
     }, [aToken]);
 
     return (
-        <motion.div className='mb-5 mt-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
+        <motion.div className='mb-5  ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
                     exit={{opacity: 0}}

@@ -12,7 +12,9 @@ import Swal from "sweetalert2";
 import {assets} from "../../assets/assets";
 import isEqual from 'lodash.isequal';
 import ViewProofModal from "./ViewProofModal";
-import {SquareCheckBig} from "lucide-react"
+import {SquareCheckBig, RotateCcw, AlarmClock} from "lucide-react"
+import CustomButton from "../../components/CustomButton";
+import {FaTrashRestoreAlt} from "react-icons/fa";
 
 
 const UpdateDocInfoAcc = () => {
@@ -38,7 +40,6 @@ const UpdateDocInfoAcc = () => {
     const [listModal, setListModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
     const [proofModal, setProofModal] = useState(false);
-
 
 
     const getAllProvinces = async () => {
@@ -70,18 +71,18 @@ const UpdateDocInfoAcc = () => {
                 }
 
                 console.log("Fetched account details:", result);
-                console.log('proof', proof)
-                console.log('proof', result.proof)
+                // console.log('proof', proof)
+                // console.log('proof', result.proof)
             }
         } catch (error) {
             console.log("Error fetching account details:", error);
             toast.error("Could not load account details.");
         }
     };
-
-    useEffect(() => {
-        console.log('Updated proof:', proof);
-    }, [proof]);
+    //
+    // useEffect(() => {
+    //     console.log('Updated proof:', proof);
+    // }, [proof]);
 
 
     const uploadDoctorDegree = async () => {
@@ -144,14 +145,16 @@ const UpdateDocInfoAcc = () => {
 
             await updateDocInfo();
 
-            if(!isVerify){
+            if (isFormValid) {
                 await changeDoctorVerifyStatus();
             }
 
             const result = await accountService.updateDocInfoAcc(data, id, aToken);
+            let path = isFormValid ? '/verified-doc-account' : '/doc-account'
 
             if (result?.status === 200) {
-                navigate('/verified-doc-account');
+
+                navigate(path);
                 await Swal.fire({
                     position: "top-end",
                     title: t("account.updateDocInfo.success"),
@@ -207,13 +210,17 @@ const UpdateDocInfoAcc = () => {
         setImage(file);
     };
 
-    // useEffect(() => {
-    //     const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address
-    //         && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
-    //         && isVerify
-    //         ;
-    //     setIsFormValid(isValid);
-    // }, [account, docData]);
+    useEffect(() => {
+        const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address !== 'none'
+            && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
+            && isVerify === false
+        setIsFormValid(isValid);
+    }, [account, docData]);
+
+    useEffect(() => {
+        console.log(isFormValid)
+        console.log(isVerify)
+    }, [isFormValid]);
 
     useEffect(() => {
         if (aToken) {
@@ -228,7 +235,7 @@ const UpdateDocInfoAcc = () => {
         <div className="m-5 w-full h-[90vh] flex flex-col items-center overflow-y-scroll">
 
             <motion.div
-                className="flex justify-between items-center w-full max-w-4xl mb-8"
+                className="flex justify-between items-center w-full  mb-8"
                 initial={{opacity: 0}}
                 animate={{opacity: 1}}
                 transition={{duration: 1}}
@@ -236,21 +243,43 @@ const UpdateDocInfoAcc = () => {
                 <h1 className="text-2xl lg:text-3xl text-primary font-semibold">
                     {t("account.updateDocInfo.title")}
                 </h1>
-                <div className="flex gap-4">
-                    <button
-                        className="bg-primary text-white px-4 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                <div className="flex gap-4 mr-4">
+                    {/*<button*/}
+                    {/*    className="bg-primary text-white px-4 py-2 rounded-full shadow-md hover:bg-primary-dark transition"*/}
+                    {/*    onClick={resetPass}*/}
+                    {/*>*/}
+                    {/*    {t("account.updateDocInfo.reset")}*/}
+                    {/*</button>*/}
+
+                    <CustomButton
                         onClick={resetPass}
-                    >
-                        {t("account.updateDocInfo.reset")}
-                    </button>
+                        label={t("account.updateDocInfo.reset")}
+                        icon={RotateCcw}
+                        bgColor="bg-[rgba(0,_166,_169,_1)]"
+                        hoverColor="rgba(0, 166, 169, 1)"
+                        shadowColor="rgba(0, 166, 169, 1)"
+                    />
+
                     {
-                        isVerify && <button
-                            className="bg-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-secondary-dark transition"
+                        isVerify && <CustomButton
                             onClick={() => setListModal(true)}
-                        >
-                            {t("account.updateDocInfo.active")}
-                        </button>
+                            label={t("account.updateDocInfo.active")}
+                            icon={AlarmClock}
+                            bgColor="bg-cyan-500"
+                            hoverColor="rgba(6, 182, 212, 1)"
+                            shadowColor="rgba(6, 182, 212, 1)"
+                        />
                     }
+
+
+                    {/*{*/}
+                    {/*    isVerify && <button*/}
+                    {/*        className="bg-cyan-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-secondary-dark transition"*/}
+                    {/*        onClick={() => setListModal(true)}*/}
+                    {/*    >*/}
+                    {/*        {t("account.updateDocInfo.active")}*/}
+                    {/*    </button>*/}
+                    {/*}*/}
                 </div>
             </motion.div>
 
@@ -266,7 +295,7 @@ const UpdateDocInfoAcc = () => {
                     <div className='flex items-center gap-6 text-gray-500'>
                         <label htmlFor="doc-img">
                             <motion.img
-                                whileHover={{ scale: 1.1 }}
+                                whileHover={{scale: 1.1}}
                                 className="w-24 h-24 bg-gray-100 rounded-full cursor-pointer object-cover"
                                 src={image ? URL.createObjectURL(image) : account?.profile_image || assets.patients_icon}
                                 alt="Upload Area"
@@ -284,9 +313,11 @@ const UpdateDocInfoAcc = () => {
                     </div>
 
                     <div className="flex flex-col ">
-                        <div className='flex justify-end'>
-                            <SquareCheckBig color="#16d079"/>
-                        </div>
+                        {
+                            account?.proof && <div className='flex justify-end'>
+                                <SquareCheckBig color="#16d079"/>
+                            </div>
+                        }
 
                         {account?.proof ? (
                             <motion.button
@@ -322,7 +353,7 @@ const UpdateDocInfoAcc = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                     <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-950 font-medium flex items-center gap-1">
+                        <label className="text-sm text-gray-950 font-medium flex items-center gap-1">
     <span className="text-primary">
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -483,7 +514,7 @@ const UpdateDocInfoAcc = () => {
                             value={docData.speciality}
                             required
                         >
-                            <option value="" disabled>Select Speciality</option>
+                            <option value="" disabled>{t("account.update.spec")}</option>
                             {specialities?.map((item, index) => (
                                 <option key={index} value={item.name}>
                                     {item.name}
@@ -641,7 +672,7 @@ const UpdateDocInfoAcc = () => {
                         {t("account.updateDocInfo.back")}
                     </motion.button>
                     {
-                        isVerify ? (
+                        !isFormValid ? (
                             <motion.button
                                 type="submit"
                                 className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
@@ -671,7 +702,7 @@ const UpdateDocInfoAcc = () => {
             </motion.form>
 
             <ActiveHourListModal open={listModal} onClose={() => setListModal(false)} id={id}/>
-            <ViewProofModal open={proofModal} onClose={()=> setProofModal(false)} proof={proof}/>
+            <ViewProofModal open={proofModal} onClose={() => setProofModal(false)} proof={proof}/>
         </div>
 
     )
