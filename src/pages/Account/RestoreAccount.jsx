@@ -20,7 +20,7 @@ import {useQuery} from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import SearchInput from "../../components/SearchInput";
 import { motion } from "framer-motion";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/button/CustomButton";
 
 
 

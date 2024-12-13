@@ -16,6 +16,7 @@
     "dashboard": "Trang chủ",
     "account": "Tài khoản",
     "speciality": "Chuyên khoa",
+    "doctor": "Bác sĩ",
     "region": "Thành Phố",
     "appointment": "Cuộc hẹn",
     "article": "Bài viết",
@@ -27,13 +28,14 @@
       "userAccount": "Tài khoản người dùng",
       "verifiedDoctor": "Bác sĩ đã được xác minh",
       "unverifiedDoctor": "Bác sĩ chưa xác minh",
-      "topDoctors": "Bác sĩ hàng đầu có nhiều lịch khám nhất",
+      "topDoctors": "Bác sĩ có nhiều lịch khám nhất",
       "topUsers": "Khách hàng đặt nhiều lịch khám nhất",
       "appointments": "cuộc hẹn",
       "unknownDoctor": "Không có dữ liệu bác sĩ",
       "noDataAvailable": "Không có dữ liệu",
       "loading": "Đang tải dữ liệu",
-      "label": "Lịch khám"
+      "label": "Lịch khám",
+      "admin": "Tài khoản quản lí"
     },
     "accountList": {
       "userAccounts": "Tài khoản người dùng",
@@ -49,11 +51,22 @@
       "deleteNoti": "Chưa chọn tài khoản để xoá!",
       "restoreNoti": "Chưa chọn tài khoản để khôi phục!",
       "successDelete": "Xoá tài khoản thành công!",
+      "successRestore": "Đã kích hoạt lại tài khoản",
       "confirmDelete": "Xác nhận xoá tài khoản",
       "pCD": "Bạn có muốn xoá tài khoản đã chọn?",
       "cancel": "Huỷ",
       "confirm": "Xoá",
       "nodata": "Không có dữ liệu!"
+    },
+    "admin": {
+      "title": "Danh Sách Tài khoản Quản Lí",
+      "access": "Quyền",
+      "delete": "Xoá quyền quản lí",
+      "fa": "Toàn quyền",
+      "wo": "Chỉnh sửa",
+      "ra": "Chỉ đọc",
+      "rsuccess": "Xoá quyền quản lí thành công!"
+
     },
     "addNewCustomerAcc": {
       "success": "Thêm tài khoản thành công!",
@@ -231,7 +244,9 @@
       "cancel": "Huỷ",
       "message": "Không có chuyên khoa nào được chọn!",
       "success": "Đã xoá chuyên khoa!",
-      "filterAll": "Tất cả chuyên khoa"
+      "filterAll": "Tất cả chuyên khoa",
+      "filterAllByRegion": "Tất cả vùng"
+
     },
     "add": {
       "name": "Vui lòng chọn tên chuyên khoa khác",
@@ -252,7 +267,9 @@
       "permanent": "Xoá vĩnh viễn",
       "rsuccess": "Khôi phục thành công",
       "rwarn": "Chưa chọn chuyên khoa cần khôi phục",
-      "p": "Đã xoá chuyên khoa"
+      "p": "Đã xoá chuyên khoa",
+      "spec": "Chuyên khoa"
+
     }
   },
   "region": {
@@ -321,7 +338,8 @@
       "pCD": "Bạn có muốn huỷ lịch khám đã chọn?",
       "cancel": "Trở lại",
       "confirm": "Huỷ",
-      "completed": "Hoàn Thành"
+      "completed": "Hoàn Thành",
+      "cancelb": "Đã huỷ"
     },
     "add": {
       "title": "Đặt Lịch Khám",
@@ -386,6 +404,7 @@
     },
     "list": {
       "warn": "Chưa chọn bài báo để xoá",
+      "add": "Thêm bài báo",
       "success": "Tạo bài báo mới thành công!",
       "image": "Ảnh bìa",
       "title": "Tiêu đề",

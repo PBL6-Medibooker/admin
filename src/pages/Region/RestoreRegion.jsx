@@ -14,7 +14,7 @@ import Modal from "../../components/Modal/Modal";
 import { FaTrashRestoreAlt } from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/button/CustomButton";
 
 const RestoreRegion = () => {
     const columnHelper = createColumnHelper();

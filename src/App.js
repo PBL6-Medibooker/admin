@@ -55,6 +55,8 @@ import DeletedArticle from "./pages/Doctor/article/DeletedArticle";
 import CreatePost from "./pages/Doctor/post/CreatePost";
 import PostList from "./pages/Doctor/post/PostList";
 import DeletedPost from "./pages/Doctor/post/DeletedPost";
+import ADoctorDashboard from "./pages/ADoctor/ADoctorDashboard";
+import AdminAccountList from "./pages/Account/AdminAccountList";
 
 
 function App() {
@@ -85,14 +87,20 @@ function App() {
 
                     <Route path='/account-dashboard' element={<AccountDashboard/>} />
                     <Route path='/account' element={<AccountList/>} />
-                    <Route path='/doc-account' element={<DoctorAccountList/>} />
-                    <Route path='/verified-doc-account' element={<VerifyDoctorList/>} />
+                    <Route path='/admin-account' element={<AdminAccountList/>}/>
+
+
                     <Route path='/add-customer-account' element={<AddNewCustomerAcc/>} />
                     <Route path='/restore-cus-account' element={<RestoreCusAccount/>} />
                     <Route path="/update-cus-account/:email" element={<AccountDetails />} />
                     <Route path='/add-doc-account' element={<AddDoctorAccount/>} />
                     <Route path='/restore-account' element={<RestoreAccount/>} />
                     <Route path='/update-doc-account/:id' element={<UpdateDocInfoAcc/>} />
+
+                    <Route path='/doctor-admin-dashboard' element={<ADoctorDashboard/>}/>
+                    <Route path='/doc-account' element={<DoctorAccountList/>} />
+                    <Route path='/verified-doc-account' element={<VerifyDoctorList/>} />
+
 
                     <Route path='/region' element={<RegionList/>} />
                     <Route path='/region-dashboard' element={<RegionDashboard/>} />

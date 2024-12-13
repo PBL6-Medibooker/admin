@@ -8,7 +8,7 @@ const ModalInsuranceMedium = ({ open, onClose, children }) => {
             {open && (
                 <motion.div
                     onClick={onClose}
-                    className="fixed inset-0 flex justify-center items-center bg-black/30"
+                    className="fixed z-50 inset-0 flex justify-center items-center bg-black/30"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

@@ -18,7 +18,7 @@ import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import Card from "../../components/Card";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/button/CustomButton";
 import {LuMapPinOff} from "react-icons/lu";
 import {MapPinPlus, Trash2} from 'lucide-react'
 import SearchInput from "../../components/SearchInput";
@@ -257,14 +257,16 @@ const PostListByForum = () => {
                         </div>
                 }
 
-                <div className="mt-2 mb-5">
-                    <SearchInput globalFilter={globalFilter}
-                                 setGlobalFilter={setGlobalFilter}
-                                 t={t("forum.list.search")}
-                                 disableHover={true}
-                    />
+                {
+                    data.length > 0 && <div className="mt-2 mb-5">
+                        <SearchInput globalFilter={globalFilter}
+                                     setGlobalFilter={setGlobalFilter}
+                                     t={t("forum.list.search")}
+                                     disableHover={true}
+                        />
 
-                </div>
+                    </div>
+                }
 
                 {
                     !isDelete ? <motion.div

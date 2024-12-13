@@ -17,6 +17,8 @@ import {toast} from "react-toastify";
 import { FaRegNewspaper } from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/button/CustomButton";
+import {Trash} from "lucide-react";
 
 const ArticleList = () => {
 
@@ -137,23 +139,40 @@ const ArticleList = () => {
         >
             <div className="flex justify-between items-center">
                 <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.list.ctitle")}</h1>
-                <div className="flex gap-1">
+                <div className="flex gap-4 mr-4">
 
-                    <button
+                    {/*<button*/}
+                    {/*    onClick={() => navigate('/create-article')}*/}
+                    {/*    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">*/}
+                    {/*    + <FaRegNewspaper />*/}
+                    {/*</button>*/}
+
+                    <CustomButton
                         onClick={() => navigate('/create-article')}
-                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">
-                        + <FaRegNewspaper />
-                    </button>
+                        label= {t("article.list.add")}
+                        icon={FaRegNewspaper}
+                        bgColor="bg-[rgba(0,_166,_169,_1)]"
+                        hoverColor="rgba(0, 166, 169, 1)"
+                        shadowColor="rgba(0, 166, 169, 1)"
+                    />
 
-                    <button
+                    <CustomButton
                         onClick={openDeleteModal}
-                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> {t("article.list.delete")}
-                    </button>
-                    <button onClick={() => navigate('/restore-article')}
-                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> {t("article.list.restore")}
-                    </button>
+                        label={t("article.list.delete")}
+                        icon={FaRegTrashAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
+
+                    <CustomButton
+                        onClick={() => navigate('/restore-article')}
+                        label={t("article.list.restore")}
+                        icon={Trash}
+                        bgColor="bg-gray-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(0, 128, 255, 0.4)"
+                    />
                 </div>
             </div>
 

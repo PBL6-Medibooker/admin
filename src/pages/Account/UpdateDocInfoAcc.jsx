@@ -13,8 +13,10 @@ import {assets} from "../../assets/assets";
 import isEqual from 'lodash.isequal';
 import ViewProofModal from "./ViewProofModal";
 import {SquareCheckBig, RotateCcw, AlarmClock} from "lucide-react"
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/button/CustomButton";
 import {FaTrashRestoreAlt} from "react-icons/fa";
+import * as doctorService from "../../service/DoctorService";
+
 
 
 const UpdateDocInfoAcc = () => {
@@ -90,7 +92,8 @@ const UpdateDocInfoAcc = () => {
         formData.append("proof", proof);
 
         try {
-            const upload = await accountService.uploadDocDegree(formData, id, aToken);
+            // const upload = await accountService.uploadDocDegree(formData, id, aToken);
+            const upload = await doctorService.uploadDocDegree(formData, id, aToken);
             console.log(upload);
             setProof(upload);
         } catch (error) {
@@ -149,8 +152,9 @@ const UpdateDocInfoAcc = () => {
                 await changeDoctorVerifyStatus();
             }
 
-            const result = await accountService.updateDocInfoAcc(data, id, aToken);
-            let path = isFormValid ? '/verified-doc-account' : '/doc-account'
+            // const result = await accountService.updateDocInfoAcc(data, id, aToken);
+            const result = await doctorService.updateDocInfoAcc(data, id, aToken);
+            let path = aToken ? '/verified-doc-account' : '/doc-account'
 
             if (result?.status === 200) {
 
@@ -160,7 +164,8 @@ const UpdateDocInfoAcc = () => {
                     title: t("account.updateDocInfo.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop:false
                 });
             } else {
                 // toast.error('Error updating doctor info.');
@@ -169,7 +174,8 @@ const UpdateDocInfoAcc = () => {
                     title: t("account.updateDocInfo.error"),
                     icon: "error",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop:false
                 });
             }
         } catch (e) {
@@ -194,7 +200,8 @@ const UpdateDocInfoAcc = () => {
 
     const changeDoctorVerifyStatus = async () => {
         try {
-            const result = await accountService.changeDoctorVerifyStatus(email, true, aToken);
+            // const result = await accountService.changeDoctorVerifyStatus(email, true, aToken);
+            const result = await doctorService.changeDoctorVerifyStatus(email, true, aToken);
             if (result) {
                 console.log("change doctor verify", result)
                 toast.success(result.message);

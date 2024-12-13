@@ -40,10 +40,10 @@ export const cancelAppointment = async (id, aToken) => {
 
 
 
-export const getAppointmentByMonth = async (aToken) => {
+export const getAppointmentByMonth = async (year,aToken) => {
     try {
-        const result = await axios.get(REST_API_BASE_URL + '/get-appointment-by-month'
-            ,{headers: {aToken}})
+        const result = await axios.post(REST_API_BASE_URL + '/get-appointment-by-month'
+           ,{year} ,{headers: {aToken}})
         return result.data
     } catch (e) {
         console.log(e)

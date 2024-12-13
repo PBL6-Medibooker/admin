@@ -17,7 +17,7 @@ const UpdateAppointment = () => {
     const [users, setUsers] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
-    const {t}= useTranslation()
+    const {t} = useTranslation()
     const [detailModal, setDetailModal] = useState(false);
     const [appointmentData, setAppointmentData] = useState({
         user_id: '',
@@ -31,8 +31,8 @@ const UpdateAppointment = () => {
         dayOfWeek: null,
         time: null,
     });
-
     const [name, setName] = useState('');
+    const [isCompeletd, setIsCompleted] = useState(false)
 
     const getName = async () => {
         if (users.length > 0 && appointmentData.user_id) {
@@ -44,7 +44,6 @@ const UpdateAppointment = () => {
             }
         }
     }
-
 
     const changeAppointmentTime = async () => {
         try {
@@ -91,6 +90,10 @@ const UpdateAppointment = () => {
                         timeRange,
                     }
                 });
+                const now = new Date();
+                const appointmentDate = new Date(appointmentData.appointment_day);
+                const isCompleted = appointmentDate < now;
+                setIsCompleted(isCompleted)
 
                 await getActiveHourList();
 
@@ -106,7 +109,7 @@ const UpdateAppointment = () => {
             if (doctorId) {
                 const response = await accountService.getAccountActiveHourList(doctorId, dToken);
                 console.log(response);
-                const { active_hours, fully_booked } = response;
+                const {active_hours, fully_booked} = response;
 
                 const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
 
@@ -122,7 +125,6 @@ const UpdateAppointment = () => {
             console.log(error);
         }
     };
-
 
 
     const updateAppointmentInfo = async () => {
@@ -171,15 +173,9 @@ const UpdateAppointment = () => {
     };
 
 
-
     useEffect(() => {
         if (dToken) {
             getDoctorAccountList();
-        }
-    }, [dToken]);
-
-    useEffect(() => {
-        if (dToken) {
             getAccountList();
         }
     }, [dToken]);
@@ -199,7 +195,6 @@ const UpdateAppointment = () => {
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>
 
-
             <div className="m-5 w-full h-full flex flex-col ">
                 <motion.div
                     initial={{opacity: 0, y: 50}}
@@ -212,19 +207,6 @@ const UpdateAppointment = () => {
                         {users?.find(user => user._id === appointmentData.user_id)?.username || t("appointment.update.nodata")}
 
                     </p>
-
-                    {/*<motion.button*/}
-                    {/*    type="button"*/}
-                    {/*    onClick={() => setUpdateModal(true)}*/}
-                    {/*    className="bg-amber-400 text-gray-700 px-6 py-2 rounded-full shadow-md transition mr-4"*/}
-                    {/*    whileHover={{scale: 1.05}}*/}
-                    {/*    whileTap={{scale: 0.95}}*/}
-                    {/*    initial={{opacity: 0}}*/}
-                    {/*    animate={{opacity: 1}}*/}
-                    {/*    transition={{delay: 0.3, duration: 0.5}}*/}
-                    {/*>*/}
-                    {/*    Insurance Information*/}
-                    {/*</motion.button>*/}
 
                     <motion.button
                         type="button"
@@ -263,12 +245,12 @@ const UpdateAppointment = () => {
 
                                     {t("appointment.update.on")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_day || t("appointment.update.nodate")}
-            </span>{' '}
+                                    {appointmentData.appointment_day || t("appointment.update.nodate")}
+                                    </span>{' '}
                                     {t("appointment.update.at")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_time_start || t("appointment.update.time")} - {appointmentData.appointment_time_end || ''}
-            </span>.
+                                     {appointmentData.appointment_time_start || t("appointment.update.time")} - {appointmentData.appointment_time_end || ''}
+                                    </span>.
                                 </p>
                             </div>
                         </motion.div>
@@ -292,7 +274,6 @@ const UpdateAppointment = () => {
                                             );
 
                                             const isSelected = appointmentData.appointment_time_start === time.start_time && appointmentData.appointment_time_end === time.end_time;
-
                                             const isDisabled = isFullyBooked || isSelected;
 
                                             return (
@@ -311,7 +292,7 @@ const UpdateAppointment = () => {
                                                             ? 'bg-gray-400 text-white cursor-not-allowed'
                                                             : 'bg-white text-black border rounded'
                                                     } px-6 py-2 rounded-lg transition-all hover:bg-primary focus:outline-none focus:bg-primary focus:text-white focus:ring-2 hover:text-white focus:border-transparent`}
-                                                    disabled={isDisabled}
+                                                    disabled={isDisabled || isCompeletd}
                                                 >
                                                     {`${time.start_time} - ${time.end_time}`}
                                                 </button>
@@ -343,6 +324,7 @@ const UpdateAppointment = () => {
                                 placeholder="Describe your health issue here..."
                                 required
                                 aria-required="true"
+                                disabled={isCompeletd}
                             />
                         </motion.div>
 
@@ -383,7 +365,7 @@ const UpdateAppointment = () => {
                     cancel={() => setDetailModal(false)}
                     id={id}
                     name={name}
-                    onClose={()=> setDetailModal(false)}
+                    onClose={() => setDetailModal(false)}
                 />
 
             </div>

@@ -1,37 +1,29 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
-import * as accountService from "../../service/AccountService"
-import {AdminContext} from "../../context/AdminContext";
-import { motion } from 'framer-motion';
+import {motion} from "framer-motion";
+import CustomButton from "../../components/button/CustomButton";
+import {FaRegTrashAlt} from "react-icons/fa";
+import Modal from "../../components/Modal/Modal";
 import {
-    createColumnHelper, flexRender,
+    createColumnHelper,
+    flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
 import {assets} from "../../assets/assets";
-import {toast} from "react-toastify";
-import Modal from "../../components/Modal/Modal";
-import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
+import {AdminContext} from "../../context/AdminContext";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
-import CustomButton from "../../components/button/CustomButton";
-import {Trash, CircleUser} from "lucide-react";
-import {LuMapPinOff} from "react-icons/lu";
+import * as adminService from "../../service/AdminService";
 
-
-const AccountList = () => {
+const AdminAccountList = () => {
+    const {aToken,  adminList, refetchAdminList} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
-    const navigate = useNavigate();
+    const {t} = useTranslation();
     const [globalFilter, setGlobalFilter] = useState("");
-    const [isUser, setIsUser] = useState(true);
-    const [isVerify, setIsVerify] = useState(false);
-    const [hiddenState, setHiddenState] = useState(false);
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
-    const {t} = useTranslation();
-    const {aToken} = useContext(AdminContext);
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -39,7 +31,7 @@ const AccountList = () => {
             cell: (info) => <span>{info.row.index + 1}</span>,
             header: "S.No",
         }),
-        columnHelper.accessor("profile_image", {
+        columnHelper.accessor("user_id.profile_image", {
             cell: (info) => (
                 <img className="rounded-full w-10 h-10 object-cover bg-white"
                      src={info?.getValue() ? info.getValue() : assets.user_icon}
@@ -48,27 +40,42 @@ const AccountList = () => {
             ),
             header: t("account.accountList.profile"),
         }),
-        columnHelper.accessor("username", {
+        columnHelper.accessor("user_id.username", {
             cell: (info) => <span>{info?.getValue()}</span>,
             header: t("account.accountList.username"),
         }),
-        columnHelper.accessor("phone", {
-            cell: (info) => <span>{info?.getValue()}</span>,
-            header: t("account.accountList.phone"),
-        }),
-        // columnHelper.accessor("role", {
-        //     cell: (info) => <span>{info?.getValue()}</span>,
-        //     header: t("account.accountList.role"),
-        // }),
-        columnHelper.accessor("email", {
+        columnHelper.accessor("user_id.email", {
             cell: (info) => <span>{info?.getValue()}</span>,
             header: "Email",
         }),
+        columnHelper.accessor("admin_write_access", {
+            cell: (info) => {
+                const row = info.row.original;
+                if (row.admin_write_access && row.read_access && row.write_access) {
+                    return <span
+                        style={{
+                            backgroundColor: '#FF1493',
+                            borderRadius: '9999px',
+                            padding: '5px 10px 5px 10px',
+                            color: 'white',
+                            display: 'inline-block',
+                        }}>
+                              {t("account.admin.fa")}
+                         </span>
+
+                } else if (row.read_access && !row.admin_write_access && !row.write_access) {
+                    return <span>{t("account.admin.ro")}</span>;
+                } else {
+                    return <span>{t("account.admin.wo")}</span>;
+                }
+            },
+            header: t("account.admin.access"),
+        }),
     ];
-    const [data, setData] = useState([]);
+
 
     const table = useReactTable({
-        data,
+        data: adminList || [],
         columns,
         state: {
             globalFilter,
@@ -78,64 +85,9 @@ const AccountList = () => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    // const rows = useMemo(() => {
-    //     return table.getRowModel().rows.filter(row => row.original.role !== 'admin');
-    // }, [table.getRowModel().rows]);
-
-
-    const getAccountList = async () => {
-
-        try {
-            const result = await accountService.findAll(isUser, isVerify, hiddenState, aToken);
-            setData(result);
-        } catch (e) {
-            console.log(e.error)
-        }
-
-    }
-
-    const toggleAccountSelection = (id) => {
-        setSelectedAccountIds((prevSelected) =>
-            prevSelected.includes(id)
-                ? prevSelected.filter((accountId) => accountId !== id)
-                : [...prevSelected, id]
-        );
-    };
-
-
-
-    const softDeleteAccounts = async () => {
-        if (selectedAccountIds?.length === 0) {
-            // toast.warn('No account selected for deletion')
-           await Swal.fire({
-                icon: "warning",
-                title: "Oops...",
-                text: t("account.accountList.deleteNoti"),
-            });
-            return;
-        }
-        try {
-            await accountService.deleteSoftAccount(selectedAccountIds, aToken)
-            getAccountList();
-            // toast.success(response.message);
-            setOpen(false);
-            setSelectedAccountIds([]);
-            await Swal.fire({
-                position: "top-end",
-                title: t("account.accountList.successDelete"),
-                icon: "success",
-                showConfirmButton: false,
-                timer: 1500,
-                backdrop: false
-            });
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
 
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
-            // toast.warn('No account selected for deletion')
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
@@ -145,12 +97,49 @@ const AccountList = () => {
             setOpen(true)
         }
     }
+    const toggleAccountSelection = (id) => {
+        setSelectedAccountIds((prevSelected) =>
+            prevSelected.includes(id)
+                ? prevSelected.filter((accountId) => accountId !== id)
+                : [...prevSelected, id]
+        );
+    }
+
+
+    const softDeleteAccounts = async () => {
+        if (selectedAccountIds?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("account.accountList.deleteNoti"),
+            });
+            return;
+        }
+        try {
+            await adminService.removeAdminAccessAccount(selectedAccountIds, aToken)
+            refetchAdminList();
+            setOpen(false);
+            setSelectedAccountIds([]);
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.admin.rsuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            });
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
 
     useEffect(() => {
         if (aToken) {
-            getAccountList();
+            refetchAdminList();
+            console.log(adminList)
         }
     }, [aToken]);
+
     return (
         <motion.div
             className="mb-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
@@ -159,44 +148,19 @@ const AccountList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
-                <h1 className="text-lg text-primary lg:text-2xl">{t("account.accountList.userAccounts")}</h1>
-                <div className="flex gap-4">
+                <h1 className="text-lg text-primary lg:text-2xl">{t("account.admin.title")}</h1>
+                <div className="flex gap-4 mr-2">
 
-
-                    <CustomButton
-                        onClick={() => navigate(`/add-customer-account`)}
-                        label= {t("account.accountList.addnewAccount")}
-                        icon={CircleUser}
-                        bgColor="bg-[rgba(0,_166,_169,_1)]"
-                        hoverColor="rgba(0, 166, 169, 1)"
-                        shadowColor="rgba(0, 166, 169, 1)"
-                    />
-
-                    {/*<motion.button*/}
-                    {/*    onClick={openDeleteModal}*/}
-                    {/*    whileHover={{scale: 1.05}}*/}
-                    {/*    className="flex items-center gap-2 px-6 py-2 text-white bg-red-600 rounded-full shadow-lg shadow-red-500/40"*/}
-                    {/*>*/}
-                    {/*    <FaRegTrashAlt/> {t("account.accountList.delete")}*/}
-                    {/*</motion.button>*/}
 
                     <CustomButton
                         onClick={openDeleteModal}
-                        label={t("account.accountList.delete")}
+                        label={t("account.admin.delete")}
                         icon={FaRegTrashAlt}
                         bgColor="bg-red-600"
                         hoverColor="rgba(0, 128, 255, 0.4)"
                         shadowColor="rgba(255, 0, 0, 0.4)"
                     />
 
-                    <CustomButton
-                        onClick={() => navigate('/restore-cus-account')}
-                        label={''}
-                        icon={Trash}
-                        bgColor="bg-gray-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(0, 128, 255, 0.4)"
-                    />
                 </div>
 
 
@@ -300,7 +264,6 @@ const AccountList = () => {
                                     <td
                                         key={cell.id}
                                         className="p-2 cursor-pointer"
-                                        onClick={() => navigate(`/update-cus-account/${row.original.email}`)}
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
@@ -356,4 +319,4 @@ const AccountList = () => {
     );
 };
 
-export default AccountList;
+export default AdminAccountList;

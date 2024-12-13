@@ -232,14 +232,14 @@ export const getDoctorProfile = async (authorization) => {
     }
 };
 
-export const getTopDoctors = async (aToken) => {
-    try {
-        const result = await axios.get(REST_API_BASE_URL + '/top-doctor', {headers: {aToken}});
-        return result.data;
-    } catch (e) {
-        console.error(e);
-    }
-};
+// export const getTopDoctors = async (aToken) => {
+//     try {
+//         const result = await axios.get(REST_API_BASE_URL + '/top-doctor', {headers: {aToken}});
+//         return result.data;
+//     } catch (e) {
+//         console.error(e);
+//     }
+// };
 
 export const getTopUsers = async (aToken) => {
     try {

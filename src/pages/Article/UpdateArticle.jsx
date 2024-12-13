@@ -8,6 +8,8 @@ import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {DoctorContext} from "../../context/DoctorContext";
+import CustomButton from "../../components/button/CustomButton";
+import {Check, Undo2} from "lucide-react";
 
 
 const UpdateArticle = () => {
@@ -179,24 +181,25 @@ const UpdateArticle = () => {
                         transition={{delay: 0.7, duration: 0.5}}
                         className="flex justify-end gap-6 mt-6"
                     >
-                        <motion.button
-                            whileHover={{scale: 1.05}}
-                            type="button"
-                            onClick={() => navigate(aToken ? '/article' : '/doctor-article')}
-                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 hover:text-white transition-all"
-                        >
-                            <i className="fas fa-arrow-left mr-2"></i> {t("article.add.back")}
-                        </motion.button>
 
-                        <motion.button
-                            whileHover={{scale: 1.05}}
-                            type="button"
+                        <CustomButton
+                            onClick={() => navigate(aToken ? '/article' : '/doctor-article')}
+                            label={t("article.add.back")}
+                            icon={Undo2}
+                            textColor='text-black'
+                            bgColor="bg-gray-300"
+                            hoverColor="rgba(209, 213, 219, 1)"
+                            shadowColor="rgba(209, 213, 219, 1)"
+                        />
+
+                        <CustomButton
                             onClick={updateArticle}
-                            className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
-                            aria-label="Save booking"
-                        >
-                            <i className="fas fa-save mr-2"></i> {t("article.add.save")}
-                        </motion.button>
+                            label={t("article.add.save")}
+                            icon={Check}
+                            bgColor="bg-[rgba(0,_166,_169,_1)]"
+                            hoverColor="rgba(0, 166, 169, 1)"
+                            shadowColor="rgba(0, 166, 169, 1)"
+                        />
                     </motion.div>
                 </div>
             </motion.div>

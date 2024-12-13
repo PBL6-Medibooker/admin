@@ -30,15 +30,6 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                     exp_date: data[0].exp_date || "",
                 });
             }
-            // else {
-            //     setInsuranceData({
-            //         id: "",
-            //         name: "",
-            //         number: "",
-            //         location: "",
-            //         exp_date: "",
-            //     });
-            // }
         } catch (e) {
             console.error(e);
         }

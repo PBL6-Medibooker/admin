@@ -35,8 +35,8 @@ const TopUserActive = () => {
     ];
 
     useEffect(() => {
-        if (aToken) {
-            console.log(data)
+        if(aToken){
+            refetch()
         }
     }, [aToken]);
 
@@ -87,7 +87,7 @@ const TopUserActive = () => {
                                     src={data?.data[0]?.userDetails?.profile_image}
                                     alt="top1"
                                     className='[background:linear-gradient(45deg,#e0e7ff,#d1d5db_50%,#e0e7ff)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.300/.48)_80%,_theme(colors.red.400)_86%,_theme(colors.blue.300)_90%,_theme(colors.blue.400)_94%,_theme(colors.slate.300/.48))_border-box]
-            border-[5px] rounded-full border-transparent animate-border'
+                                    border-[5px] w-full h-full object-cover rounded-full border-transparent animate-border'
                                     initial={{scale: 0}}
                                     animate={{scale: 1}}
                                     transition={{duration: 0.6, type: "spring", stiffness: 100}}
@@ -109,7 +109,7 @@ const TopUserActive = () => {
                     </div>
 
 
-                    <div className="flex flex-1 mr-4 ml-4 gap-4 items-center justify-start">
+                    <div className="flex flex-1 mr-4 ml-4 gap-14 items-center justify-start">
                         {data.data.slice(1, 5).map((item, index) => (
                             <motion.div
                                 className="flex flex-col items-center justify-center"

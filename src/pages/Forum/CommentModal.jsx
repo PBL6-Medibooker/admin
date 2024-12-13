@@ -10,7 +10,8 @@ import ModalD from "../../components/Modal/Modal";
 import * as forumService from "../../service/ForumService";
 import Swal from "sweetalert2";
 import {X} from 'react-feather';
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../components/button/CustomButton";
+import ButtonDelete from "../../components/button/ButtonDelete";
 
 
 const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
@@ -19,7 +20,6 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
     const [openD, setOpenD] = useState(false)
     const [cId, setCId] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
-    const [data, setData] = useState([])
 
     const openDeleteModal = (id) => {
         setOpenD(true)
@@ -32,7 +32,6 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
             await forumService.deleteComment(post_id, cId, aToken)
             refetch()
             setOpenD(false)
-
             await Swal.fire({
                 position: "top-end",
                 title: t("forum.list.csuccess"),
@@ -121,16 +120,20 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                     </motion.p>
                                                 </div>
                                             </div>
-                                            <div className="relative h-full bg-primary">
-                                                <motion.button
-                                                    whileHover={{scale: 1.05}}
-                                                    whileTap={{scale: 0.95}}
+                                            <div className="relative h-full">
+                                                {/*<motion.button*/}
+                                                {/*    whileHover={{scale: 1.05}}*/}
+                                                {/*    whileTap={{scale: 0.95}}*/}
+                                                {/*    onClick={() => openDeleteModal(item._id)}*/}
+                                                {/*    className="absolute top-[-18px] right-[1px] text-sm text-stone-500 py-2 transition-all duration-300"*/}
+                                                {/*>*/}
+                                                {/*    <Trash2*/}
+                                                {/*        className="text-stone-500 transition-colors duration-300 hover:text-red-500"/>*/}
+                                                {/*</motion.button>*/}
+                                                <ButtonDelete
                                                     onClick={() => openDeleteModal(item._id)}
-                                                    className="absolute top-[-18px] right-[1px] text-sm text-stone-500 py-2 transition-all duration-300"
-                                                >
-                                                    <Trash2
-                                                        className="text-stone-500 transition-colors duration-300 hover:text-red-500"/>
-                                                </motion.button>
+                                                    text={t("forum.list.delete")}
+                                                />
                                             </div>
 
                                         </motion.div>
@@ -160,6 +163,7 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                     hoverColor="rgba(0, 166, 169, 1)"
                                     shadowColor="rgba(0, 166, 169, 1)"
                                 />
+
                             </div>
                         }
 

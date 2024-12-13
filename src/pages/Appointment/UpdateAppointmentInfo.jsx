@@ -17,19 +17,17 @@ const UpdateAppointmentInfo = () => {
     const {id} = useParams();
 
     const {aToken} = useContext(AdminContext);
-    const [appointmentId, setAppointmentId] = useState('')
     const [doctorId, setDoctorId] = useState('')
 
-    const [user_id, setUserId] = useState('');
     const [users, setUsers] = useState([]);
     const [doctors, setDoctors] = useState([]);
-    const [doctor, setDoctor] = useState(null);
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
 
     const [updateModal, setUpdateModal] = useState(false);
     const [detailModal, setDetailModal] = useState(false);
     const [name, setName] = useState('');
     const {t} = useTranslation();
+    const [isCompeletd, setIsCompleted] = useState(false)
 
 
     const getName = async () => {
@@ -104,9 +102,11 @@ const UpdateAppointmentInfo = () => {
                         timeRange,
                     }
                 });
-
+                const now = new Date();
+                const appointmentDate = new Date(appointmentData.appointment_day);
+                const isCompleted = appointmentDate < now;
+                setIsCompleted(isCompleted)
                 await getActiveHourList();
-                // await getName()
 
             }
         } catch (e) {
@@ -153,7 +153,8 @@ const UpdateAppointmentInfo = () => {
                     title: t("appointment.update.asuccess"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 })
             } else {
                 toast.error('Doctor is not available')
@@ -182,7 +183,7 @@ const UpdateAppointmentInfo = () => {
         }
     };
 
-    const onLoad = () =>{
+    const onLoad = () => {
         setDetailModal(false)
     }
 
@@ -190,11 +191,6 @@ const UpdateAppointmentInfo = () => {
     useEffect(() => {
         if (aToken) {
             getDoctorAccountList();
-        }
-    }, [aToken]);
-
-    useEffect(() => {
-        if (aToken) {
             getAccountList();
         }
     }, [aToken]);
@@ -250,6 +246,7 @@ const UpdateAppointmentInfo = () => {
                         initial={{opacity: 0}}
                         animate={{opacity: 1}}
                         transition={{delay: 0.3, duration: 0.5}}
+                        disabled={isCompeletd}
                     >
                         {t("appointment.update.insurance")}
                     </motion.button>
@@ -276,16 +273,16 @@ const UpdateAppointmentInfo = () => {
                                     {t("appointment.update.y")}
                                     {' '}
                                     <span className="font-semibold text-blue-600">
-                {doctors?.find((doc) => doc._id === appointmentData.doctor_id)?.username || t("appointment.update.nod")}
-            </span>{' '}
+                                      {doctors?.find((doc) => doc._id === appointmentData.doctor_id)?.username || t("appointment.update.nod")}
+                                    </span>{' '}
                                     {t("appointment.update.on")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_day || t("appointment.update.nodate")}
-            </span>{' '}
+                                        {appointmentData.appointment_day || t("appointment.update.nodate")}
+                                    </span>{' '}
                                     {t("appointment.update.at")}{' '}
                                     <span className="font-semibold text-blue-600">
-                {appointmentData.appointment_time_start || t("appointment.update.time")} - {appointmentData.appointment_time_end || ''}
-            </span>.
+                                        {appointmentData.appointment_time_start || t("appointment.update.time")} - {appointmentData.appointment_time_end || ''}
+                                    </span>.
                                 </p>
                             </div>
                         </motion.div>
@@ -328,7 +325,7 @@ const UpdateAppointmentInfo = () => {
                                                             ? 'bg-gray-400 text-white cursor-not-allowed'
                                                             : 'bg-white text-black border rounded'
                                                     } px-6 py-2 rounded-lg transition-all hover:bg-primary focus:outline-none focus:bg-primary focus:text-white focus:ring-2 hover:text-white focus:border-transparent`}
-                                                    disabled={isDisabled}
+                                                    disabled={isDisabled || isCompeletd}
                                                 >
                                                     {`${time.start_time} - ${time.end_time}`}
                                                 </button>
@@ -360,6 +357,7 @@ const UpdateAppointmentInfo = () => {
                                 placeholder="Describe your health issue here..."
                                 required
                                 aria-required="true"
+                                disabled={isCompeletd}
                             />
                         </motion.div>
 

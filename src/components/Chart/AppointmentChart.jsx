@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
     ComposedChart,
     Area,
-    Bar,
-    Line,
     CartesianGrid,
     ResponsiveContainer,
     Tooltip,
@@ -14,21 +12,21 @@ import {
 import { motion } from "framer-motion";
 import { AdminContext } from "../../context/AdminContext";
 import * as appointmentService from "../../service/AppointmentService";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const AppointmentChart = () => {
     const { aToken } = useContext(AdminContext);
     const [dataAppointments, setDataAppointments] = useState([]);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+    const [yearOptions] = useState(['2024', '2025']);
+    const [selectedYear, setSelectedYear] = useState('2024');
 
-    const getAppointmentByMonth = async () => {
+    const getAppointmentByMonth = async (year) => {
         try {
-            const result = await appointmentService.getAppointmentByMonth(aToken);
+            const result = await appointmentService.getAppointmentByMonth(year, aToken);
             console.log(result);
 
-
             if (result.data && Array.isArray(result.data)) {
-
                 const formattedData = result.data.map(item => ({
                     ...item,
                     month: item.month.split('-')[1],
@@ -44,35 +42,65 @@ const AppointmentChart = () => {
     };
 
     useEffect(() => {
-        getAppointmentByMonth();
-    }, [aToken]);
+        if (aToken) {
+            getAppointmentByMonth(selectedYear);
+        }
+    }, [aToken, selectedYear]);
 
-
-    useEffect(() => {
-        getAppointmentByMonth();
-    }, [aToken]);
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
 
     return (
         <motion.div
-            className='bg-white shadow-lg rounded-xl p-6 border border-gray-300 mb-8'
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
+            className="bg-white shadow-lg rounded-xl p-6 border border-gray-300 mb-8"
+            initial={{opacity: 0, y: 20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{delay: 0.5, duration: 0.8}}
         >
-            <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-xl font-semibold text-gray-800'>{t("appointment.dashboard.ctitle")}</h2>
-            </div>
-
-            <div className='w-full h-80'>
-                <ResponsiveContainer width="100%" height="100%"
-                                     syncId="anyId"
-
+            <motion.div
+                className="flex items-center justify-between mb-6"
+                initial={{opacity: 0, x: -20}}
+                animate={{opacity: 1, x: 0}}
+                transition={{delay: 0.7, duration: 0.6}}
+            >
+                <motion.h2
+                    className="text-xl font-semibold text-gray-800"
+                    initial={{scale: 0.8}}
+                    animate={{scale: 1}}
+                    transition={{delay: 0.8, duration: 0.4}}
                 >
+                    {t("appointment.dashboard.ctitle")}
+                </motion.h2>
+
+                <motion.select
+                    value={selectedYear}
+                    onChange={handleYearChange}
+                    className="border border-gray-300 rounded px-3 py-2"
+                    initial={{opacity: 0, x: 20}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={{delay: 0.9, duration: 0.6}}
+                >
+                    {yearOptions.map((year) => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                    ))}
+                </motion.select>
+            </motion.div>
+
+            <motion.div
+                className="w-full h-80"
+                initial={{scale: 0.95}}
+                animate={{scale: 1}}
+                transition={{delay: 1, duration: 0.7}}
+            >
+                <ResponsiveContainer width="100%" height="100%" syncId="anyId">
                     {dataAppointments.length > 0 ? (
                         <ComposedChart data={dataAppointments}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                            <XAxis dataKey="month" stroke="#4B5563" />
-                            <YAxis stroke="#4B5563" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB"/>
+                            <XAxis dataKey="month" stroke="#4B5563"/>
+                            <YAxis stroke="#4B5563"/>
                             <Tooltip
                                 contentStyle={{
                                     backgroundColor: "rgba(249, 250, 251, 0.9)",
@@ -81,7 +109,9 @@ const AppointmentChart = () => {
                                 itemStyle={{
                                     color: "#1F2937"
                                 }}
-                                labelFormatter={(month) => `${t("appointment.dashboard.month")}: ${month}`}
+                                labelFormatter={(month) =>
+                                    `${t("appointment.dashboard.month")}: ${month}`
+                                }
                                 formatter={(value, name, props) => {
                                     if (props.dataKey === 'appointmentCountBar') {
                                         return [`${t("appointment.dashboard.number")}: ${value}`];
@@ -89,19 +119,14 @@ const AppointmentChart = () => {
                                     return null;
                                 }}
                             />
-
-
                             <Legend
-                                formatter={(value, entry, index) => {
-
+                                formatter={(value, entry) => {
                                     if (entry.dataKey === "appointmentCountBar") {
                                         return t("appointment.dashboard.label");
                                     }
                                     return '';
                                 }}
                             />
-
-
                             <Area
                                 syncId="anyId"
                                 type="monotone"
@@ -111,29 +136,21 @@ const AppointmentChart = () => {
                                 fillOpacity={0.3}
                                 name="Number of Appointments in a Month"
                             />
-
-
-                            {/*<Bar*/}
-                            {/*    dataKey="appointmentCountBar"*/}
-                            {/*    barSize={20}*/}
-                            {/*    fill="#413ea0"*/}
-                            {/*    name="Number of Appointments in a Month"*/}
-                            {/*/>*/}
-
-
-                            {/*<Line*/}
-                            {/*    type="monotone"*/}
-                            {/*    dataKey="appointmentCount"*/}
-                            {/*    stroke="#ff7300"*/}
-                            {/*    name=""*/}
-                            {/*/>*/}
                         </ComposedChart>
                     ) : (
-                        <p>No data available</p>
+                        <motion.p
+                            className="text-center text-gray-500"
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{delay: 1.2, duration: 0.5}}
+                        >
+                            No data available
+                        </motion.p>
                     )}
                 </ResponsiveContainer>
-            </div>
+            </motion.div>
         </motion.div>
+
     );
 };
 

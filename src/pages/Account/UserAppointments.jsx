@@ -62,17 +62,6 @@ const UserAppointments = () => {
         }
     });
 
-    // const { data = [], isLoading, isError, refetch } = useQuery({
-    //     queryKey: ["appointments", id],
-    //     queryFn: async () => {
-    //         throw new Error("Simulated error");
-    //     },
-    //     onSuccess: () => {
-    //         setIsInitialLoading(false);
-    //     }
-    // });
-
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsInitialLoading(false);

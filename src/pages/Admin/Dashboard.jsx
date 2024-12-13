@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
 import {BadgeCheck, ClipboardList} from "lucide-react";
-import AppointmentChart from "../../components/Chart/AppointmentChart";
 import {useTranslation} from "react-i18next";
 import {AdminContext} from "../../context/AdminContext";
 import {useQuery} from "@tanstack/react-query";
@@ -51,7 +50,7 @@ const Dashboard = () => {
     }
 
 
-    return (
+    return aToken && (
         <div className='flex-1 overflow-auto relative z-10'>
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
                 {/* STATS */}

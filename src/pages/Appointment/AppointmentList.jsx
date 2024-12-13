@@ -1,4 +1,4 @@
-import {motion} from "framer-motion";
+import {motion, AnimatePresence} from "framer-motion";
 import React, {useContext, useEffect, useState} from 'react';
 import MUIDataTable from "mui-datatables";
 import * as appointmentService from "../../service/AppointmentService";
@@ -11,6 +11,8 @@ import Modal from "../../components/Modal/Modal";
 import {FaRegTrashAlt} from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/button/CustomButton";
+import {ArrowBigLeftDash, CalendarDays} from "lucide-react";
 
 const AppointmentList = () => {
     const navigate = useNavigate();
@@ -33,7 +35,8 @@ const AppointmentList = () => {
                     title: t("appointment.list.mcancel"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
 
@@ -75,11 +78,11 @@ const AppointmentList = () => {
         {
             name: t("appointment.list.patient"),
             options: {
-                    customHeadLabelRender: () => (
-                        <span className="text-lg text-primary">
+                customHeadLabelRender: () => (
+                    <span className="text-lg text-primary">
                             {t("appointment.list.patient")}
                     </span>
-                    ),
+                ),
                 customBodyRenderLite: (dataIndex) => (
                     <div className="flex w-8 h-8 items-center gap-2">
                         <img
@@ -155,10 +158,12 @@ const AppointmentList = () => {
                         <div className='ml-10'>
                             {isCompleted ? (
                                 <p className="text-green-500 text-xs font-medium">{t("appointment.list.completed")}</p>
-                            ) : (
-                                <img
-                                    alt="pic"
-                                    src={assets.cancel_icon}
+                            ) : appointment.is_deleted ?
+                                <p className="text-green-500 text-xs font-medium">{t("appointment.list.cancelb")}</p>
+                                :(
+                                    <img
+                                        alt="pic"
+                                        src={assets.cancel_icon}
                                     className="w-10 cursor-pointer"
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -195,18 +200,17 @@ const AppointmentList = () => {
     };
 
 
-    //
-    // const modalVariants = {
-    //     hidden: { opacity: 0, y: "-50%" },
-    //     visible: { opacity: 1, y: "0%" },
-    //     exit: { opacity: 0, y: "50%" },
-    // };
-    //
-    // const backdropVariants = {
-    //     hidden: { opacity: 0 },
-    //     visible: { opacity: 1 },
-    //     exit: { opacity: 0 },
-    // };
+    const modalVariants = {
+        hidden: {opacity: 0, y: "-50%"},
+        visible: {opacity: 1, y: "0%"},
+        exit: {opacity: 0, y: "50%"},
+    };
+
+    const backdropVariants = {
+        hidden: {opacity: 0},
+        visible: {opacity: 1},
+        exit: {opacity: 0},
+    };
 
 
     useEffect(() => {
@@ -226,20 +230,20 @@ const AppointmentList = () => {
             <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
 
                 <motion.div
-                    className="flex justify-between mb-4"
+                    className="flex justify-between items-center mb-4 mr-4"
                     initial={{y: -20}}
                     animate={{y: 0}}
                     transition={{duration: 0.5}}
                 >
-                    <p className="mb-1 text-lg lg:text-2xl text-primary font-medium">{t("appointment.list.title")}</p>
-                    <motion.button
+                    <p className="text-lg lg:text-2xl text-primary font-medium">{t("appointment.list.title")}</p>
+                    <CustomButton
                         onClick={() => navigate("/booking-appointment")}
-                        className="bg-primary text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
-                        whileHover={{scale: 1.05}}
-                        whileTap={{scale: 0.95}}
-                    >
-                        {t("appointment.list.booking")}
-                    </motion.button>
+                        label={t("appointment.list.booking")}
+                        icon={CalendarDays}
+                        bgColor="bg-[rgba(0,_166,_169,_1)]"
+                        hoverColor="rgba(0, 166, 169, 1)"
+                        shadowColor="rgba(0, 166, 169, 1)"
+                    />
                 </motion.div>
 
                 <div className="w-full max-w-6xl m-5">
@@ -256,79 +260,80 @@ const AppointmentList = () => {
                     </motion.div>
                 </div>
             </main>
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <div className="text-center w-72">
-                    <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
-                    <div className="mx-auto my-4 w-60">
-                        <h3 className="text-lg font-black text-gray-800">{t("appointment.list.confirmDelete")}</h3>
-                        <p className="text-sm text-gray-600">
-                            {t("appointment.list.pCD")}
-                        </p>
-                    </div>
-                    <div className="flex gap-4 mt-6">
-                        <button
-                            className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
-                            onClick={cancelBooking}>{t("appointment.list.confirm")}
-                        </button>
-                        <button
-                            className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
-                            onClick={() => setOpen(false)}
-                        >
-                            {t("appointment.list.cancel")}
-                        </button>
-                    </div>
-                </div>
-            </Modal>
-
-
-            {/*<AnimatePresence>*/}
-            {/*    {open && (*/}
-            {/*        <motion.div*/}
-            {/*            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"*/}
-            {/*            initial="hidden"*/}
-            {/*            animate="visible"*/}
-            {/*            exit="exit"*/}
-            {/*            variants={backdropVariants}*/}
-            {/*            onClick={() => setOpen(false)} // Close modal on backdrop click*/}
-            {/*        >*/}
-            {/*            <motion.div*/}
-            {/*                className="bg-white text-center p-6 rounded-lg shadow-lg w-72 relative"*/}
-            {/*                variants={modalVariants}*/}
-            {/*                initial="hidden"*/}
-            {/*                animate="visible"*/}
-            {/*                exit="exit"*/}
-            {/*                onClick={(e) => e.stopPropagation()} // Prevent backdrop click from closing modal*/}
+            {/*<Modal open={open} onClose={() => setOpen(false)}>*/}
+            {/*    <div className="text-center w-72">*/}
+            {/*        <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>*/}
+            {/*        <div className="mx-auto my-4 w-60">*/}
+            {/*            <h3 className="text-lg font-black text-gray-800">{t("appointment.list.confirmDelete")}</h3>*/}
+            {/*            <p className="text-sm text-gray-600">*/}
+            {/*                {t("appointment.list.pCD")}*/}
+            {/*            </p>*/}
+            {/*        </div>*/}
+            {/*        <div className="flex gap-4 mt-6">*/}
+            {/*            <button*/}
+            {/*                className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"*/}
+            {/*                onClick={cancelBooking}>{t("appointment.list.confirm")}*/}
+            {/*            </button>*/}
+            {/*            <button*/}
+            {/*                className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"*/}
+            {/*                onClick={() => setOpen(false)}*/}
             {/*            >*/}
-            {/*                <FaRegTrashAlt size={56} className="mx-auto text-red-500" />*/}
-            {/*                <div className="mx-auto my-4 w-60">*/}
-            {/*                    <h3 className="text-lg font-black text-gray-800">*/}
-            {/*                        {t("appointment.list.confirmDelete")}*/}
-            {/*                    </h3>*/}
-            {/*                    <p className="text-sm text-gray-600">*/}
-            {/*                        {t("appointment.list.pCD")}*/}
-            {/*                    </p>*/}
-            {/*                </div>*/}
-            {/*                <div className="flex gap-4 mt-6">*/}
-            {/*                    <button*/}
-            {/*                        className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"*/}
-            {/*                        onClick={() => {*/}
-            {/*                            cancelBooking();*/}
-            {/*                            setOpen(false);*/}
-            {/*                        }}*/}
-            {/*                    >*/}
-            {/*                        {t("appointment.list.confirm")}*/}
-            {/*                    </button>*/}
-            {/*                    <button*/}
-            {/*                        className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"*/}
-            {/*                        onClick={() => setOpen(false)}*/}
-            {/*                    >*/}
-            {/*                        {t("appointment.list.cancel")}*/}
-            {/*                    </button>*/}
-            {/*                </div>*/}
-            {/*            </motion.div>*/}
-            {/*        </motion.div>*/}
-            {/*    )}*/}
-            {/*</AnimatePresence>*/}
+            {/*                {t("appointment.list.cancel")}*/}
+            {/*            </button>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</Modal>*/}
+
+
+            <AnimatePresence>
+                {open &&
+                    (
+                    <motion.div
+                        className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={backdropVariants}
+                        onClick={() => setOpen(false)}
+                    >
+                        <motion.div
+                            className="bg-white text-center p-6 rounded-lg shadow-lg w-80 relative"
+                            variants={modalVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
+                            <div className="mx-auto my-4 w-60">
+                                <h3 className="text-lg font-black text-gray-800">
+                                    {t("appointment.list.confirmDelete")}
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    {t("appointment.list.pCD")}
+                                </p>
+                            </div>
+                            <div className="flex gap-4 mt-6">
+                                <button
+                                    className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
+                                    onClick={() => {
+                                        cancelBooking()
+                                    }}
+                                >
+                                    {t("appointment.list.confirm")}
+                                </button>
+                                <button
+                                    className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
+                                    onClick={() => setOpen(false)}
+                                >
+                                    {t("appointment.list.cancel")}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                    )
+            }
+            </AnimatePresence>
 
         </motion.div>
     );

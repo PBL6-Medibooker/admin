@@ -1,50 +1,50 @@
-import React, {useContext, useEffect, useState} from 'react';
-import Modal from '../../components/Modal/ModalMedium';
-import {toast} from "react-toastify";
+import React, { useContext, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import Modal from "../../components/Modal/ModalMedium";
+import { toast } from "react-toastify";
 import * as accountService from "../../service/AccountService";
-import {AdminContext} from "../../context/AdminContext";
+import { AdminContext } from "../../context/AdminContext";
 import Swal from "sweetalert2";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import * as doctorService from "../../service/DoctorService";
 
-
-const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
-
-    const {aToken} = useContext(AdminContext);
-    const {t} = useTranslation();
+const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
+    const { aToken } = useContext(AdminContext);
+    const { t } = useTranslation();
 
     const [activeHour, setActiveHour] = useState({
-        day: '',
-        start_time: '',
-        end_time: '',
-        hour_type: '',
-        appointment_limit: '',
-        old_day: '',
-        old_start_time: '',
-        old_end_time: '',
-        old_hour_type: '',
+        day: "",
+        start_time: "",
+        end_time: "",
+        hour_type: "",
+        appointment_limit: "",
+        old_day: "",
+        old_start_time: "",
+        old_end_time: "",
+        old_hour_type: "",
     });
 
     const getOldActiveHour = async () => {
         if (data) {
             setActiveHour({
-                day: data.day || '',
-                start_time: data.start_time || '',
-                end_time: data.end_time || '',
-                hour_type: data.hour_type || '',
-                appointment_limit: data.appointment_limit || '',
-                old_day: data.day || '',
-                old_start_time: data.start_time || '',
-                old_end_time: data.end_time || '',
-                old_hour_type: data.hour_type || '',
+                day: data.day || "",
+                start_time: data.start_time || "",
+                end_time: data.end_time || "",
+                hour_type: data.hour_type || "",
+                appointment_limit: data.appointment_limit || "",
+                old_day: data.day || "",
+                old_start_time: data.start_time || "",
+                old_end_time: data.end_time || "",
+                old_hour_type: data.hour_type || "",
             });
         }
     };
 
     useEffect(() => {
-        if(aToken){
-            getOldActiveHour()
+        if (aToken) {
+            getOldActiveHour();
         }
-    }, [aToken,data]);
+    }, [aToken, data]);
 
     const formatTime = (time) => {
         const [hour, minute] = time.split(":");
@@ -55,32 +55,17 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
         const { name, value, type } = e.target;
         let formattedValue = value;
 
-        // Only format if the input is of type 'time'
         if (type === "time") {
             formattedValue = formatTime(value);
         }
         setActiveHour((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const { day, start_time, end_time, hour_type } = activeHour;
-
-            const activeHourDetails = {
-                day: activeHour.day,
-                start_time: activeHour.start_time,
-                end_time: activeHour.end_time,
-                hour_type: activeHour.hour_type,
-                appointment_limit: activeHour.appointment_limit,
-                old_day: activeHour.old_day,
-                old_start_time: activeHour.old_start_time,
-                old_end_time: activeHour.old_end_time,
-                old_hour_type: activeHour.old_hour_type,
-            };
-
+            const { day, start_time, end_time } = activeHour;
 
             const [startHour, startMinute] = start_time.split(":").map(Number);
             const [endHour, endMinute] = end_time.split(":").map(Number);
@@ -94,23 +79,21 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                     title: t("account.aa.error"),
                     icon: "error",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
                 return;
             }
 
-            const result = await accountService.updateDoctorActiveHour(activeHourDetails, accountId, aToken);
+            const result = await doctorService.updateDoctorActiveHour(activeHour, accountId, aToken);
 
             if (result) {
-                onClose()
-                console.log("Active hour updated successfully:", result);
-                // toast.success("Active hour updated successfully");
+                onClose();
                 await Swal.fire({
                     position: "top-end",
                     title: t("account.updateaa.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
             } else {
                 await Swal.fire({
@@ -118,28 +101,35 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                     title: t("account.updateaa.error"),
                     icon: "error",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
             }
         } catch (e) {
-            console.log("Error updating active hour:", e);
             toast.error(e.message || "Error updating active hour.");
         }
-
-        console.log(activeHour);
     };
-
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h1 className='text-primary font-medium '>{t("account.updateaa.title")}</h1>
-            <form onSubmit={handleSubmit}
-                  className="flex flex-col justify-center items-center p-6 ml-9 bg-white rounded max-w-lg w-full">
-
-                <div className="flex flex-col">
-                    <div className="flex gap-3">
+            <h1 className="text-primary lg:text-xl font-medium">
+                {t("account.updateaa.title")}
+            </h1>
+            <motion.div
+                initial={{opacity: 0, y: -50}}
+                animate={{opacity: 1, y: 0}}
+                exit={{opacity: 0, y: 50}}
+                transition={{type: "spring", stiffness: 200}}
+                className="p-2 ml-9 bg-white rounded max-w-lg w-full"
+            >
+                <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center gap-6">
+                    <motion.div
+                        className="flex gap-3"
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{delay: 0.2}}
+                    >
                         <div>
-                            <label>{t("account.updateaa.day")}</label>
+                            <label className="text-black font-bold">{t("account.updateaa.day")}</label>
                             <select
                                 name="day"
                                 value={activeHour.day}
@@ -148,18 +138,18 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                                 className="border p-2 rounded"
                             >
                                 <option value="">Select a Day</option>
-                                <option value="Monday">Monday</option>
-                                <option value="Tuesday">Tuesday</option>
-                                <option value="Wednesday">Wednesday</option>
-                                <option value="Thursday">Thursday</option>
-                                <option value="Friday">Friday</option>
-                                <option value="Saturday">Saturday</option>
-                                <option value="Sunday">Sunday</option>
+                                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
+                                    (day) => (
+                                        <option key={day} value={day}>
+                                            {day}
+                                        </option>
+                                    )
+                                )}
                             </select>
                         </div>
 
                         <div>
-                            <label>{t("account.updateaa.start")}</label>
+                            <label className="text-black font-bold">{t("account.updateaa.start")}</label>
                             <input
                                 type="time"
                                 name="start_time"
@@ -171,7 +161,7 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                         </div>
 
                         <div>
-                            <label>{t("account.updateaa.end")}</label>
+                            <label className="text-black font-bold">{t("account.updateaa.end")}</label>
                             <input
                                 type="time"
                                 name="end_time"
@@ -182,23 +172,8 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                             />
                         </div>
 
-                        {/*<div>*/}
-                        {/*    <label>Type</label>*/}
-                        {/*    <select*/}
-                        {/*        name="hour_type"*/}
-                        {/*        value={activeHour.hour_type}*/}
-                        {/*        onChange={handleInputChange}*/}
-                        {/*        required*/}
-                        {/*        className="border p-2 rounded"*/}
-                        {/*    >*/}
-                        {/*        <option value="working">Working</option>*/}
-                        {/*        <option value="appointment">Appointment</option>*/}
-                        {/*    </select>*/}
-                        {/*</div>*/}
-
-
                         <div>
-                            <label>{t("account.updateaa.limit")}</label>
+                            <label className="text-black font-bold">{t("account.updateaa.limit")}</label>
                             <input
                                 type="number"
                                 name="appointment_limit"
@@ -208,27 +183,35 @@ const UpdateActiveHourModal = ({ open, onClose, data,accountId, cancel }) => {
                                 className="border w-[90px] p-2 rounded"
                             />
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="flex justify-center gap-2 mt-4">
-                        <button
+                    <motion.div
+                        className="flex justify-center gap-2"
+                        initial={{opacity: 0, scale: 0.9}}
+                        animate={{opacity: 1, scale: 1}}
+                        transition={{delay: 0.3}}
+                    >
+                        <motion.button
                             type="button"
                             onClick={cancel}
-                            className="bg-gray-300 p-2 rounded"
+                            className="bg-gray-300 w-[100px] p-2 rounded"
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                         >
                             {t("account.updateaa.cancel")}
-                        </button>
-                        <button
+                        </motion.button>
+                        <motion.button
                             type="submit"
-                            className="bg-green-500 text-white w-[150px] p-2 rounded"
+                            className="bg-primary text-white w-[100px] p-2 rounded"
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                         >
                             {t("account.updateaa.update")}
-                        </button>
-                    </div>
-                </div>
-            </form>
+                        </motion.button>
+                    </motion.div>
+                </form>
+            </motion.div>
         </Modal>
-
     );
 };
 

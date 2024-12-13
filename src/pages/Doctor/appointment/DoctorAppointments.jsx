@@ -20,8 +20,6 @@ const DoctorAppointments = () => {
     const {dToken, getDoctorData, docId, doctorAppointments, isDoctorAppointmentsLoading,reFetchDA} = useContext(DoctorContext);
     const {calculateAge, dateFormat, separateDayAndDate} = useContext(AppContext);
 
-    const [appointments, setAppointments] = useState([]);
-
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
     const [id, setId] =useState('')
@@ -164,7 +162,7 @@ const DoctorAppointments = () => {
         rowsPerPage: 5,
         rowsPerPageOptions: [5, 10, 20],
         onRowClick: (rowData, rowMeta) => {
-            const appointment = doctorAppointments[rowMeta.dataIndex];
+            const appointment = doctorAppointments[rowMeta.dataIndex]
             navigate(`/update-appointment-of-doctor/${appointment._id}`)
         },
         download: false,

@@ -19,6 +19,7 @@ import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
+import * as regionService from "../../service/RegionService";
 
 const VerifyDoctorList = () => {
 
@@ -27,9 +28,11 @@ const VerifyDoctorList = () => {
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
     const [open, setOpen] = useState(false);
-    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec} = useContext(AdminContext);
+    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec,
+     regionList, refetchRegionList} = useContext(AdminContext);
     const {t} = useTranslation();
-    const [filterValue, setFilterValue] = useState("");
+    const [specialityFilterValue, setSpecialityFilterValue] = useState("");
+    const [regionFilterValue, setRegionFilterValue] = useState("");
     const [filteredDoctors, setFilteredDoctors] = useState([]);
 
 
@@ -56,7 +59,6 @@ const VerifyDoctorList = () => {
         })
     ];
     const table = useReactTable({
-        // data: verifiedDoctor || [],
         data: filteredDoctors || [],
         columns,
         state: {globalFilter},
@@ -82,22 +84,47 @@ const VerifyDoctorList = () => {
         }
     };
 
-    const handleFilterChange = (event) => {
+
+    const handleSpecialityFilterChange = (event) => {
         const selectedValue = event.target.value;
-        setFilterValue(selectedValue);
+        setSpecialityFilterValue(selectedValue);
+        let filtered = verifiedDoctor;
 
         if (selectedValue) {
-            const filtered = verifiedDoctor.filter((doctor) =>
+            filtered = filtered.filter((doctor) =>
                 doctor.speciality_id?.name.toLowerCase() === selectedValue.toLowerCase()
             );
-            console.log("Selected Value:", selectedValue);
-            console.log("Filtered Data:", filtered);
-            setFilteredDoctors(filtered);
-        } else {
-            setFilteredDoctors(verifiedDoctor);
         }
+
+        if (regionFilterValue) {
+            filtered = filtered.filter((doctor) =>
+                doctor.region_id?.name.toLowerCase() === regionFilterValue.toLowerCase()
+            );
+        }
+
+        setFilteredDoctors(filtered);
     };
 
+    const handleRegionFilterChange = (event) => {
+        const selectedValue = event.target.value;
+        setRegionFilterValue(selectedValue);
+
+        let filtered = verifiedDoctor;
+
+        if (specialityFilterValue) {
+            filtered = filtered.filter((doctor) =>
+                doctor.speciality_id?.name.toLowerCase() === specialityFilterValue.toLowerCase()
+            );
+        }
+
+        if (selectedValue) {
+            filtered = filtered.filter((doctor) =>
+                doctor.region_id?.name.toLowerCase() === selectedValue.toLowerCase()
+            );
+        }
+
+        setFilteredDoctors(filtered);
+    };
 
     const openDeleteModal = () => {
         if (selectedAccountIds?.length === 0) {
@@ -148,6 +175,7 @@ const VerifyDoctorList = () => {
             getAccountList()
             rVerifyDoctorData()
             refetchSpec()
+            refetchRegionList()
         }
     }, [aToken, verifiedDoctor]);
 
@@ -201,22 +229,41 @@ const VerifyDoctorList = () => {
 
             <div className="flex gap-4 mt-4 mb-4">
 
-                <SearchInput globalFilter={globalFilter} setGlobalFilter={setFilteredDoctors}
-                t={t("account.verified.search")}/>
+                <SearchInput
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                    t={t("account.verified.search")}
+                    disableHover={false}
+                />
 
-                <motion.div>
-                    <select
-                        className="w-[20vw] p-4 border border-gray-300 rounded"
-                        value={filterValue}
-                        onChange={handleFilterChange}
-                    >
-                        <option value="">{t("speciality.list.filterAll")}</option>
-                        {specialities?.map((item) => (
-                            <option key={item._id} value={item.name}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
+                    <motion.div>
+                        <select
+                            className="w-[20vw] p-4 border border-gray-300 rounded"
+                            value={specialityFilterValue}
+                            onChange={handleSpecialityFilterChange}
+                        >
+                            <option value="">{t("speciality.list.filterAll")}</option>
+                            {specialities?.map((item) => (
+                                <option key={item._id} value={item.name}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
+                    </motion.div>
+
+                    <motion.div>
+                        <select
+                            className="w-[20vw] p-4 border border-gray-300 rounded"
+                            value={regionFilterValue}
+                            onChange={handleRegionFilterChange}
+                        >
+                            <option value="">{t("speciality.list.filterAllByRegion")}</option>
+                            {regionList?.map((item) => (
+                                <option key={item._id} value={item.name}>
+                                    {item.name}
+                                </option>
+                            ))}
+                        </select>
                 </motion.div>
 
             </div>
@@ -339,7 +386,9 @@ const VerifyDoctorList = () => {
 
 
             {/* Pagination */}
-            {(filteredDoctors.length > 0 || verifiedDoctor.length > 0) && <div className="flex items-center justify-end gap-2 mt-4">
+            {
+                (Array.isArray(verifiedDoctor) && filteredDoctors.length > 0)
+                && <div className="flex items-center justify-end gap-2 mt-4">
                 <button
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}

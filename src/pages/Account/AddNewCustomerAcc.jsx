@@ -35,6 +35,7 @@ const AddNewCustomerAcc = () => {
                 icon: "error",
                 showConfirmButton: false,
                 timer: 1500,
+                backdrop: false
             });
             return;
         }

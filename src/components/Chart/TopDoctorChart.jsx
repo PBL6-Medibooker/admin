@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AdminContext} from "../../context/AdminContext";
 import * as accountService from "../../service/AccountService";
+import * as doctorService from "../../service/DoctorService";
 import {motion} from "framer-motion";
 import {
      Cell,
@@ -23,7 +24,7 @@ const TopDoctorChart = () => {
 
     const getTopDoctor = async () => {
         try {
-            const data = await accountService.getTopDoctors(aToken);
+            const data = await doctorService.getTopDoctors(aToken);
             if (data) {
                 console.log(data);
                 const formattedData = data.data.map((item) => ({

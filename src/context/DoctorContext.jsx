@@ -3,8 +3,10 @@ import * as accountService from "../service/AccountService";
 import {useQuery} from "@tanstack/react-query";
 import Error from "../components/Error";
 import * as appointmentService from "../service/AppointmentService";
+import * as doctorService from "../service/DoctorService";
 import * as articleService from "../service/ArticleService";
 import Swal from "sweetalert2";
+
 
 export const DoctorContext = createContext();
 
@@ -20,7 +22,8 @@ const DoctorContextProvider = (props) => {
 
     const getDoctorData = async () => {
         try {
-            const result = await accountService.getDoctorProfile(dToken);
+            // const result = await accountService.getDoctorProfile(dToken);
+            const result = await doctorService.getDoctorProfile(dToken);
 
             if (result.success) {
                 setDoctorData(result.profileData);

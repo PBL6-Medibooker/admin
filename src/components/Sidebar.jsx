@@ -35,7 +35,11 @@ const Sidebar = () => {
     };
 
     const isAccountActive = () => {
-        return location.pathname.includes("account");
+        return location.pathname.includes("account") && !location.pathname.includes("doctor") && !location.pathname.includes("doc");
+    };
+
+    const isDoctorActive = () => {
+        return location.pathname.includes("doctor") || location.pathname.includes("doc");
     };
 
     const isTrashActive = () => {
@@ -74,6 +78,9 @@ const Sidebar = () => {
                                 isActive: isAccountActive()},
                                 { to: "/speciality-dashboard", icon: assets.speciality_icon, label: t("sidebar.speciality"),
                                     isActive: isSpecialityActive()
+                                },
+                                { to: "/doctor-admin-dashboard", icon: assets.doctor, label: t("sidebar.doctor"),
+                                    isActive: isDoctorActive()
                                 },
                                 { to: "/region-dashboard", icon: assets.map_icon, label: t("sidebar.region"),
                                 isActive: isRegionActive()},

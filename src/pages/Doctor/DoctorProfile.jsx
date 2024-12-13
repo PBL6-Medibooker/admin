@@ -11,6 +11,8 @@ import * as regionService from "../../service/RegionService";
 import * as specialityService from "../../service/SpecialityService";
 import bcrypt from 'bcryptjs';
 import validator from "validator";
+import * as doctorService from "../../service/DoctorService";
+
 
 const DoctorProfile = () => {
 
@@ -36,7 +38,8 @@ const DoctorProfile = () => {
 
     const getDoctorData = async () => {
         try {
-            const result = await accountService.getDoctorProfile(dToken);
+            // const result = await accountService.getDoctorProfile(dToken);
+            const result = await doctorService.getDoctorProfile(dToken);
             console.log(result)
             if (result.success) {
                 setDoctorData(result.profileData)
@@ -53,8 +56,8 @@ const DoctorProfile = () => {
         {
             queryKey: ["regions"],
             queryFn: async () => {
-                const data = regionService.findAll(false, dToken)
-                return data
+                return await regionService.findAll(false, dToken)
+
             }
         }
     )
@@ -63,8 +66,8 @@ const DoctorProfile = () => {
         {
             queryKey: ["spec"],
             queryFn: async () => {
-                const data = await specialityService.findAll(false, dToken);
-                return data
+                return await specialityService.findAll(false, dToken);
+
             }
         }
     )
@@ -321,10 +324,10 @@ const DoctorProfile = () => {
                     >
                         {
                             isChangePassword ?
-                                <div className='w-[300px] h-[200px] bg-green-600'>
+                                <div className='w-[300px] h-[200px] bg-transparent rounded-lg'>
                                     <img
-                                        className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                        src={assets.admin_logo}
+                                        className="w-full h-full object-cover rounded-lg"
+                                        src={assets.logo}
                                         alt="profile"
                                     />
                                 </div>
@@ -712,7 +715,15 @@ const DoctorProfile = () => {
 
                         {
                             isChangePassword ?
-                                <motion.div className='flex justify-end mt-3 mr-72'>
+                                <motion.div className='flex justify-end mt-3 mr-72 gap-2'>
+                                    <motion.button
+                                        onClick={() => setIsChangePassword(false)}
+                                        className="px-4 py-1 border border-red-600 text-sm rounded-full hover:bg-primary hover:text-white transition-all"
+                                        whileHover={{scale: 1.05}}
+                                        whileTap={{scale: 0.95}}
+                                    >
+                                        {t("doctor.profile.cancel")}
+                                    </motion.button>
                                     <motion.button
                                         onClick={changePassword}
                                         className="px-4 py-1 border border-primary text-sm rounded-full hover:bg-primary hover:text-white transition-all"

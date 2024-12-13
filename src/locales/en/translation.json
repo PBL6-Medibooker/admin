@@ -16,6 +16,7 @@
     "dashboard": "Dashboard",
     "account": "Account",
     "speciality": "Speciality",
+    "doctor": "Doctor",
     "region": "Region",
     "appointment": "Appointment",
     "article": "Article",
@@ -33,7 +34,8 @@
       "unknownDoctor": "Unknown Doctor",
       "noDataAvailable": "No data available",
       "loading": "Loading",
-      "label": "Appointments"
+      "label": "Appointments",
+      "admin": "Admin Account"
     },
     "accountList": {
       "userAccounts": "User Accounts",
@@ -50,10 +52,20 @@
       "restoreNoti": "No account selected for restoration!",
       "successDelete": "Account Deleted",
       "confirmDelete": "Confirm Delete",
+      "successRestore": "Restore Account Successful",
       "pCD": "Are you sure you want to delete?",
       "cancel": "Cancel",
       "confirm": "Delete",
       "nodata": "No Record Found!"
+    },
+    "admin": {
+      "title": "Administrator Account",
+      "access": "Access",
+      "delete": "Remove admin access",
+      "fa": "Full Access",
+      "wo": "Write Only",
+      "ra": "Read Only",
+      "rsuccess": "Remove admin access successful!"
     },
     "addNewCustomerAcc": {
       "success": "Add New Customer Account Successful!",
@@ -230,7 +242,8 @@
       "cancel": "Cancel",
       "message": "No speciality selected for deletion",
       "success": "Deleted Speciality!",
-      "filterAll": "All"
+      "filterAll": "All Speciality",
+      "filterAllByRegion": "All Region"
     },
     "add": {
       "name": "Speciality name already exists",
@@ -251,7 +264,8 @@
       "permanent": "Permanently Delete",
       "rsuccess": "Restored Successful",
       "rwarn": "No speciality selected for restoration",
-      "p": "Speciality Deleted"
+      "p": "Speciality Deleted",
+      "spec": "Speciality"
     }
   },
   "region": {
@@ -320,7 +334,9 @@
       "pCD": "Are you sure you want to delete?",
       "cancel": "Cancel",
       "confirm": "Delete",
-      "completed": "Completed"
+      "completed": "Completed",
+      "cancelb": "Cancelled"
+
     },
     "add": {
       "title": "Booking Appointment",
@@ -386,6 +402,7 @@
     "list": {
       "warn": "No article selected for deletion",
       "success": "Create a new article successfully!",
+      "add": "Create newspaper",
       "image": "Image",
       "title": "Article Title",
       "doctor": "Doctor",
@@ -458,8 +475,6 @@
       "comments": "Comment Section",
       "noCData": "No Comment Yet!",
       "cs": "Post Comment"
-
-
     },
     "update": {
       "success": "Post Updated!",

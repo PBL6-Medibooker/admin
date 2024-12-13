@@ -15,6 +15,7 @@ import Modal from "../../components/Modal/Modal";
 import {useTranslation} from "react-i18next";
 import {motion} from "framer-motion";
 import Swal from "sweetalert2";
+import CustomButton from "../../components/button/CustomButton";
 
 const RestoreCusAccount = () => {
     const columnHelper = createColumnHelper();
@@ -110,13 +111,22 @@ const RestoreCusAccount = () => {
             return;
         }
         try {
-            const response = await accountService.restoreAccount(selectedAccountIds, aToken);
+            await accountService.restoreAccount(selectedAccountIds, aToken);
             getDeletedAccountList();
-            toast.success(response.message,{
-                autoClose: 1000
-            });
+            // toast.success(response.message,{
+            //     autoClose: 1000
+            // });
             setSelectedAccountIds([]);
             setOpen(false);
+
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.accountList.successRestore"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            });
 
         } catch (e) {
             toast.error(e.message);
@@ -144,7 +154,8 @@ const RestoreCusAccount = () => {
                     title: t("account.accountList.successDelete"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             } else {
                 toast.error('Error')
@@ -167,18 +178,38 @@ const RestoreCusAccount = () => {
 
             <div className='flex justify-between items-center'>
                 <h1 className='text-lg lg:text-2xl text-primary font-medium'>{t("account.restore.title")}</h1>
-                <div className='flex gap-1'>
-                    <button
-                        onClick={restoreCusAccount}
-                        className='flex items-center gap-1 bg-emerald-400 px-10 py-3 mt-4 text-white rounded-full'>
-                        <FaTrashRestoreAlt/> {t("account.restore.putBack")}
-                    </button>
+                <div className='flex gap-4 mr-4'>
+                    {/*<button*/}
+                    {/*    onClick={restoreCusAccount}*/}
+                    {/*    className='flex items-center gap-1 bg-emerald-400 px-10 py-3 mt-4 text-white rounded-full'>*/}
+                    {/*    <FaTrashRestoreAlt/> {t("account.restore.putBack")}*/}
+                    {/*</button>*/}
 
-                    <button
-                        className='flex items-center gap-1 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40'
-                        onClick={() => setOpen(true)}>
-                        <FaRegTrashAlt/> {t("account.restore.deleteP")}
-                    </button>
+                    <CustomButton
+                        onClick={restoreCusAccount}
+                        label={t("account.restore.putBack")}
+                        icon={FaTrashRestoreAlt}
+                        bgColor="bg-green-600"
+                        hoverColor="rgba(22, 163, 74, 0.4)"
+                        shadowColor="rgba(22, 163, 74, 0.4)"
+                    />
+
+
+                    {/*<button*/}
+                    {/*    className='flex items-center gap-1 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40'*/}
+                    {/*    onClick={() => setOpen(true)}>*/}
+                    {/*    <FaRegTrashAlt/> {t("account.restore.deleteP")}*/}
+                    {/*</button>*/}
+
+                    <CustomButton
+                        onClick={() => setOpen(true)}
+                        label={t("account.restore.deleteP")}
+                        icon={FaRegTrashAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
+
 
 
                 </div>
@@ -279,7 +310,7 @@ const RestoreCusAccount = () => {
                         ))
                 ) : (
                     <tr className="text-center h-32 text-blue-400">
-                        <td colSpan={12}>No Record Found!</td>
+                        <td colSpan={12}>{t("account.dvd.nodata")}</td>
                     </tr>
                 )}
                 </tbody>

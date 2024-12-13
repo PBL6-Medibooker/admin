@@ -9,10 +9,14 @@ import Swal from "sweetalert2";
 import CommentModal from "./CommentModal";
 import {useQuery} from "@tanstack/react-query";
 import {MessageCircle} from 'lucide-react';
+import {DoctorContext} from "../../context/DoctorContext";
+import Loader from "../../components/Loader";
+import Error from "../../components/Error";
 
 
 const PostDetails = () => {
     const {aToken} = useContext(AdminContext);
+    const {dToken} = useContext(DoctorContext);
     const {id} = useParams();
     const navigate = useNavigate();
     const {t} = useTranslation();
@@ -29,26 +33,17 @@ const PostDetails = () => {
 
     }
 
-    // const getPostDetails = async () => {
-    //     try {
-    //         const result = await forumService.getPost(id, aToken)
-    //         if (result) {
-    //             // console.log(result)
-    //             setPostData(result)
-    //         }
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
-    //
     const {isLoading, isError, refetch} = useQuery({
         queryKey: ['postDetail'],
         queryFn: async () => {
             try {
-                const result = await forumService.getPost(id, aToken)
+                const token = aToken || dToken
+                const result = await forumService.getPost(id, token)
                 if (result) {
                     setPostData(result)
+                    return result
                 }
+                return null
             } catch (e) {
                 console.log(e)
             }
@@ -63,9 +58,9 @@ const PostDetails = () => {
                 speciality_name: postData.speciality_id.name,
             };
             const result = await forumService.updatePost(payload, id, aToken);
+            let path = aToken ? '/post-list-by-spec' : '/doctor-post'
             if (result) {
-
-                navigate('/post-list-by-spec', {state: {name: postData.speciality_id.name}});
+                navigate(path, {state: {name: postData.speciality_id.name}});
                 await Swal.fire({
                     position: "top-end",
                     title: t("forum.update.success"),
@@ -80,6 +75,22 @@ const PostDetails = () => {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+                <Loader />
+            </div>
+        )
+    }
+
+    if(isError){
+        return (
+            <div>
+                <Error />
+            </div>
+        )
+    }
+
 
     // useEffect(() => {
     //     if (aToken) {
@@ -88,19 +99,20 @@ const PostDetails = () => {
     // }, [aToken]);
 
     return (
-        <div className='m-5 w-[60vw] h-[100vh]'>
+        <div className='m-5 w-[90vw] h-[100vh]'>
             <motion.div
+                className="flex flex-col justify-between"
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5}}
             >
                 <motion.div
-                    className="flex justify-between items-center mb-6"
+                    className="flex justify-start mb-6"
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
                     transition={{delay: 0.3}}
                 >
-                    <p className="text-2xl lg:text-2xl text-primary font-bold mb-4">
+                    <p className="text-2xl lg:text-2xl text-primary font-bold ">
                         {t("forum.update.title")}
                     </p>
                 </motion.div>
@@ -114,14 +126,14 @@ const PostDetails = () => {
                 >
                     <div
                         className="bg-white px-10 py-10 border rounded-xl shadow-lg w-full max-h-[80vh] overflow-y-auto">
-                        <div className="flex items-center gap-6 mb-8 text-gray-500">
+                        {aToken && <div className="flex items-center gap-6 mb-8 text-gray-500">
                             <div className="text-center">
                                 <p className="text-base font-semibold">
                                     {t("forum.update.t")} <span
                                     className="text-primary">{postData?.user_id?.email}</span>
                                 </p>
                             </div>
-                        </div>
+                        </div>}
 
                         <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 text-gray-600">
                             <div className="flex flex-col gap-6">

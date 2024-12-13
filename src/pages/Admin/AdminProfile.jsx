@@ -236,7 +236,7 @@ const AdminProfile = () => {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
+            <div className='flex justify-center items-center w-[100vw] h-screen bg-opacity-75 fixed top-0 left-0 z-50'>
                 <Loader/>
             </div>
         );
@@ -268,10 +268,10 @@ const AdminProfile = () => {
                     >
                         {
                             isChangePassword ?
-                                <div className='w-[300px] h-[200px] bg-green-600'>
+                                <div className='w-[250px] h-[200px] bg-green-600 rounded-lg'>
                                     <img
                                         className="w-full h-full object-cover bg-primary/80 sm:max-w-64 rounded-lg"
-                                        src={assets.admin_logo}
+                                        src={`${assets.logo}?remove-bg=true`}
                                         alt="profile"
                                     />
                                 </div>

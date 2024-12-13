@@ -12,6 +12,8 @@ import DeleteActiveHoursModal from "./DeleteActiveHoursModal";
 import { IoMdAddCircle } from "react-icons/io";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import * as doctorService from "../../service/DoctorService";
+
 
 const getMuiTheme = () => createTheme({
     typography: {
@@ -204,7 +206,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
 
     const getActiveHourList = async () => {
         try {
-            const response = await accountService.getAccountActiveHourList(id, aToken);
+            // const response = await accountService.getAccountActiveHourList(id, aToken);
+            const response = await doctorService.getAccountActiveHourList(id, aToken);
             console.log('Full response:', response);
             const { active_hours, booked, fully_booked } = response;
 
@@ -234,7 +237,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
     const handleDeleteConfirmation = async () => {
         if (activeHour) {
             try {
-                await accountService.deleteDoctorActiveHour(activeHour, id, aToken);
+                // await accountService.deleteDoctorActiveHour(activeHour, id, aToken);
+                await doctorService.deleteDoctorActiveHour(activeHour, id, aToken);
                 setActiveHours(prevState => prevState.filter(item => item.day !== activeHour.day || item.start_time !== activeHour.start_time || item.end_time !== activeHour.end_time));
                 setDeleteModal(false);
                 await Swal.fire({
