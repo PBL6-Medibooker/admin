@@ -65,7 +65,12 @@
       "fa": "Full Access",
       "wo": "Write Only",
       "ra": "Read Only",
-      "rsuccess": "Remove admin access successful!"
+      "rsuccess": "Remove admin access successful!",
+      "r": "Grant permission to display data",
+      "w": "Grant permission to update data",
+      "a": "Full Access",
+      "gtitle": "Grant Administrator Permission",
+      "gsuccess": "Grant Administrator Permission Successful"
     },
     "addNewCustomerAcc": {
       "success": "Add New Customer Account Successful!",
@@ -309,7 +314,7 @@
     },
     "update": {
       "title": "Update",
-      "sucess": "Update Region Name Success"
+      "success": "Update Region Name Success"
     }
   },
   "appointment": {

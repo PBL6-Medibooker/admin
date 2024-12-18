@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import * as accountService from "../../service/AccountService"
 import {AdminContext} from "../../context/AdminContext";
@@ -31,7 +31,7 @@ const AccountList = () => {
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
-    const {aToken} = useContext(AdminContext);
+    const {aToken, adminList, refetchAdminList} = useContext(AdminContext);
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -78,16 +78,18 @@ const AccountList = () => {
         getPaginationRowModel: getPaginationRowModel(),
     });
 
-    // const rows = useMemo(() => {
-    //     return table.getRowModel().rows.filter(row => row.original.role !== 'admin');
-    // }, [table.getRowModel().rows]);
+
+    const rows = useMemo(() => {
+        return table.getRowModel().rows.filter(row => !adminList.some(admin => admin.user_id?._id === row.original._id));
+    }, [table.getRowModel().rows, adminList]);
 
 
     const getAccountList = async () => {
 
         try {
             const result = await accountService.findAll(isUser, isVerify, hiddenState, aToken);
-            setData(result);
+            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+            setData(filter);
         } catch (e) {
             console.log(e.error)
         }
@@ -148,7 +150,8 @@ const AccountList = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAccountList();
+            refetchAdminList()
+            getAccountList()
         }
     }, [aToken]);
     return (
@@ -276,10 +279,12 @@ const AccountList = () => {
                 ))}
                 </thead>
                 <tbody>
-                {table?.getRowModel()?.rows?.length ? (
-                    table.getRowModel().rows
-                        .filter((row) => row.original.role !== 'admin')
-                        .map((row, i) => (
+                {
+                    // table?.getRowModel()?.rows?.length ? (
+                    // table.getRowModel().rows
+                    //     .filter((row) => row.original.role !== 'admin')
+                    rows.length > 0 ? (
+                        rows.map((row, i) => (
                             <motion.tr
                                 key={row.id}
                                 className={`${

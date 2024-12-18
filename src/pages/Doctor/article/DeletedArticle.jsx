@@ -6,7 +6,13 @@ import * as articleService from "../../../service/ArticleService";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
-import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    useReactTable
+} from "@tanstack/react-table";
 import Loader from "../../../components/Loader";
 import {motion} from "framer-motion";
 import {assets} from "../../../assets/assets";
@@ -16,6 +22,7 @@ import {ArchiveRestore} from "lucide-react";
 
 
 const DeletedArticle = () => {
+    const columnHelper = createColumnHelper();
     const {dToken, doctorData, getDoctorData} = useContext(DoctorContext)
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -24,6 +31,7 @@ const DeletedArticle = () => {
     const {t} = useTranslation()
     const [open, setOpen] = useState(false)
     const [selectedArticleIds, setSelectedArticleIds] = useState([])
+
 
 
     const fetchDoctorArticles = async () => {
@@ -70,7 +78,8 @@ const DeletedArticle = () => {
                 title: t('article.restore.success'),
                 icon: 'success',
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         },
         onError: (error) => {
@@ -103,7 +112,8 @@ const DeletedArticle = () => {
                 title: t("doctor.article.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);
@@ -111,8 +121,24 @@ const DeletedArticle = () => {
         }
     };
 
+    const columns = [
+        columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
+        columnHelper.accessor("article_image", {
+            cell: (info) => <img className="rounded-full w-10 h-10 object-cover"
+                                 src={info?.getValue() || assets.user_icon} alt="..."/>,
+            header: t("article.list.image")
+        }),
+        columnHelper.accessor("article_title", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.title")}),
+        columnHelper.accessor("date_published", {cell: (info) => {
+                const date = new Date(info?.getValue())
+                return <span>{date.toLocaleDateString("en-GB")}</span>
+            }, header:t("article.list.public")
+        })
+    ];
+
     const table = useReactTable({
         data: articles,
+        columns,
         state: {
             pagination,
         },
@@ -125,6 +151,15 @@ const DeletedArticle = () => {
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
     );
+
+    const toggleAccountSelection = (id) => {
+        setSelectedArticleIds((prevSelected) =>
+            prevSelected.includes(id)
+                ? prevSelected.filter((accountId) => accountId !== id)
+                : [...prevSelected, id]
+        );
+    };
+
 
     if (isLoading) {
         return (
@@ -173,79 +208,67 @@ const DeletedArticle = () => {
             }
             <div>
                 {paginatedData.length > 0
-                    ? paginatedData.map((item, index) => {
-                        const date = new Date(item.date_published);
-                        const d = date.toLocaleDateString("en-GB");
+                    ?
 
-                        return (
-                            <motion.div
-                                key={item._id}
-                                className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
-                                initial={{opacity: 0, y: 20}}
-                                animate={{opacity: 1, y: 0}}
-                                transition={{duration: 0.5, delay: index * 0.05}}
-                            >
-                                <div className='w-32 h-32'>
-                                    <motion.img
-                                        className="w-full h-full object-cover bg-indigo-50"
-                                        src={item.article_image ? item.article_image : assets.user_icon}
-                                        alt="Doctor"
-                                        initial={{scale: 0.9}}
-                                        animate={{scale: 1}}
-                                        transition={{duration: 0.3, ease: "easeInOut"}}
-                                    />
-                                </div>
+                        (
+                            <motion.table
+                                className="border border-gray-700 w-full mt-5 text-left text-white border-collapse"
+                                initial={{opacity: 0}} animate={{opacity: 1}}>
+                                <thead className="bg-gray-600">
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <tr key={headerGroup.id}>
+                                        <th className="p-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={table.getRowModel().rows.length > 0 && table.getRowModel().rows.every((row) => selectedArticleIds.includes(row.original._id))}
+                                                onChange={(e) =>
+                                                    setSelectedArticleIds(
+                                                        e.target.checked ? table.getRowModel().rows.map((row) => row.original._id) : []
+                                                    )
+                                                }
+                                            />
+                                        </th>
+                                        {headerGroup.headers.map((header) => (
+                                            <th key={header.id}
+                                                className="capitalize p-2">{flexRender(header.column.columnDef.header, header.getContext())}</th>
+                                        ))}
+                                    </tr>
+                                ))}
+                                </thead>
+                                <tbody>
+                                    {table.getRowModel().rows.length ? (
+                                        table.getRowModel().rows.map((row, i) => (
+                                            <motion.tr
+                                                key={row.id}
+                                                className={i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'}
+                                                initial={{y: 10, opacity: 0}}
+                                                animate={{y: 0, opacity: 1}}
+                                                exit={{y: 10, opacity: 0}}
+                                            >
+                                                <td className="p-2">
+                                                    <input type="checkbox"
+                                                           checked={selectedArticleIds.includes(row.original._id)}
+                                                           onChange={() => toggleAccountSelection(row.original._id)}
+                                                    />
+                                                </td>
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <td key={cell.id} className="p-2"
+                                                        >
+                                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    </td>
+                                                ))}
+                                            </motion.tr>
+                                        ))
+                                    ) : (
+                                        <motion.tr className="text-center h-32 text-blue-400" initial={{opacity: 0}}
+                                                   animate={{opacity: 1}}>
+                                            <td colSpan={12}>{t("article.list.noData")}</td>
+                                        </motion.tr>
+                                    )}
+                                </tbody>
+                            </motion.table>
 
-                                <div className="flex-1 gap-2 text-sm text-zinc-600">
-                                    <motion.p
-                                        className="text-lg font-semibold"
-                                        whileHover={{color: "#4A90E2"}}
-                                        transition={{duration: 0.3}}
-                                    >
-                                        {item.article_title}
-                                    </motion.p>
-
-                                    <motion.p
-                                        className="text-gray-500"
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: 1}}
-                                        transition={{duration: 0.5, delay: 0.1}}
-                                    >
-                                        {item.doctor_id.speciality_id.name}
-                                    </motion.p>
-
-                                    <motion.p
-                                        className="mt-2 text-gray-600"
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: 1}}
-                                        transition={{duration: 0.5, delay: 0.2}}
-                                    >
-                                        {t("doctor.article.date")}: <span className="text-xs">{d}</span>
-                                    </motion.p>
-                                </div>
-
-                                <div className="flex flex-col justify-start">
-                                    <motion.div
-                                        initial={{opacity: 0, y: 10}}
-                                        animate={{opacity: 1, y: 0}}
-                                        transition={{duration: 0.5}}
-                                        whileHover={{scale: 1.02}}
-                                    >
-                                        <motion.input
-                                            type="checkbox"
-                                            checked={selectedArticleIds.includes(item._id)}
-                                            onChange={() => selectedArticle(item._id)}
-                                            className="cursor-pointer mr-2"
-                                            whileTap={{scale: 0.9}}
-                                            initial={{opacity: 0, scale: 0.9}}
-                                            animate={{opacity: 1, scale: 1}}
-                                            transition={{duration: 0.3, ease: "easeInOut"}}
-                                        />
-                                    </motion.div>
-                                </div>
-                            </motion.div>
-                        );
-                    })
+                    )
                     : <motion.div
                         className="flex justify-center items-center"
                         initial={{opacity: 0, scale: 0.8}}

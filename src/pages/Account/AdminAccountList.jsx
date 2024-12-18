@@ -16,14 +16,16 @@ import {AdminContext} from "../../context/AdminContext";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import * as adminService from "../../service/AdminService";
+import {useNavigate} from "react-router-dom";
 
 const AdminAccountList = () => {
-    const {aToken,  adminList, refetchAdminList} = useContext(AdminContext);
+    const {aToken, adminList, refetchAdminList} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
     const {t} = useTranslation();
     const [globalFilter, setGlobalFilter] = useState("");
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -41,32 +43,58 @@ const AdminAccountList = () => {
             header: t("account.accountList.profile"),
         }),
         columnHelper.accessor("user_id.username", {
-            cell: (info) => <span>{info?.getValue()}</span>,
+            cell: (info) => <span>{info?.getValue() || 'No Username'}</span>,
             header: t("account.accountList.username"),
         }),
         columnHelper.accessor("user_id.email", {
-            cell: (info) => <span>{info?.getValue()}</span>,
+            cell: (info) => {
+                const email = info?.getValue();
+                return <span>{email ? email : 'No Email'}</span>;
+            },
             header: "Email",
         }),
         columnHelper.accessor("admin_write_access", {
             cell: (info) => {
                 const row = info.row.original;
-                if (row.admin_write_access && row.read_access && row.write_access) {
-                    return <span
-                        style={{
-                            backgroundColor: '#FF1493',
-                            borderRadius: '9999px',
-                            padding: '5px 10px 5px 10px',
-                            color: 'white',
-                            display: 'inline-block',
-                        }}>
-                              {t("account.admin.fa")}
-                         </span>
-
+                if ((row.admin_write_access && row.read_access && row.write_access) || row.admin_write_access) {
+                    return (
+                        <span
+                            style={{
+                                backgroundColor: '#FF1493',
+                                borderRadius: '9999px',
+                                padding: '5px 10px',
+                                color: 'white',
+                                display: 'inline-block',
+                            }}>
+                        {t("account.admin.fa")}
+                    </span>
+                    );
                 } else if (row.read_access && !row.admin_write_access && !row.write_access) {
-                    return <span>{t("account.admin.ro")}</span>;
+                    return (
+                        <span
+                            style={{
+                                backgroundColor: '#FFA500',
+                                borderRadius: '9999px',
+                                padding: '5px 10px',
+                                color: 'white',
+                                display: 'inline-block',
+                            }}>
+                        {t("account.admin.ra")}
+                    </span>
+                    );
                 } else {
-                    return <span>{t("account.admin.wo")}</span>;
+                    return (
+                        <span
+                            style={{
+                                backgroundColor: '#9B4DCA',
+                                borderRadius: '9999px',
+                                padding: '5px 10px',
+                                color: 'white',
+                                display: 'inline-block',
+                            }}>
+                        {t("account.admin.wo")}
+                    </span>
+                    );
                 }
             },
             header: t("account.admin.access"),
@@ -138,7 +166,7 @@ const AdminAccountList = () => {
             refetchAdminList();
             console.log(adminList)
         }
-    }, [aToken]);
+    }, [aToken, adminList]);
 
     return (
         <motion.div
@@ -264,6 +292,8 @@ const AdminAccountList = () => {
                                     <td
                                         key={cell.id}
                                         className="p-2 cursor-pointer"
+                                        onClick={() => navigate(`/update-cus-account/${row.original.user_id.email}`)}
+
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>

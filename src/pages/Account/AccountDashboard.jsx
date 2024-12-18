@@ -21,7 +21,9 @@ const AccountDashboard = () => {
 
         try {
             const result = await accountService.findAll(true, false, false, aToken);
-            setTotalUser(result.length);
+            console.log(result)
+            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+            setTotalUser(filter.length);
         } catch (e) {
             console.log(e.error)
         }

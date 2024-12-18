@@ -126,23 +126,7 @@ export const updateDocInfoAcc = async (formData, id, aToken) => {
 }
 
 
-export const uploadDocDegree = async (proof, id, aToken) => {
-    try {
-        const result = await axios.post(REST_API_BASE_URL + `/upload-proof/${id}`, proof, {headers: {aToken}})
-        return result.data
-    } catch (e) {
-        console.log(e)
-    }
-}
 
-export const addDoctorActiveHours = async (activeHours, id, aToken) => {
-    try {
-        const result = await axios.post(REST_API_BASE_URL + `/add-active-hour/${id}`, activeHours, {headers: {aToken}})
-        return result.data
-    } catch (e) {
-        console.log(e)
-    }
-}
 
 export const getAccountActiveHourList = async (id, aToken) => {
     try {
@@ -153,26 +137,7 @@ export const getAccountActiveHourList = async (id, aToken) => {
     }
 }
 
-export const updateDoctorActiveHour = async (activeHour, id, aToken) => {
-    try {
-        const result = await axios.post(REST_API_BASE_URL + `/update-active-hour/${id}`, activeHour, {headers: {aToken}});
-        return result.data;
-    } catch (e) {
-        console.error("Error in updateDoctorActiveHour:", e);
-        throw new Error(e.response?.data?.message || "Failed to update active hour.");
-    }
-};
 
-
-export const deleteDoctorActiveHour = async (activeHour, id, aToken) => {
-    try {
-        const result = await axios.post(REST_API_BASE_URL + `/delete-active-hour/${id}`, activeHour, {headers: {aToken}});
-        return result.data;
-    } catch (e) {
-        console.error(e);
-
-    }
-};
 
 export const forgotPassword = async (email, id, aToken) => {
     try {
@@ -183,21 +148,10 @@ export const forgotPassword = async (email, id, aToken) => {
     }
 };
 
-export const changeDoctorVerifyStatus = async (email, verified, id, aToken) => {
-    try {
-        const result = await axios.post(REST_API_BASE_URL + '/change-doc-verified-status', {
-            email,
-            verified
-        }, {headers: {aToken}});
-        return result.data;
-    } catch (e) {
-        console.error(e);
-    }
-};
 
-export const changeAccountRole = async (email, role, aToken) => {
+export const changeAccountRole = async (email, role,limit, aToken) => {
     try {
-        const result = await axios.post(REST_API_BASE_URL + '/change-acc-role', {email, role}, {headers: {aToken}});
+        const result = await axios.post(REST_API_BASE_URL + '/change-acc-role', {email, role, limit}, {headers: {aToken}});
         return result.data;
     } catch (e) {
         console.error(e);

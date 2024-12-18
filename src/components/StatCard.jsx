@@ -38,7 +38,7 @@ const StatCard = ({ name, icon: Icon, value, color, to, onClick }) => {
 };
 
 export default StatCard;
-//
+
 // const StatCard = ({ name, icon: Icon, value, color, to }) => {
 //     const navigate = useNavigate();
 //     const [isClicked, setIsClicked] = useState(false);

@@ -37,7 +37,8 @@ const DoctorAppointments = () => {
                     title: t("appointment.list.mcancel"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
 
@@ -74,11 +75,13 @@ const DoctorAppointments = () => {
                 ),
                 customBodyRenderLite: (dataIndex) => (
                     <div className="flex ml-4 items-center gap-2">
-                        <img
-                            className="w-8 rounded-full"
-                            src={doctorAppointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
-                            alt=""
-                        />
+                        <div className='w-8 h-8'>
+                            <img
+                                className="w-full h-full rounded-full"
+                                src={doctorAppointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
+                                alt=""
+                            />
+                        </div>
                         <p>{doctorAppointments[dataIndex]?.user_id?.username}</p>
                     </div>
                 ),
@@ -172,6 +175,7 @@ const DoctorAppointments = () => {
 
     useEffect(() => {
         if (dToken) {
+            reFetchDA()
             getDoctorData()
         }
     }, [dToken, docId])

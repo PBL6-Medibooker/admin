@@ -5,12 +5,24 @@ import * as regionService from "../../service/RegionService";
 import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
+import {motion} from "framer-motion";
+import * as provincesService from "../../service/ProvinceService";
 
 const UpdateRegion = ({open, onClose, id}) => {
 
     const [name, setName] = useState('');
     const {aToken} = useContext(AdminContext);
     const {t} = useTranslation();
+    const [provinces, setProvinces] = useState([]);
+
+    const getAllProvinces = async () => {
+        try {
+            const result = await provincesService.apiGetPublicProvinces()
+            setProvinces(result.data)
+        } catch (error) {
+            console.error("Error fetching provinces:", error)
+        }
+    };
 
     const getRegionDetails = async () => {
         const result = await regionService.getRegionDetails(id, aToken);
@@ -23,7 +35,8 @@ const UpdateRegion = ({open, onClose, id}) => {
 
     useEffect(() => {
         if (aToken) {
-            getRegionDetails();
+            getRegionDetails()
+            getAllProvinces()
         }
     }, [aToken, id]);
 
@@ -56,15 +69,35 @@ const UpdateRegion = ({open, onClose, id}) => {
                     <div className="flex flex-col lg:flex-row items-start gap-10 text-gray-600">
                         <div className="w-full lg:flex-1 flex flex-col gap-4">
                             <div className="flex flex-1 flex-col gap-1">
-                                <input
-                                    onChange={(e) => setName(e.target.value)}
+                                {/*<input*/}
+                                {/*    onChange={(e) => setName(e.target.value)}*/}
+                                {/*    value={name}*/}
+                                {/*    className="border rounded px-3 py-2"*/}
+                                {/*    type="text"*/}
+                                {/*    placeholder="Province Name"*/}
+                                {/*    required*/}
+                                {/*    autoFocus*/}
+                                {/*/>*/}
+
+                                <motion.select
                                     value={name}
-                                    className="border rounded px-3 py-2"
-                                    type="text"
-                                    placeholder="Province Name"
-                                    required
-                                    autoFocus
-                                />
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="border-2 border-gray-300 rounded-lg px-4 py-2 w-full transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    whileHover={{scale: 1.05}}
+                                    whileTap={{scale: 0.95}}
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    transition={{duration: 0.3}}
+                                >
+                                    <option value="" className="text-gray-400">{t("region.add.name")}</option>
+                                    {
+                                        provinces.map((item, index) => (
+                                            <option key={index} value={item.name} className="text-gray-700">
+                                                {item.name}
+                                            </option>
+                                        ))
+                                    }
+                                </motion.select>
                             </div>
                         </div>
                     </div>

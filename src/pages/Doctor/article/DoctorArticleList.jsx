@@ -44,22 +44,6 @@ const DoctorArticleList = () => {
     };
 
 
-    // const fetchDoctorArticles = async () => {
-    //     if (!doctorData?.email) {
-    //         const doctorProfile = await getDoctorData();
-    //         if (!doctorProfile?.email) {
-    //             throw new Error("Doctor email not found");
-    //         }
-    //         console.log("Fetched doctor profile:", doctorProfile);
-    //         const articles = await articleService.getAllArticleByDoctor(doctorProfile.email, dToken);
-    //         console.log("Fetched articles by doctor:", articles);
-    //         return articles;
-    //     }
-    //     const articles = await articleService.getAllArticleByDoctor(doctorData.email, dToken);
-    //     console.log("Fetched articles by doctor:", articles);
-    //     return articles;
-    // };
-
     const {data: articles = [], isLoading, isError, refetch} = useQuery({
         queryKey: ["articles", doctorData?.email],
         queryFn: fetchDoctorArticles,
@@ -88,7 +72,8 @@ const DoctorArticleList = () => {
                 title: t("doctor.article.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);

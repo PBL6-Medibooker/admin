@@ -5,6 +5,7 @@ import {motion} from "framer-motion";
 import * as appointmentService from "../../service/AppointmentService";
 import {toast} from "react-toastify";
 import * as accountService from "../../service/AccountService";
+import * as doctorService from "../../service/DoctorService";
 import UpdateInsuranceModal from "./UpdateInsuranceModal";
 import DetailInsuranceModal from "./DetailInsuranceModal";
 import {useTranslation} from "react-i18next";
@@ -118,7 +119,8 @@ const UpdateAppointmentInfo = () => {
     const getActiveHourList = async () => {
         try {
             if (doctorId) {
-                const response = await accountService.getAccountActiveHourList(doctorId, aToken);
+                // const response = await accountService.getAccountActiveHourList(doctorId, aToken);
+                const response = await doctorService.getAccountActiveHourList(doctorId, aToken);
                 console.log(response);
                 const {active_hours, fully_booked} = response;
 

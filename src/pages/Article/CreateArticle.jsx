@@ -219,7 +219,7 @@ const CreateArticle = () => {
                     >
                         <button
                             type="button"
-                            onClick={() => navigate('/article')}
+                            onClick={() => navigate(aToken ? '/article' : '/doctor-article')}
                             className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
                         >
                             <i className="fas fa-arrow-left mr-2"></i> {t("article.add.back")}

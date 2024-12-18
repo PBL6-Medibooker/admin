@@ -140,6 +140,7 @@ const RestoreCusAccount = () => {
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
             });
+            setOpen(false)
 
             return;
         }

@@ -118,7 +118,7 @@ const AddDoctorAccount = () => {
                                     value={username}
                                     className="border rounded px-3 py-2"
                                     type="text"
-                                    placeholder="Username"
+                                    placeholder="bevis"
                                     required
                                     autoFocus
                                 />
@@ -132,7 +132,7 @@ const AddDoctorAccount = () => {
                                     value={password}
                                     className="border rounded px-3 py-2"
                                     type="password"
-                                    placeholder="Password"
+                                    placeholder="12345@Viet"
                                     required
                                 />
                             </div>
@@ -145,7 +145,7 @@ const AddDoctorAccount = () => {
                                     value={email}
                                     className="border rounded px-3 py-2"
                                     type="email"
-                                    placeholder="Email"
+                                    placeholder="bevis@gmail.com"
                                     required
                                 />
                             </div>
@@ -158,7 +158,7 @@ const AddDoctorAccount = () => {
                                     value={phone}
                                     className="border rounded px-3 py-2"
                                     type="text"
-                                    placeholder="Phone"
+                                    placeholder="123456789"
                                     required
                                 />
                             </div>

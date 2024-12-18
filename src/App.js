@@ -72,7 +72,6 @@ function App() {
                 <Routes>
                     <Route path='/' element={<></>} />
                     {/*<Route path='/' element={<Test />} />*/}
-                    {/*<Route path='/' element={<Loading />} />*/}
                     {/*<Route path='/admin-dashboard' element={<Dashboard/>}/>*/}
                     <Route path='/admin-dashboard' element={<Dashboard/>}/>
                     {/*<Route path='/admin-profile' element={<AdminProfile/>}/>*/}

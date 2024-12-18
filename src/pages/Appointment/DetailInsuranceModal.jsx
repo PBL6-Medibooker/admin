@@ -31,15 +31,6 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                     exp_date: data[0].exp_date || "",
                 });
             }
-            // else {
-            //     setInsuranceData({
-            //         id: "",
-            //         name: "",
-            //         number: "",
-            //         location: "",
-            //         exp_date: "",
-            //     });
-            // }
         } catch (e) {
             console.error(e);
         }
@@ -56,14 +47,14 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
             // console.log(payload)
             const data = await appointmentService.addInsurance(payload, id, aToken)
             if (data) {
-                // console.log(data)
                 cancel()
                 await Swal.fire({
                     position: "top-end",
                     title: t("appointment.add.insurance.isuccess"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 })
             } else {
                 toast.error(data.error)
@@ -204,7 +195,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                             </button>
                             <button
                                 type="submit"
-                                className="bg-green-500 text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
+                                className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
                             >
                                 {t("appointment.update.save")}
                             </button>

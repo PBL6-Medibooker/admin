@@ -174,7 +174,8 @@ const PostListByForum = () => {
                 title: t("forum.list.rsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);
@@ -230,6 +231,14 @@ const PostListByForum = () => {
                         : <div className="flex justify-between items-center">
                             <h1 className="text-lg max-w-[50vw] text-primary lg:text-2xl font-medium">{t("forum.list.dspec")} {name}</h1>
                             <div className="flex gap-4 mr-4">
+                                <CustomButton
+                                    onClick={restorePost}
+                                    label={t("forum.list.put")}
+                                    icon={FaTrashRestoreAlt}
+                                    bgColor="bg-green-600"
+                                    hoverColor="rgba(22, 163, 74, 0.4)"
+                                    shadowColor="rgba(22, 163, 74, 0.4)"
+                                />
 
                                 <CustomButton
                                     onClick={openDeleteModal}
@@ -245,14 +254,7 @@ const PostListByForum = () => {
                                 {/*    <FaTrashRestoreAlt/>{t("forum.list.put")}*/}
                                 {/*</button>*/}
 
-                                <CustomButton
-                                    onClick={restorePost}
-                                    label={t("forum.list.put")}
-                                    icon={FaTrashRestoreAlt}
-                                    bgColor="bg-green-600"
-                                    hoverColor="rgba(22, 163, 74, 0.4)"
-                                    shadowColor="rgba(22, 163, 74, 0.4)"
-                                />
+
                             </div>
                         </div>
                 }

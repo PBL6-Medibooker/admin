@@ -2,24 +2,37 @@ import React, {useContext, useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {AdminContext} from "../../context/AdminContext";
 import * as accountService from "../../service/AccountService"
+import * as adminService from "../../service/AdminService"
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {motion} from 'framer-motion';
 import Button from "../../components/button/Button";
+import GrantAdminModel from "./GrantAdminModel";
 
 
 const AccountDetails = () => {
     const {email} = useParams();
     const {aToken} = useContext(AdminContext);
-    const [account, setAccount] = useState(null);
+    // const [account, setAccount] = useState(null);
+    const [account, setAccount] = useState({
+        username: "",
+        phone: "",
+        address: "",
+        date_of_birth: "",
+        underlying_condition: "",
+        email: "",
+        profile_image: "",
+    });
+
     const [image, setImage] = useState(null);
     const [accountRole, setAccountRole] = useState('')
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
     const [userName, setUserName] = useState('');
     const {t} = useTranslation();
+    const [gOpen, setGOpen] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -49,7 +62,7 @@ const AccountDetails = () => {
             cancelButtonText: t("account.update.cancel"),
         }).then((result) => {
             if (result.isConfirmed) {
-                changeAccountRole()
+                // changeAccountRole()
                 console.log("Access granted!");
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 console.log("Action canceled!");
@@ -57,17 +70,9 @@ const AccountDetails = () => {
         });
 
     }
-    const changeAccountRole = async () => {
+    const openAccess = async () => {
         try {
-            await accountService.changeAccountRole(account.email, 'admin', aToken)
-            navigate('/account');
-            await Swal.fire({
-                position: "top-end",
-                title: t("account.update.rsuccess"),
-                icon: "success",
-                showConfirmButton: false,
-                timer: 1500
-            });
+            setGOpen(true)
         } catch (e) {
             console.log(e)
         }
@@ -210,7 +215,8 @@ const AccountDetails = () => {
                         </div>
 
                         <div className="absolute right-0">
-                            <Button onClick={openChangeRoleModal} t={t("account.update.crole")}/>
+                            {/*<Button onClick={openChangeRoleModal} t={t("account.update.crole")}/>*/}
+                            <Button onClick={openAccess} t={t("account.update.crole")}/>
                         </div>
 
                     </motion.div>
@@ -226,15 +232,29 @@ const AccountDetails = () => {
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm text-black font-bold">{t("account.update.username")}
                                 </label>
+                                {/*<input*/}
+                                {/*    onChange={(e) => setAccount(prev => ({...prev, username: e.target.value}))}*/}
+                                {/*    value={account?.username}*/}
+                                {/*    className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"*/}
+                                {/*    type="text"*/}
+                                {/*    placeholder="Customer Name"*/}
+                                {/*    required*/}
+                                {/*    autoFocus*/}
+                                {/*/>*/}
+
                                 <input
-                                    onChange={(e) => setAccount(prev => ({...prev, username: e.target.value}))}
-                                    value={account?.username}
+                                    onChange={(e) => setAccount(prev => ({
+                                        ...prev,
+                                        username: e.target.value || ""
+                                    }))}
+                                    value={account?.username || ""}
                                     className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                                     type="text"
-                                    placeholder="Customer Name"
+                                    placeholder="bevis"
                                     required
                                     autoFocus
                                 />
+
                             </div>
 
 
@@ -264,7 +284,9 @@ const AccountDetails = () => {
                                         ...prev,
                                         date_of_birth: e.target.value
                                     }))}
-                                    value={account?.date_of_birth ? new Date(account.date_of_birth).toISOString().split('T')[0] : ''}
+                                    // value={account?.date_of_birth ? new Date(account.date_of_birth).toISOString().split('T')[0] : ''}
+                                    value={account?.date_of_birth ? new Date(account.date_of_birth).toISOString().split('T')[0] : ""}
+
                                     className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                                     type="date"
                                     required
@@ -292,13 +314,22 @@ const AccountDetails = () => {
                                     {t("account.update.phone")}
                                 </label>
                                 <input
-                                    onChange={(e) => setAccount(prev => ({...prev, phone: e.target.value}))}
-                                    value={account?.phone}
+                                    onChange={(e) => setAccount(prev => ({...prev, phone: e.target.value || ""}))}
+                                    value={account?.phone || ""}
                                     className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                                     type="text"
                                     placeholder="Customer Phone Number"
                                     required
                                 />
+
+                                {/*<input*/}
+                                {/*    onChange={(e) => setAccount(prev => ({...prev, phone: e.target.value}))}*/}
+                                {/*    value={account?.phone}*/}
+                                {/*    className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"*/}
+                                {/*    type="text"*/}
+                                {/*    placeholder="Customer Phone Number"*/}
+                                {/*    required*/}
+                                {/*/>*/}
                             </div>
 
 
@@ -372,6 +403,8 @@ const AccountDetails = () => {
                     </motion.div>
                 </motion.div>
             </form>
+
+            <GrantAdminModel open={gOpen} id={userId} onClose={()=>setGOpen(false)} />
         </div>
     );
 };

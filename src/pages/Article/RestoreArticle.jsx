@@ -12,11 +12,12 @@ import * as articleService from "../../service/ArticleService";
 import {toast} from "react-toastify";
 import {assets} from "../../assets/assets";
 import {AnimatePresence, motion} from "framer-motion";
-import {FaRegNewspaper, FaRegTrashAlt} from "react-icons/fa";
+import {FaRegNewspaper, FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import { MdOutlineSettingsBackupRestore } from "react-icons/md";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
+import CustomButton from "../../components/button/CustomButton";
 
 const RestoreArticle = () => {
     const columnHelper = createColumnHelper();
@@ -52,7 +53,9 @@ const RestoreArticle = () => {
                     title: t("article.restore.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
+
                 });
             }
 
@@ -93,7 +96,8 @@ const RestoreArticle = () => {
                 title: t("article.restore.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);
@@ -150,19 +154,25 @@ const RestoreArticle = () => {
                     animate={{opacity: 1}} exit={{opacity: 0}}>
             <div className="flex justify-between items-center">
                 <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.restore.title")}</h1>
-                <div className="flex gap-1">
+                <div className="flex gap-4 mr-4">
 
-                    <button
+                    <CustomButton
                         onClick={restoreDeletedArticle}
-                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">
-                        <MdOutlineSettingsBackupRestore/>
-                    </button>
+                        label={t("region.restore.put")}
+                        icon={MdOutlineSettingsBackupRestore}
+                        bgColor="bg-green-600"
+                        hoverColor="rgba(22, 163, 74, 0.4)"
+                        shadowColor="rgba(22, 163, 74, 0.4)"
+                    />
 
-                    <button
+                    <CustomButton
                         onClick={openDeleteModal}
-                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer">
-                        <FaRegTrashAlt/> {t("article.restore.pd")}
-                    </button>
+                        label={t("article.restore.pd")}
+                        icon={FaRegTrashAlt}
+                        bgColor="bg-red-600"
+                        hoverColor="rgba(0, 128, 255, 0.4)"
+                        shadowColor="rgba(255, 0, 0, 0.4)"
+                    />
 
                 </div>
             </div>

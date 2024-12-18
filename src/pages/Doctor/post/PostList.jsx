@@ -85,7 +85,8 @@ const PostList = () => {
                 title: t("forum.list.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);
@@ -135,7 +136,7 @@ const PostList = () => {
                 >
                     {paginatedData.length > 0 && t("doctor.post.ltitle")}
                 </motion.p>
-                <div>
+                <div className='mr-10'>
                     <motion.button
                         onClick={() => navigate('/doctor-create-post')}
                         className='bg-primary px-10 py-3 mt-4 text-white rounded-full'

@@ -39,15 +39,12 @@ const DoctorAccountList = () => {
                                  src={info?.getValue() || assets.user_icon} alt="..."/>,
             header: t("account.accountList.profile")
         }),
-        columnHelper.accessor("role", {
-            cell: (info) => <span>{info?.getValue()}</span>,
-            header: t("account.accountList.role")
-        }),
-        columnHelper.accessor("email", {cell: (info) => <span>{info?.getValue()}</span>, header: "Email"}),
         columnHelper.accessor("username", {
             cell: (info) => <span>{info?.getValue()}</span>,
             header: t("account.accountList.username")
         }),
+        columnHelper.accessor("email", {cell: (info) => <span>{info?.getValue()}</span>, header: "Email"}),
+
         columnHelper.accessor("phone", {
             cell: (info) => <span>{info?.getValue()}</span>,
             header: t("account.accountList.phone")
@@ -288,6 +285,45 @@ const DoctorAccountList = () => {
                 </AnimatePresence>
                 </tbody>
             </motion.table>
+
+            {
+                data.length > 0 && <div className="flex items-center justify-end gap-2 mt-4">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {">"}
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        </strong>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        | {t("account.accountList.goToPage")}:
+                        <input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={(e) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                table.setPageIndex(page);
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
+                        />
+                    </div>
+                </div>
+            }
         </motion.div>
     );
 };

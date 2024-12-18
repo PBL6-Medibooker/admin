@@ -17,9 +17,10 @@ const ForumDashboard = () => {
 
     const getPostList = async () => {
         try {
-            const result = await forumService.findAll( aToken);
-            setTotalPost(result.length)
-            setData(result);
+            const result = await forumService.findAll(aToken);
+            const filterData = result.filter(post => post.is_deleted === false)
+            setTotalPost(filterData.length)
+            setData(filterData);
         } catch (e) {
             console.log(e.error);
         }

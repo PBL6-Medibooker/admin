@@ -171,12 +171,13 @@ const AddNewCustomerAcc = () => {
                             <i className="fas fa-arrow-left mr-2"></i>  {t("account.addNewCustomerAcc.back")}
                         </button>
 
-                        <button
+                        <motion.button
+                            whileHover={{scale: 1.05}}
                             type="submit"
                             className="bg-primary px-6 py-3 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
                         >
                             <i className="fas fa-plus mr-2"></i>  {t("account.addNewCustomerAcc.add")}
-                        </button>
+                        </motion.button>
                     </motion.div>
                 </form>
             </motion.div>

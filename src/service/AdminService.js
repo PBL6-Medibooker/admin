@@ -21,6 +21,17 @@ export const findAll = async (aToken) => {
         console.log(e)
     }
 }
+export const addAdmin = async (formData,aToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + "/add-admin", formData
+            
+        ,{headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+        throw e
+    }
+}
 
 export const removeAdminAccessAccount = async (selectedAccountIds, aToken) => {
     try {

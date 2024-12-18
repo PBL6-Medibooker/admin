@@ -85,7 +85,7 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                         </AnimatePresence>
                     </div>
                 </div>
-                <p>{content}</p>
+                <p className='content'>{content}</p>
                 <div className="stats">
                     <div>
                         <div>
@@ -97,7 +97,8 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                                     <circle strokeWidth={2} r={9} cy={12} cx={12}/>
                                 </g>
                             </svg>
-                            {date}</div>
+                            {date}
+                        </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <g strokeWidth={0} id="SVGRepo_bgCarrier"/>
@@ -162,11 +163,18 @@ const StyledWrapper = styled.div`
         border: 3px dashed transparent;
         max-width: 350px;
         width: 350px;
-    }
-
-    .author {
+        height: 150px;
 
     }
+
+    .content {
+        max-width: 300px;
+        max-height: 100px;
+        overflow: hidden; /* Ensures content does not overflow the container */
+        text-overflow: ellipsis; /* Adds ... for overflowed text */
+        white-space: nowrap; /* Prevents text wrapping to the next line */
+    }
+
 
     .author-image {
         display: flex;

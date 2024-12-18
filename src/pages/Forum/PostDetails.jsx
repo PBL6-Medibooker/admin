@@ -29,7 +29,7 @@ const PostDetails = () => {
 
 
     const openPostBySpecialityList = (value) => {
-        navigate('/post-list-by-spec', {state: {name: value}});
+        navigate(aToken ? '/post-list-by-spec' : '/doctor-post', {state: {name: value}});
 
     }
 
@@ -66,7 +66,8 @@ const PostDetails = () => {
                     title: t("forum.update.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
         } catch (e) {
@@ -141,7 +142,7 @@ const PostDetails = () => {
                                     <label
                                         className="text-lg text-primary font-medium">{t("forum.update.ptitle")}</label>
                                     <motion.input
-                                        onChange={(e) => setPostData(prev => ({...prev, post_title: e.target.value}))}
+                                        onChange={(e) => setPostData(prev => ({ ...prev, post_title: e.target.value }))}
                                         value={postData?.post_title}
                                         className="border rounded-lg px-5 py-4 text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                                         type="text"

@@ -52,7 +52,8 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                     title: t("appointment.add.insurance.isuccess"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 })
             } else {
                 toast.error(data.error)
@@ -91,7 +92,8 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                     title: t("appointment.update.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             } else {
                 await Swal.fire({
@@ -99,7 +101,8 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                     title: t("appointment.update.error"),
                     icon: "error",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
         } catch (e) {
@@ -193,7 +196,7 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                             </button>
                             <button
                                 type="submit"
-                                className="bg-green-500 text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
+                                className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
                             >
                                 {t("appointment.update.save")}
                             </button>

@@ -77,7 +77,9 @@ const ArticleList = () => {
                 title: t("article.list.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
+
             });
         } catch (error) {
             console.error(error.message);

@@ -31,15 +31,21 @@ const Sidebar = () => {
     };
 
     const isAppointmentActive = () => {
-        return location.pathname.includes("appointment");
+        return location.pathname.includes("appointment") && !location.pathname.includes("user");
     };
 
     const isAccountActive = () => {
-        return location.pathname.includes("account") && !location.pathname.includes("doctor") && !location.pathname.includes("doc");
+        return  (location.pathname.includes("account") &&
+                !location.pathname.includes("doctor") &&
+                !location.pathname.includes("doc") &&
+                !location.pathname.includes("restore-account")) ||
+            location.pathname.includes("user")
+
     };
 
     const isDoctorActive = () => {
-        return location.pathname.includes("doctor") || location.pathname.includes("doc");
+        return location.pathname.includes("doctor") || location.pathname.includes("doc")
+            || location.pathname.includes("restore-account");
     };
 
     const isTrashActive = () => {

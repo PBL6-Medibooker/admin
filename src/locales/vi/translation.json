@@ -65,7 +65,12 @@
       "fa": "Toàn quyền",
       "wo": "Chỉnh sửa",
       "ra": "Chỉ đọc",
-      "rsuccess": "Xoá quyền quản lí thành công!"
+      "rsuccess": "Xoá quyền quản lí thành công!",
+      "r": "Cấp quyền hiển thị",
+      "w": "Cấp quyền chỉnh sửa dữ liệu",
+      "a": "Cấp toàn quyền",
+      "gtitle": "Cấp quyền quản lí",
+      "gsuccess": "Cấp quyền quản lí thành công!"
 
     },
     "addNewCustomerAcc": {
@@ -313,7 +318,7 @@
     },
     "update": {
       "title": "Cập nhật",
-      "sucess": "Cập nhật thành công!"
+      "success": "Cập nhật thành công!"
     }
   },
   "appointment": {

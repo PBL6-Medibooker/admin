@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import * as appointmentService from "../../../service/AppointmentService";
 import * as accountService from "../../../service/AccountService";
+import * as doctorService from "../../../service/DoctorService";
 import {toast} from "react-toastify";
 import {motion} from "framer-motion";
 import {DoctorContext} from "../../../context/DoctorContext";
@@ -107,7 +108,8 @@ const UpdateAppointment = () => {
     const getActiveHourList = async () => {
         try {
             if (doctorId) {
-                const response = await accountService.getAccountActiveHourList(doctorId, dToken);
+                // const response = await accountService.getAccountActiveHourList(doctorId, dToken);
+                const response = await doctorService.getAccountActiveHourList(doctorId, dToken);
                 console.log(response);
                 const {active_hours, fully_booked} = response;
 
@@ -143,7 +145,8 @@ const UpdateAppointment = () => {
                     title: t("appointment.update.asuccess"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             } else {
                 toast.error('Doctor is not available')

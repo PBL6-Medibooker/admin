@@ -29,17 +29,6 @@ const AdminProfile = () => {
     const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
     const [adminData, setAdminData] = useState([]);
 
-    // const getAdminData = async () => {
-    //     try {
-    //         const result = await accountService.getAdminProfile(aToken);
-    //         console.log(result)
-    //         if (result.success) {
-    //             setAdminData(result.adminData);
-    //         }
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
 
     const {isLoading, isError, refetch} = useQuery({
         queryKey: ['admin'],

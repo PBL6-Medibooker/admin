@@ -111,7 +111,8 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                         {item.replier.username}
                                                     </motion.p>
                                                     <motion.p
-                                                        className="text-xs text-black mt-1"
+                                                        className="text-xs text-black mt-1
+                                                        max-w-[40vw] max-h-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
                                                         initial={{opacity: 0}}
                                                         animate={{opacity: 1}}
                                                         transition={{duration: 0.3, delay: 0.2}}

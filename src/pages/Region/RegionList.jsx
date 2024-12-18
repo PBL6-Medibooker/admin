@@ -242,16 +242,16 @@ const RegionList = () => {
                         shadowColor="rgba(0, 128, 255, 0.4)"
                     />
 
-                    {/*<motion.button*/}
-                    {/*    className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-600 hover:bg-gray-700 text-white transition duration-300"*/}
-                    {/*    onClick={() => navigate('/restore-region')}*/}
-                    {/*    whileHover={{scale: 1.1}}*/}
-                    {/*    whileTap={{scale: 0.95}}*/}
-                    {/*>*/}
-                    {/*    <LuMapPinOff/>*/}
-                    {/*    {t("region.list.trash")}*/}
-                    {/*</motion.button>*/}
                 </div>
+            </div>
+            <div className="mt-5">
+                <input
+                    type="text"
+                    placeholder={t("account.accountList.search")}
+                    value={globalFilter || ""}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                />
             </div>
 
             <motion.table
@@ -264,7 +264,7 @@ const RegionList = () => {
                 {table.getHeaderGroups().map((headerGroup) => (
                     <tr key={headerGroup.id}>
                         <th className="p-3 border-b border-gray-300">
-                        <input
+                            <input
                                 type="checkbox"
                                 checked={
                                     table.getRowModel().rows?.length > 0 &&

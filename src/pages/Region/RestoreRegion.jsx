@@ -175,7 +175,8 @@ const RestoreRegion = () => {
                         <div className="mx-auto my-4 w-60">
                             <h3 className="text-lg font-black text-gray-800"></h3>
                             <p className="text-sm text-gray-600">
-                                {t("region.restore.p")} <strong className='text-red-500'>{t("region.restore.dp")}</strong> ?
+                                {t("region.restore.p")} <strong
+                                className='text-red-500'>{t("region.restore.dp")}</strong> ?
                             </p>
                         </div>
                         <div className="flex gap-4 mt-6">
@@ -192,6 +193,16 @@ const RestoreRegion = () => {
                         </div>
                     </div>
                 </Modal>
+            </div>
+
+            <div className="mt-5">
+                <input
+                    type="text"
+                    placeholder={t("account.accountList.search")}
+                    value={globalFilter || ""}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                    className="w-[20vw] p-3 border border-gray-300 rounded mb-4"
+                />
             </div>
 
             <table className="border border-gray-700 w-full mt-5 text-left text-white border-collapse ">
