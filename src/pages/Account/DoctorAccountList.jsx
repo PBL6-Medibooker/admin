@@ -17,6 +17,9 @@ import {toast} from "react-toastify";
 import {motion, AnimatePresence} from "framer-motion";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
+import {Tooltip} from "@mui/material";
+import CustomButton from "../../components/button/CustomButton";
+import {CircleUser} from "lucide-react";
 
 const DoctorAccountList = () => {
 
@@ -28,9 +31,9 @@ const DoctorAccountList = () => {
     const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(false);
     const [open, setOpen] = useState(false);
-    const {aToken, specialities, refetchSpec} = useContext(AdminContext);
+    const {aToken, specialities, refetchSpec,  refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess, adminData,
+        refectAdminData} = useContext(AdminContext);
     const {t} = useTranslation();
-    const [filterValue, setFilterValue] = useState("");
 
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
@@ -130,12 +133,25 @@ const DoctorAccountList = () => {
         }
     };
 
+    const hoverSettings = (readOnly && !fullAccess && !writeOnly)
+        ? {}
+        : {
+            whileHover: {
+                scale: 1.1,
+                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+            },
+            whileTap: {scale: 0.95},
+            transition: {type: "spring", stiffness: 300},
+        };
+
     useEffect(() => {
         if (aToken) {
-            getAccountList();
-            refetchSpec();
+            refectAdminData()
+            getAccountList()
+            refetchAdminDetails()
+            refetchSpec()
         }
-    }, [aToken, hiddenState]);
+    }, [aToken, hiddenState, adminDetails, adminData]);
 
     return (
         <motion.div className="m-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
@@ -146,34 +162,72 @@ const DoctorAccountList = () => {
                 </h1>
                 <div className="flex gap-4 mr-4">
 
-                    <motion.button
-                        onClick={() => navigate(`/add-doc-account`)}
-                        className="bg-primary text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
-                        whileHover={{
-                            scale: 1.1,
-                            boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
-                        }}
-                        whileTap={{scale: 0.95}}
-                        transition={{type: "spring", stiffness: 300}}
-                    >
-                        <IoPersonAddOutline/>
-                        {t("account.unverified.add")}
-                    </motion.button>
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
 
+                            <motion.button
+                                onClick={() => navigate(`/add-doc-account`)}
+                                className="bg-primary text-white flex items-center cursor-not-allowed gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
+                                {...hoverSettings}
+                                disabled={readOnly && !fullAccess && !writeOnly}
 
-                    <motion.button
-                        onClick={openDeleteModal}
-                        className="bg-red-600 text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
-                        whileHover={{
-                            scale: 1.1,
-                            boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
-                        }}
-                        whileTap={{scale: 0.95}}
-                        transition={{type: "spring", stiffness: 300}}
-                    >
-                        <FaRegTrashAlt/>
-                        {t("account.unverified.delete")}
-                    </motion.button>
+                            >
+                                <IoPersonAddOutline/>
+                                {t("account.unverified.add")}
+                            </motion.button>
+                        </Tooltip>
+                    }
+
+                    {
+                        (fullAccess && writeOnly) &&
+                        <motion.button
+                            onClick={() => navigate(`/add-doc-account`)}
+                            className="bg-primary text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
+                            whileHover={{
+                                scale: 1.1,
+                                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+                            }}
+                            whileTap={{scale: 0.95}}
+                            transition={{type: "spring", stiffness: 300}}
+                        >
+                            <IoPersonAddOutline/>
+                            {t("account.unverified.add")}
+                        </motion.button>
+                    }
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
+
+                            <motion.button
+                                onClick={openDeleteModal}
+                                className="bg-red-600 text-white flex items-center cursor-not-allowed gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
+                                {...hoverSettings}
+                                disabled={readOnly && !fullAccess && !writeOnly}
+                            >
+                                <FaRegTrashAlt/>
+                                {t("account.unverified.delete")}
+                            </motion.button>
+                        </Tooltip>
+                    }
+
+                    {
+                        (fullAccess && writeOnly) &&
+                        <motion.button
+                            onClick={openDeleteModal}
+                            className="bg-red-600 text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
+                            whileHover={{
+                                scale: 1.1,
+                                boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                            }}
+                            whileTap={{scale: 0.95}}
+                            transition={{type: "spring", stiffness: 300}}
+                        >
+                            <FaRegTrashAlt/>
+                            {t("account.unverified.delete")}
+                        </motion.button>
+                    }
 
 
                     <motion.button

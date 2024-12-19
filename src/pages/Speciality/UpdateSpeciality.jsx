@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import {useTranslation} from "react-i18next";
 
 const UpdateSpeciality = () => {
-    const { aToken, backendUrl } = useContext(AdminContext);
+    const { aToken, backendUrl, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
     const { id } = useParams();
     const navigate = useNavigate();
     const [specialities, setSpecialities] = useState([]);
@@ -19,10 +19,14 @@ const UpdateSpeciality = () => {
         speciality_image: null,
     });
     const {t}= useTranslation();
+    const [read, setRead] = useState(false)
 
     const loadSpecData = async () => {
         try {
             const { data } = await axios.get(`${backendUrl}/special/get-spec/${id}`, { headers: { aToken } });
+            if(readOnly && !writeOnly && !fullAccess){
+                setRead(true)
+            }
             if (data.success) {
                 setSpecData({
                     name: data.specData.name,
@@ -70,7 +74,7 @@ const UpdateSpeciality = () => {
 
     useEffect(() => {
         if (aToken) {
-            loadSpecData();
+            loadSpecData()
         }
     }, [aToken]);
 
@@ -128,6 +132,7 @@ const UpdateSpeciality = () => {
                             type="file"
                             id="doc-img"
                             hidden
+                            disabled={read}
                         />
                     </motion.div>
 
@@ -149,6 +154,8 @@ const UpdateSpeciality = () => {
                             className="w-full border rounded-lg px-4 py-3 text-base focus:ring-primary focus:outline-none focus:ring-2"
                             required
                             whileFocus={{ scale: 1.02 }}
+                            disabled={read}
+
                         />
                     </div>
 
@@ -173,6 +180,8 @@ const UpdateSpeciality = () => {
                             className="w-full border rounded-lg px-4 py-3 text-base focus:ring-primary focus:outline-none focus:ring-2"
                             required
                             whileFocus={{ scale: 1.02 }}
+                            disabled={read}
+
                         />
                     </div>
 
@@ -180,7 +189,7 @@ const UpdateSpeciality = () => {
                         <motion.button
                             type="button"
                             onClick={() => navigate("/speciality")}
-                            className="bg-red-500 text-white px-8 py-3 rounded-full text-lg font-medium"
+                            className="bg-red-500 text-white px-8 py-2 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -188,9 +197,10 @@ const UpdateSpeciality = () => {
                         </motion.button>
                         <motion.button
                             type="submit"
-                            className="bg-primary text-white px-8 py-3 rounded-full text-lg font-medium"
+                            className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white px-8 py-2 rounded-full text-lg font-medium` }
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
+                            disabled={read}
                         >
                             {t("speciality.add.save")}
                         </motion.button>

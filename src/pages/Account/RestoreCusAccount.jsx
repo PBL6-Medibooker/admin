@@ -16,23 +16,26 @@ import {useTranslation} from "react-i18next";
 import {motion} from "framer-motion";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
+import {Tooltip} from "@mui/material";
+import {CircleUser} from "lucide-react";
 
 const RestoreCusAccount = () => {
     const columnHelper = createColumnHelper();
-
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
-
     const [globalFilter, setGlobalFilter] = useState("");
-
     const [isUser, setIsUser] = useState(true);
     const [isVerify, setIsVerify] = useState(false);
     const [hiddenState, setHiddenState] = useState(true);
-
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
-
-
-    const {aToken} = useContext(AdminContext);
+    const {aToken,
+        adminData,
+        refectAdminData,
+        refetchAdminDetails,
+        adminDetails,
+        readOnly,
+        writeOnly,
+        fullAccess} = useContext(AdminContext);
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -180,38 +183,67 @@ const RestoreCusAccount = () => {
             <div className='flex justify-between items-center'>
                 <h1 className='text-lg lg:text-2xl text-primary font-medium'>{t("account.restore.title")}</h1>
                 <div className='flex gap-4 mr-4'>
-                    {/*<button*/}
-                    {/*    onClick={restoreCusAccount}*/}
-                    {/*    className='flex items-center gap-1 bg-emerald-400 px-10 py-3 mt-4 text-white rounded-full'>*/}
-                    {/*    <FaTrashRestoreAlt/> {t("account.restore.putBack")}*/}
-                    {/*</button>*/}
 
-                    <CustomButton
-                        onClick={restoreCusAccount}
-                        label={t("account.restore.putBack")}
-                        icon={FaTrashRestoreAlt}
-                        bgColor="bg-green-600"
-                        hoverColor="rgba(22, 163, 74, 0.4)"
-                        shadowColor="rgba(22, 163, 74, 0.4)"
-                    />
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
+                           <span>
+                                        <CustomButton
+                                            onClick={restoreCusAccount}
+                                            label={t("account.restore.putBack")}
+                                            icon={FaTrashRestoreAlt}
+                                            bgColor="bg-green-600"
+                                            hoverColor="rgba(22, 163, 74, 0.4)"
+                                            shadowColor="rgba(22, 163, 74, 0.4)"
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            cursor={true}
+                                        />
+                           </span>
+                        </Tooltip>
+                    }
 
+                    {
+                        (fullAccess && writeOnly) &&
+                        <CustomButton
+                            onClick={restoreCusAccount}
+                            label={t("account.restore.putBack")}
+                            icon={FaTrashRestoreAlt}
+                            bgColor="bg-green-600"
+                            hoverColor="rgba(22, 163, 74, 0.4)"
+                            shadowColor="rgba(22, 163, 74, 0.4)"
+                        />
+                    }
 
-                    {/*<button*/}
-                    {/*    className='flex items-center gap-1 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40'*/}
-                    {/*    onClick={() => setOpen(true)}>*/}
-                    {/*    <FaRegTrashAlt/> {t("account.restore.deleteP")}*/}
-                    {/*</button>*/}
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
+                           <span>
+                                <CustomButton
+                                    onClick={() => setOpen(true)}
+                                    label={t("account.restore.deleteP")}
+                                    icon={FaRegTrashAlt}
+                                    bgColor="bg-red-600"
+                                    hoverColor="rgba(0, 128, 255, 0.4)"
+                                    shadowColor="rgba(255, 0, 0, 0.4)"
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                    cursor={true}
+                                />
 
-                    <CustomButton
-                        onClick={() => setOpen(true)}
-                        label={t("account.restore.deleteP")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                           </span>
+                        </Tooltip>
+                    }
 
-
+                    {
+                        (fullAccess && writeOnly) &&
+                        <CustomButton
+                            onClick={() => setOpen(true)}
+                            label={t("account.restore.deleteP")}
+                            icon={FaRegTrashAlt}
+                            bgColor="bg-red-600"
+                            hoverColor="rgba(0, 128, 255, 0.4)"
+                            shadowColor="rgba(255, 0, 0, 0.4)"
+                        />
+                    }
 
                 </div>
 
@@ -318,42 +350,45 @@ const RestoreCusAccount = () => {
             </motion.table>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end gap-2 mt-4">
-                <button
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {"<"}
-                </button>
-                <button
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="px-2 py-1 border border-gray-400 rounded-md"
-                >
-                    {">"}
-                </button>
+            {
+                data.length > 0 &&
+                <div className="flex items-center justify-end gap-2 mt-4">
+                    <button
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {"<"}
+                    </button>
+                    <button
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="px-2 py-1 border border-gray-400 rounded-md"
+                    >
+                        {">"}
+                    </button>
 
-                <div className="flex items-center gap-1">
-                    <span>{t("account.accountList.page")}</span>
-                    <strong>
-                        {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                    </strong>
-                </div>
+                    <div className="flex items-center gap-1">
+                        <span>{t("account.accountList.page")}</span>
+                        <strong>
+                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+                        </strong>
+                    </div>
 
-                <div className="flex items-center gap-1">
-                    | {t("account.accountList.goToPage")}:
-                    <input
-                        type="number"
-                        defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={(e) => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                            table.setPageIndex(page);
-                        }}
-                        className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
-                    />
+                    <div className="flex items-center gap-1">
+                        | {t("account.accountList.goToPage")}:
+                        <input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={(e) => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                                table.setPageIndex(page);
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-400 rounded-md bg-transparent"
+                        />
+                    </div>
                 </div>
-            </div>
+            }
 
         </div>
 

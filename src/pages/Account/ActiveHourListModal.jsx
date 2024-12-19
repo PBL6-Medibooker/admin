@@ -13,6 +13,8 @@ import { IoMdAddCircle } from "react-icons/io";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import * as doctorService from "../../service/DoctorService";
+import {Undo2} from 'lucide-react'
+import {DoctorContext} from "../../context/DoctorContext";
 
 
 const getMuiTheme = () => createTheme({
@@ -40,21 +42,20 @@ const getMuiTheme = () => createTheme({
 
 const ActiveHourListModal = ({open, onClose, id}) => {
 
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const [activeHours, setActiveHours] = useState([]);
+    const {dToken} = useContext(DoctorContext);
 
     const muiTheme = getMuiTheme();
     const [createModal, setCreateModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-
     const [activeHour, setActiveHour] = useState(null);
     const [bookedHours, setBookedHours] = useState([]);
     const [fullyBookedHours, setFullyBookedHours] = useState([]);
     const {t} = useTranslation();
     const [isAdd, setIsAdd] = useState(false);
-
-
+    const [read, setRead] = useState(false);
 
     const options = {
         elevation: 0,
@@ -153,7 +154,7 @@ const ActiveHourListModal = ({open, onClose, id}) => {
                     };
 
                     return (
-                        <button onClick={handleDelete} className="bg-red-500 text-white w-16 p-2 rounded">
+                        <button disabled={read} onClick={handleDelete} className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-red-500 text-white w-16 p-2 rounded`}>
                             {t("account.active.delete")}
                         </button>
                     );
@@ -216,6 +217,9 @@ const ActiveHourListModal = ({open, onClose, id}) => {
             // console.log('Booked:', booked);
             setFullyBookedHours(fully_booked);
             // console.log('Fully Booked:', fully_booked);
+            if(readOnly && !writeOnly && !fullAccess){
+                setRead(true)
+            }
         } catch (error) {
             toast.error("Failed to load active hours.");
         }
@@ -246,7 +250,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
                     title: t("account.active.message"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             } catch (error) {
                 toast.error("Failed to delete active hour");
@@ -256,10 +261,10 @@ const ActiveHourListModal = ({open, onClose, id}) => {
 
 
     useEffect(() => {
-        if (aToken) {
+        if (aToken || dToken) {
             getActiveHourList();
         }
-    }, [aToken, isAdd]);
+    }, [aToken, isAdd, dToken]);
 
     return (
         <Modal className='w-full max-w-4xl h-full max-h-[80vh]' open={open} onClose={onClose}>
@@ -275,10 +280,19 @@ const ActiveHourListModal = ({open, onClose, id}) => {
 
 
             <div className='flex justify-end '>
-                <button onClick={() => setCreateModal(true)}
-                        className=' flex items-center justify-center gap-0.5 bg-primary w-[200px] text-white rounded-full px-3 py-2'>
-                    <IoMdAddCircle/>{t("account.active.add")}
-                </button>
+
+
+                {
+                    read ? <button onClick={onClose}
+                                   className=' flex items-center justify-center gap-0.5 bg-primary w-[200px] text-white rounded-full px-3 py-2'>
+                            <Undo2/>
+                            {t("account.updateDocInfo.back")}
+                        </button> :
+                        <button onClick={() => setCreateModal(true)}
+                                className=' flex items-center justify-center gap-0.5 bg-primary w-[200px] text-white rounded-full px-3 py-2'>
+                            <IoMdAddCircle/>{t("account.active.add")}
+                        </button>
+                }
             </div>
 
 

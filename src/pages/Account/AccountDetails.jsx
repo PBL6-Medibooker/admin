@@ -10,11 +10,13 @@ import Swal from "sweetalert2";
 import {motion} from 'framer-motion';
 import Button from "../../components/button/Button";
 import GrantAdminModel from "./GrantAdminModel";
+import {RefreshCcwDot, CalendarFold, ArchiveRestore} from 'lucide-react'
+import {Tooltip} from "@mui/material";
 
 
 const AccountDetails = () => {
     const {email} = useParams();
-    const {aToken} = useContext(AdminContext);
+    const {aToken, fullAccess, refetchAdminDetails, adminDetails, readOnly, writeOnly} = useContext(AdminContext);
     // const [account, setAccount] = useState(null);
     const [account, setAccount] = useState({
         username: "",
@@ -33,6 +35,7 @@ const AccountDetails = () => {
     const [userName, setUserName] = useState('');
     const {t} = useTranslation();
     const [gOpen, setGOpen] = useState(false);
+    const [read, setRead] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -47,29 +50,14 @@ const AccountDetails = () => {
             setUserId(response._id)
             setUserName(response.username)
             setAccountRole(response.role)
+            if(readOnly && !writeOnly && !fullAccess){
+                setRead(true)
+            }
         } catch (err) {
             console.log(err.message);
         }
     };
 
-    const openChangeRoleModal = async () => {
-        Swal.fire({
-            title: t("account.update.aru"),
-            text: t("account.update.arut"),
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: t("account.update.grant"),
-            cancelButtonText: t("account.update.cancel"),
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // changeAccountRole()
-                console.log("Access granted!");
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                console.log("Action canceled!");
-            }
-        });
-
-    }
     const openAccess = async () => {
         try {
             setGOpen(true)
@@ -103,7 +91,8 @@ const AccountDetails = () => {
                 title: t("account.update.noti"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
 
             // formData.forEach((value, key) => {
@@ -130,6 +119,16 @@ const AccountDetails = () => {
             console.log(e);
         }
     }
+    const hoverSettings = (readOnly && !fullAccess && !writeOnly)
+        ? {}
+        : {
+            whileHover: {
+                scale: 1.1,
+                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+            },
+            whileTap: {scale: 0.95},
+            transition: {type: "spring", stiffness: 300},
+        };
 
     useEffect(() => {
 
@@ -155,28 +154,88 @@ const AccountDetails = () => {
                     {t("account.update.title")}
                 </motion.p>
 
-                <div className="flex items-center gap-4">
-                    <motion.button
-                        className="px-8 py-3 text-white bg-primary rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
-                        onClick={resetPass}
-                        whileHover={{scale: 1.05}}
-                        whileTap={{scale: 0.95}}
-                    >
-                        {t("account.update.reset")}
-                    </motion.button>
+                <div className="flex items-center gap-4 mr-4">
 
-                    <motion.button
-                        className="px-8 py-3 text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
-                        onClick={() =>
-                            navigate(`/user-appointments/${account._id}`, {
-                                state: {name: account.username},
-                            })
-                        }
-                        whileHover={{scale: 1.05}}
-                        whileTap={{scale: 0.95}}
-                    >
-                        {t("account.update.appointments")}
-                    </motion.button>
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                                <motion.button
+                                    className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-white bg-primary rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                    onClick={resetPass}
+                                    {...hoverSettings}
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                >
+                                    <RefreshCcwDot/>{t("account.update.reset")}
+                                </motion.button>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <motion.button
+                                className="flex items-center gap-2 px-8 py-3 text-white bg-primary rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                onClick={resetPass}
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <RefreshCcwDot/>{t("account.update.reset")}
+                            </motion.button>
+
+                        )
+                    }
+
+
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+
+                                <motion.button
+                                    className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                    onClick={() =>
+                                        navigate(`/user-appointments/${account._id}`, {
+                                            state: {name: account.username},
+                                        })
+                                    }
+                                    {...hoverSettings}
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                >
+                                    <CalendarFold/>{t("account.update.appointments")}
+                                </motion.button>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <motion.button
+                                className="flex items-center gap-2 px-8 py-3 text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                onClick={() =>
+                                    navigate(`/user-appointments/${account._id}`, {
+                                        state: {name: account.username},
+                                    })
+                                }
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <CalendarFold/>{t("account.update.appointments")}
+                            </motion.button>
+
+                        )
+                    }
                 </div>
             </motion.div>
 
@@ -205,9 +264,10 @@ const AccountDetails = () => {
                                 whileTap={{scale: 0.95}}
                             />
                         </label>
-                        <input onChange={handleImageChange} type="file" id="doc-img" hidden/>
+                        <input onChange={handleImageChange} type="file" id="doc-img" hidden disabled={read}/>
+
                         <div className="text-center">
-                            <p className="text-sm text-black font-semibold">{t("account.update.upload")}
+                        <p className="text-sm text-black font-semibold">{t("account.update.upload")}
                             </p>
                             <p className="text-xs text-gray-400">
                                 {t("account.update.cupload")}
@@ -216,7 +276,10 @@ const AccountDetails = () => {
 
                         <div className="absolute right-0">
                             {/*<Button onClick={openChangeRoleModal} t={t("account.update.crole")}/>*/}
-                            <Button onClick={openAccess} t={t("account.update.crole")}/>
+                            {
+                                fullAccess &&
+                                <Button onClick={openAccess} t={t("account.update.crole")}/>
+                            }
                         </div>
 
                     </motion.div>
@@ -253,6 +316,7 @@ const AccountDetails = () => {
                                     placeholder="bevis"
                                     required
                                     autoFocus
+                                    disabled={read}
                                 />
 
                             </div>
@@ -272,6 +336,8 @@ const AccountDetails = () => {
                                     type="text"
                                     placeholder="Customer Address"
                                     required
+                                    disabled={read}
+
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
@@ -290,6 +356,8 @@ const AccountDetails = () => {
                                     className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                                     type="date"
                                     required
+                                    disabled={read}
+
                                 />
                             </div>
                         </div>
@@ -306,6 +374,7 @@ const AccountDetails = () => {
                                     type="text"
                                     placeholder="Customer Email"
                                     disabled
+
                                 />
                             </div>
 
@@ -320,6 +389,8 @@ const AccountDetails = () => {
                                     type="text"
                                     placeholder="Customer Phone Number"
                                     required
+                                    disabled={read}
+
                                 />
 
                                 {/*<input*/}
@@ -372,6 +443,8 @@ const AccountDetails = () => {
                                 rows={5}
                                 placeholder="Underlying Condition"
                                 required
+                                disabled={read}
+
                             />
                         </div>
                     </motion.div>
@@ -394,9 +467,11 @@ const AccountDetails = () => {
 
                         <motion.button
                             type="submit"
-                            className="bg-primary px-6 py-3 text-sm text-white font-bold rounded-full hover:bg-primary-dark transition-all"
+                            className={`${read? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary px-6 py-3 text-sm text-white font-bold rounded-full hover:bg-primary-dark transition-all`}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
+                            disabled={read}
+
                         >
                             {t("account.update.save")}
                         </motion.button>
@@ -404,7 +479,7 @@ const AccountDetails = () => {
                 </motion.div>
             </form>
 
-            <GrantAdminModel open={gOpen} id={userId} onClose={()=>setGOpen(false)} />
+            <GrantAdminModel open={gOpen} id={userId} onClose={() => setGOpen(false)}/>
         </div>
     );
 };

@@ -18,6 +18,7 @@ import { MdOutlineSettingsBackupRestore } from "react-icons/md";
 import Swal from "sweetalert2";
 import {useTranslation} from "react-i18next";
 import CustomButton from "../../components/button/CustomButton";
+import {Tooltip} from "@mui/material";
 
 const RestoreArticle = () => {
     const columnHelper = createColumnHelper();
@@ -26,7 +27,7 @@ const RestoreArticle = () => {
     const [globalFilter, setGlobalFilter] = useState("");
     const {t}= useTranslation();
     const [open, setOpen] = useState(false);
-    const {aToken} = useContext(AdminContext);
+    const {aToken,refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const [data, setData] = useState([]);
 
 
@@ -107,9 +108,10 @@ const RestoreArticle = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAllDeletedArticle();
+            getAllDeletedArticle()
+            refetchAdminDetails()
         }
-    }, [aToken])
+    }, [aToken, adminDetails])
 
 
     const toggleAccountSelection = (id) => {
@@ -155,24 +157,75 @@ const RestoreArticle = () => {
             <div className="flex justify-between items-center">
                 <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.restore.title")}</h1>
                 <div className="flex gap-4 mr-4">
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                        <CustomButton
+                                            onClick={restoreDeletedArticle}
+                                            label={t("region.restore.put")}
+                                            icon={MdOutlineSettingsBackupRestore}
+                                            bgColor="bg-green-600"
+                                            hoverColor="rgba(22, 163, 74, 0.4)"
+                                            shadowColor="rgba(22, 163, 74, 0.4)"
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            cursor={true}
+                                        />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
 
-                    <CustomButton
-                        onClick={restoreDeletedArticle}
-                        label={t("region.restore.put")}
-                        icon={MdOutlineSettingsBackupRestore}
-                        bgColor="bg-green-600"
-                        hoverColor="rgba(22, 163, 74, 0.4)"
-                        shadowColor="rgba(22, 163, 74, 0.4)"
-                    />
 
-                    <CustomButton
-                        onClick={openDeleteModal}
-                        label={t("article.restore.pd")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={restoreDeletedArticle}
+                                label={t("region.restore.put")}
+                                icon={MdOutlineSettingsBackupRestore}
+                                bgColor="bg-green-600"
+                                hoverColor="rgba(22, 163, 74, 0.4)"
+                                shadowColor="rgba(22, 163, 74, 0.4)"
+                            />
+                        )
+                    }
+
+
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                      <CustomButton
+                                          onClick={openDeleteModal}
+                                          label={t("article.restore.pd")}
+                                          icon={FaRegTrashAlt}
+                                          bgColor="bg-red-600"
+                                          hoverColor="rgba(0, 128, 255, 0.4)"
+                                          shadowColor="rgba(255, 0, 0, 0.4)"
+                                          disabled={readOnly && !fullAccess && !writeOnly}
+                                          cursor={true}
+                                      />
+
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={openDeleteModal}
+                                label={t("article.restore.pd")}
+                                icon={FaRegTrashAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(0, 128, 255, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+                        )
+                    }
 
                 </div>
             </div>
@@ -266,7 +319,7 @@ const RestoreArticle = () => {
                                 </td>
                                 {row.getVisibleCells().map((cell) => (
                                     <td key={cell.id} className="p-2"
-                                        onClick={() => navigate(`/update-article/${row.original._id}`)}>
+                                    >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}

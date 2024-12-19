@@ -13,7 +13,7 @@ import {Check, Undo2} from "lucide-react";
 
 
 const UpdateArticle = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {dToken} = useContext(DoctorContext);
     const {id} = useParams();
     const navigate = useNavigate();
@@ -71,8 +71,9 @@ const UpdateArticle = () => {
     useEffect(() => {
         if(aToken || dToken){
             articleInfo()
+            refetchAdminDetails()
         }
-    }, [aToken, dToken]);
+    }, [aToken, dToken, adminDetails]);
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>
@@ -118,6 +119,7 @@ const UpdateArticle = () => {
                                 id="image"
                                 hidden
                                 accept="image/jpg"
+                                disabled={readOnly && !writeOnly && !fullAccess && aToken}
                             />
                         </label>
 
@@ -149,6 +151,7 @@ const UpdateArticle = () => {
                             required
                             autoFocus
                             aria-required="true"
+                            disabled={readOnly && !writeOnly && !fullAccess && aToken}
                         />
                     </motion.div>
 
@@ -171,6 +174,8 @@ const UpdateArticle = () => {
                             placeholder="Describe your health issue here..."
                             required
                             aria-required="true"
+                            disabled={readOnly && !writeOnly && !fullAccess && aToken}
+
                         />
                     </motion.div>
 
@@ -199,6 +204,8 @@ const UpdateArticle = () => {
                             bgColor="bg-[rgba(0,_166,_169,_1)]"
                             hoverColor="rgba(0, 166, 169, 1)"
                             shadowColor="rgba(0, 166, 169, 1)"
+                            disabled={readOnly && !writeOnly && !fullAccess && aToken}
+
                         />
                     </motion.div>
                 </div>

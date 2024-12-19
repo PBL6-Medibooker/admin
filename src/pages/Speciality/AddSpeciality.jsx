@@ -27,11 +27,7 @@ const AddSpeciality = () => {
         }
     };
 
-    useEffect(() => {
-        if(aToken){
-            findAllSpecialities();
-        }
-    }, [aToken]);
+
 
     const check = () => {
         const exists = specialities.some(
@@ -97,6 +93,12 @@ const AddSpeciality = () => {
             console.error("Error:", errorMessage);
         }
     };
+
+    useEffect(() => {
+        if(aToken){
+            findAllSpecialities();
+        }
+    }, [aToken]);
 
     return (
         <motion.div

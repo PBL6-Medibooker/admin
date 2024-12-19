@@ -1,5 +1,8 @@
 {
   "common": {
+    "access": {
+      "permission": "You do not have permission"
+    },
     "button": {
       "search": "Search",
       "cancel": "Cancel",
@@ -277,7 +280,8 @@
     "dashboard": {
       "total": "Total Region",
       "ctitle": "Doctors Of Each Region",
-      "doctor": "doctors"
+      "doctor": "doctors",
+      "name": "City"
     },
     "list": {
       "region": "Region",

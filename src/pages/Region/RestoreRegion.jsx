@@ -15,6 +15,8 @@ import { FaTrashRestoreAlt } from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
+import {Tooltip} from "@mui/material";
+import {MapPinPlus} from "lucide-react";
 
 const RestoreRegion = () => {
     const columnHelper = createColumnHelper();
@@ -25,7 +27,7 @@ const RestoreRegion = () => {
     const [open, setOpen] = useState(false);
     const {t}= useTranslation();
 
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -148,24 +150,74 @@ const RestoreRegion = () => {
                 <h1 className='text-lg text-primary lg:text-2xl font-medium'>{t("region.restore.title")}</h1>
                 <div className='flex gap-4 mr-4'>
 
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
 
-                    <CustomButton
-                        onClick={restoreRegion}
-                        label={t("region.restore.put")}
-                        icon={FaTrashRestoreAlt}
-                        bgColor="bg-green-600"
-                        hoverColor="rgba(22, 163, 74, 0.4)"
-                        shadowColor="rgba(22, 163, 74, 0.4)"
-                    />
+                                      <CustomButton
+                                          onClick={restoreRegion}
+                                          label={t("region.restore.put")}
+                                          icon={FaTrashRestoreAlt}
+                                          bgColor="bg-green-600"
+                                          hoverColor="rgba(22, 163, 74, 0.4)"
+                                          shadowColor="rgba(22, 163, 74, 0.4)"
+                                          disabled={readOnly && !fullAccess && !writeOnly}
+                                          cursor={true}
+                                      />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
 
-                    <CustomButton
-                        onClick={() => setOpen(true)}
-                        label={t("region.restore.pd")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(255, 0, 0, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={restoreRegion}
+                                label={t("region.restore.put")}
+                                icon={FaTrashRestoreAlt}
+                                bgColor="bg-green-600"
+                                hoverColor="rgba(22, 163, 74, 0.4)"
+                                shadowColor="rgba(22, 163, 74, 0.4)"
+                            />
+                        )
+                    }
+
+
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                     <CustomButton
+                                         onClick={() => setOpen(true)}
+                                         label={t("region.restore.pd")}
+                                         icon={FaRegTrashAlt}
+                                         bgColor="bg-red-600"
+                                         hoverColor="rgba(255, 0, 0, 0.4)"
+                                         shadowColor="rgba(255, 0, 0, 0.4)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={() => setOpen(true)}
+                                label={t("region.restore.pd")}
+                                icon={FaRegTrashAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(255, 0, 0, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+                        )
+                    }
+
 
 
                 </div>

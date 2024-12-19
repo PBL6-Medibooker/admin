@@ -5,6 +5,7 @@ import {useTranslation} from "react-i18next";
 import * as adminService from "../../service/AdminService";
 import Swal from "sweetalert2";
 import {motion} from "framer-motion";
+import {useNavigate} from "react-router-dom";
 
 const GrantAdminModel = ({open, id, onClose}) => {
     const {aToken} = useContext(AdminContext);
@@ -15,6 +16,27 @@ const GrantAdminModel = ({open, id, onClose}) => {
         write_access: false,
         admin_write_access: false
     })
+    const navigate = useNavigate()
+
+    const openChangeRoleModal = async () => {
+        Swal.fire({
+            title: t("account.update.aru"),
+            text: t("account.update.arut"),
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: t("account.update.grant"),
+            cancelButtonText: t("account.update.cancel"),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // changeAccountRole()
+                console.log("Access granted!");
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                console.log("Action canceled!");
+            }
+        });
+
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -27,6 +49,7 @@ const GrantAdminModel = ({open, id, onClose}) => {
             console.log('form data', formData)
             await adminService.addAdmin(formData, aToken);
             onClose()
+            navigate('/admin-account')
 
             await Swal.fire({
                 position: "top-end",

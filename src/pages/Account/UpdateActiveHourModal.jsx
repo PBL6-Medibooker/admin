@@ -9,8 +9,9 @@ import { useTranslation } from "react-i18next";
 import * as doctorService from "../../service/DoctorService";
 
 const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
-    const { aToken } = useContext(AdminContext);
+    const { aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
     const { t } = useTranslation();
+    const [read, setRead] = useState(false);
 
     const [activeHour, setActiveHour] = useState({
         day: "",
@@ -37,6 +38,9 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                 old_end_time: data.end_time || "",
                 old_hour_type: data.hour_type || "",
             });
+        }
+        if(readOnly && !writeOnly && !fullAccess && aToken){
+            setRead(true)
         }
     };
 
@@ -111,7 +115,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h1 className="text-primary lg:text-xl font-medium">
+            <h1 className="text-primary lg:text-xl font-bold">
                 {t("account.updateaa.title")}
             </h1>
             <motion.div
@@ -136,6 +140,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                                 onChange={handleInputChange}
                                 required
                                 className="border p-2 rounded"
+                                disabled={read}
                             >
                                 <option value="">Select a Day</option>
                                 {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
@@ -157,6 +162,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                                 onChange={handleInputChange}
                                 required
                                 className="border p-2 rounded"
+                                disabled={read}
                             />
                         </div>
 
@@ -169,6 +175,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                                 onChange={handleInputChange}
                                 required
                                 className="border p-2 rounded"
+                                disabled={read}
                             />
                         </div>
 
@@ -181,6 +188,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                                 onChange={handleInputChange}
                                 required
                                 className="border w-[90px] p-2 rounded"
+                                disabled={read}
                             />
                         </div>
                     </motion.div>
@@ -202,9 +210,10 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                         </motion.button>
                         <motion.button
                             type="submit"
-                            className="bg-primary text-white w-[100px] p-2 rounded"
+                            className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white w-[100px] p-2 rounded`}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
+                            disabled={read}
                         >
                             {t("account.updateaa.update")}
                         </motion.button>

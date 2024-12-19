@@ -7,8 +7,8 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {DoctorContext} from "../../context/DoctorContext";
 
-const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
-    const { aToken } = useContext(AdminContext);
+const DetailInsuranceModal = ({ open, id, cancel, onClose, name, isCompleted }) => {
+    const { aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
     const {t} = useTranslation();
     const [insuranceData, setInsuranceData] = useState({
         id:"",
@@ -93,7 +93,9 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                     title: t("appointment.update.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
+
                 });
             } else {
                 await Swal.fire({
@@ -137,6 +139,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                                     type="text"
                                     placeholder="BHYT"
                                     required
+                                    disabled={isCompleted || (readOnly && !writeOnly && !fullAccess)}
                                 />
                             </div>
 
@@ -152,6 +155,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                                     type="text"
                                     placeholder="Nhập vào số BH"
                                     required
+                                    disabled={isCompleted || (readOnly && !writeOnly && !fullAccess)}
                                 />
                             </div>
 
@@ -167,6 +171,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                                     type="text"
                                     placeholder="Nhập vào địa chỉ"
                                     required
+                                    disabled={isCompleted || (readOnly && !writeOnly && !fullAccess)}
                                 />
                             </div>
 
@@ -181,6 +186,7 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                                     className="border rounded-lg px-4 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-primary"
                                     type="date"
                                     required
+                                    disabled={isCompleted || (readOnly && !writeOnly && !fullAccess)}
                                 />
                             </div>
                         </div>
@@ -189,13 +195,14 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name }) => {
                             <button
                                 type="button"
                                 onClick={cancel}
-                                className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 transition"
+                                className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 hover:text-white transition"
                             >
                                 {t("appointment.update.back")}
                             </button>
                             <button
+                                disabled={isCompleted || (readOnly && !writeOnly && !fullAccess)}
                                 type="submit"
-                                className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
+                                className={`bg-primary ${isCompleted || (readOnly && !writeOnly && !fullAccess) ? 'cursor-not-allowed' : 'cursor-pointer'} text-white w-32 p-2 rounded-lg hover:bg-primary/85 transition`}
                             >
                                 {t("appointment.update.save")}
                             </button>

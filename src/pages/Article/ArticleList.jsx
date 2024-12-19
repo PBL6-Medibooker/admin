@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AnimatePresence, motion} from "framer-motion";
-import {FaRegTrashAlt} from "react-icons/fa";
+import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import {
     createColumnHelper,
@@ -19,6 +19,7 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {Trash} from "lucide-react";
+import {Tooltip} from "@mui/material";
 
 const ArticleList = () => {
 
@@ -28,7 +29,7 @@ const ArticleList = () => {
     const [globalFilter, setGlobalFilter] = useState("");
 
     const [open, setOpen] = useState(false);
-    const {aToken} = useContext(AdminContext);
+    const {aToken,refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const [data, setData] = useState([]);
     const {t} = useTranslation();
 
@@ -87,13 +88,6 @@ const ArticleList = () => {
         }
     };
 
-    useEffect(() => {
-        if (aToken) {
-            getAllArticle();
-        }
-    }, [aToken])
-
-
     const toggleAccountSelection = (id) => {
         setSelectedAccountIds((prevSelected) =>
             prevSelected.includes(id)
@@ -132,6 +126,14 @@ const ArticleList = () => {
     });
 
 
+    useEffect(() => {
+        if (aToken) {
+            getAllArticle()
+            refetchAdminDetails()
+        }
+    }, [aToken, adminDetails])
+
+
     return (
         <motion.div
             className="mb-5 pl-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
@@ -143,29 +145,74 @@ const ArticleList = () => {
                 <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.list.ctitle")}</h1>
                 <div className="flex gap-4 mr-4">
 
-                    {/*<button*/}
-                    {/*    onClick={() => navigate('/create-article')}*/}
-                    {/*    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">*/}
-                    {/*    + <FaRegNewspaper />*/}
-                    {/*</button>*/}
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
 
-                    <CustomButton
-                        onClick={() => navigate('/create-article')}
-                        label= {t("article.list.add")}
-                        icon={FaRegNewspaper}
-                        bgColor="bg-[rgba(0,_166,_169,_1)]"
-                        hoverColor="rgba(0, 166, 169, 1)"
-                        shadowColor="rgba(0, 166, 169, 1)"
-                    />
+                               <span>
+                                     <CustomButton
+                                         onClick={() => navigate('/create-article')}
+                                         label= {t("article.list.add")}
+                                         icon={FaRegNewspaper}
+                                         bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                         hoverColor="rgba(0, 166, 169, 1)"
+                                         shadowColor="rgba(0, 166, 169, 1)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
 
-                    <CustomButton
-                        onClick={openDeleteModal}
-                        label={t("article.list.delete")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+
+                    {
+                        (fullAccess || writeOnly) && (
+
+                            <CustomButton
+                                onClick={() => navigate('/create-article')}
+                                label= {t("article.list.add")}
+                                icon={FaRegNewspaper}
+                                bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                hoverColor="rgba(0, 166, 169, 1)"
+                                shadowColor="rgba(0, 166, 169, 1)"
+                            />
+                        )
+                    }
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                     <CustomButton
+                                         onClick={openDeleteModal}
+                                         label={t("article.list.delete")}
+                                         icon={FaRegTrashAlt}
+                                         bgColor="bg-red-600"
+                                         hoverColor="rgba(0, 128, 255, 0.4)"
+                                         shadowColor="rgba(255, 0, 0, 0.4)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+
+                            <CustomButton
+                                onClick={openDeleteModal}
+                                label={t("article.list.delete")}
+                                icon={FaRegTrashAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(0, 128, 255, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+                        )
+                    }
 
                     <CustomButton
                         onClick={() => navigate('/restore-article')}

@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import * as accountService from "../../service/AccountService"
 import {AdminContext} from "../../context/AdminContext";
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import {
     createColumnHelper, flexRender,
     getCoreRowModel,
@@ -13,12 +13,12 @@ import {
 import {assets} from "../../assets/assets";
 import {toast} from "react-toastify";
 import Modal from "../../components/Modal/Modal";
-import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
+import {FaRegTrashAlt} from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {Trash, CircleUser} from "lucide-react";
-import {LuMapPinOff} from "react-icons/lu";
+import {Tooltip} from "@mui/material";
 
 
 const AccountList = () => {
@@ -31,7 +31,18 @@ const AccountList = () => {
     const [selectedAccountIds, setSelectedAccountIds] = useState([]);
     const [open, setOpen] = useState(false);
     const {t} = useTranslation();
-    const {aToken, adminList, refetchAdminList} = useContext(AdminContext);
+    const {
+        aToken,
+        adminList,
+        refetchAdminList,
+        adminData,
+        refectAdminData,
+        refetchAdminDetails,
+        adminDetails,
+        readOnly,
+        writeOnly,
+        fullAccess
+    } = useContext(AdminContext);
 
     const columns = [
         columnHelper.accessor("_id", {
@@ -105,11 +116,10 @@ const AccountList = () => {
     };
 
 
-
     const softDeleteAccounts = async () => {
         if (selectedAccountIds?.length === 0) {
             // toast.warn('No account selected for deletion')
-           await Swal.fire({
+            await Swal.fire({
                 icon: "warning",
                 title: "Oops...",
                 text: t("account.accountList.deleteNoti"),
@@ -150,10 +160,13 @@ const AccountList = () => {
 
     useEffect(() => {
         if (aToken) {
+            refectAdminData()
+            refetchAdminDetails()
+            console.log(adminDetails)
             refetchAdminList()
             getAccountList()
         }
-    }, [aToken]);
+    }, [aToken, adminDetails, adminData]);
     return (
         <motion.div
             className="mb-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
@@ -162,35 +175,67 @@ const AccountList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
-                <h1 className="text-lg text-primary lg:text-2xl">{t("account.accountList.userAccounts")}</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("account.accountList.userAccounts")}</h1>
                 <div className="flex gap-4">
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
+                           <span>
+                                <CustomButton
+                                    onClick={() => navigate(`/add-customer-account`)}
+                                    label={t("account.accountList.addnewAccount")}
+                                    icon={CircleUser}
+                                    bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                    hoverColor="rgba(0, 166, 169, 1)"
+                                    shadowColor="rgba(0, 166, 169, 1)"
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                    cursor={true}
+                                />
+                           </span>
+                        </Tooltip>
+                    }
 
+                    {
+                        (fullAccess && writeOnly) &&
+                        <CustomButton
+                            onClick={() => navigate(`/add-customer-account`)}
+                            label={t("account.accountList.addnewAccount")}
+                            icon={CircleUser}
+                            bgColor="bg-[rgba(0,_166,_169,_1)]"
+                            hoverColor="rgba(0, 166, 169, 1)"
+                            shadowColor="rgba(0, 166, 169, 1)"
+                        />
+                    }
 
-                    <CustomButton
-                        onClick={() => navigate(`/add-customer-account`)}
-                        label= {t("account.accountList.addnewAccount")}
-                        icon={CircleUser}
-                        bgColor="bg-[rgba(0,_166,_169,_1)]"
-                        hoverColor="rgba(0, 166, 169, 1)"
-                        shadowColor="rgba(0, 166, 169, 1)"
-                    />
+                    {
+                        (readOnly && !writeOnly && !fullAccess) &&
+                        <Tooltip title={t("common.access.permission")} arrow>
+                           <span>
+                                <CustomButton
+                                    onClick={openDeleteModal}
+                                    label={t("account.accountList.delete")}
+                                    icon={FaRegTrashAlt}
+                                    bgColor="bg-red-600"
+                                    hoverColor="rgba(0, 128, 255, 0.4)"
+                                    shadowColor="rgba(255, 0, 0, 0.4)"
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                    cursor={true}
+                                />
+                           </span>
+                        </Tooltip>
+                    }
 
-                    {/*<motion.button*/}
-                    {/*    onClick={openDeleteModal}*/}
-                    {/*    whileHover={{scale: 1.05}}*/}
-                    {/*    className="flex items-center gap-2 px-6 py-2 text-white bg-red-600 rounded-full shadow-lg shadow-red-500/40"*/}
-                    {/*>*/}
-                    {/*    <FaRegTrashAlt/> {t("account.accountList.delete")}*/}
-                    {/*</motion.button>*/}
-
-                    <CustomButton
-                        onClick={openDeleteModal}
-                        label={t("account.accountList.delete")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                    {
+                        (fullAccess && writeOnly) &&
+                        <CustomButton
+                            onClick={openDeleteModal}
+                            label={t("account.accountList.delete")}
+                            icon={FaRegTrashAlt}
+                            bgColor="bg-red-600"
+                            hoverColor="rgba(0, 128, 255, 0.4)"
+                            shadowColor="rgba(255, 0, 0, 0.4)"
+                        />
+                    }
 
                     <CustomButton
                         onClick={() => navigate('/restore-cus-account')}
@@ -305,6 +350,7 @@ const AccountList = () => {
                                     <td
                                         key={cell.id}
                                         className="p-2 cursor-pointer"
+
                                         onClick={() => navigate(`/update-cus-account/${row.original.email}`)}
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -312,11 +358,11 @@ const AccountList = () => {
                                 ))}
                             </motion.tr>
                         ))
-                ) : (
-                    <tr className="text-center h-32 text-blue-400">
-                        <td colSpan={12}>{t("account.accountList.nodata")}</td>
-                    </tr>
-                )}
+                    ) : (
+                        <tr className="text-center h-32 text-blue-400">
+                            <td colSpan={12}>{t("account.accountList.nodata")}</td>
+                        </tr>
+                    )}
                 </tbody>
             </motion.table>
 

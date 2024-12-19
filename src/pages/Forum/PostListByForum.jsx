@@ -22,11 +22,12 @@ import CustomButton from "../../components/button/CustomButton";
 import {LuMapPinOff} from "react-icons/lu";
 import {MapPinPlus, Trash2} from 'lucide-react'
 import SearchInput from "../../components/SearchInput";
+import {Tooltip} from "@mui/material";
 
 
 const PostListByForum = () => {
 
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const navigate = useNavigate();
     const location = useLocation();
     const {name, isDelete} = location.state || {};
@@ -194,8 +195,9 @@ const PostListByForum = () => {
     useEffect(() => {
         if (aToken) {
             getAllPostBySpeciality()
+            refetchAdminDetails()
         }
-    }, [aToken, isDelete]);
+    }, [aToken, isDelete, adminDetails]);
     return (
         <div className='mb-5 pl-5 mr-5 mt-1 w-[100vw] h-[100vh]'>
 
@@ -231,23 +233,75 @@ const PostListByForum = () => {
                         : <div className="flex justify-between items-center">
                             <h1 className="text-lg max-w-[50vw] text-primary lg:text-2xl font-medium">{t("forum.list.dspec")} {name}</h1>
                             <div className="flex gap-4 mr-4">
-                                <CustomButton
-                                    onClick={restorePost}
-                                    label={t("forum.list.put")}
-                                    icon={FaTrashRestoreAlt}
-                                    bgColor="bg-green-600"
-                                    hoverColor="rgba(22, 163, 74, 0.4)"
-                                    shadowColor="rgba(22, 163, 74, 0.4)"
-                                />
+                                {
+                                    (readOnly && !writeOnly && !fullAccess) && (
+                                        <Tooltip title={t("common.access.permission")} arrow>
+                                            <span>
+                                                 <CustomButton
+                                                     onClick={restorePost}
+                                                     label={t("forum.list.put")}
+                                                     icon={FaTrashRestoreAlt}
+                                                     bgColor="bg-green-600"
+                                                     hoverColor="rgba(22, 163, 74, 0.4)"
+                                                     shadowColor="rgba(22, 163, 74, 0.4)"
+                                                     disabled={readOnly && !fullAccess && !writeOnly}
+                                                     cursor={true}
+                                                 />
+                                            </span>
 
-                                <CustomButton
-                                    onClick={openDeleteModal}
-                                    label={t("forum.list.dp")}
-                                    icon={Trash2}
-                                    bgColor="bg-red-600"
-                                    hoverColor="rgba(0, 128, 255, 0.4)"
-                                    shadowColor="rgba(255, 0, 0, 0.4)"
-                                />
+                                        </Tooltip>
+                                    )
+                                }
+
+
+                                {
+                                    (fullAccess || writeOnly) && (
+                                        <CustomButton
+                                            onClick={restorePost}
+                                            label={t("forum.list.put")}
+                                            icon={FaTrashRestoreAlt}
+                                            bgColor="bg-green-600"
+                                            hoverColor="rgba(22, 163, 74, 0.4)"
+                                            shadowColor="rgba(22, 163, 74, 0.4)"
+                                        />
+
+                                    )
+                                }
+
+
+
+                                {
+                                    (readOnly && !writeOnly && !fullAccess) && (
+                                        <Tooltip title={t("common.access.permission")} arrow>
+                                            <span>
+                                                 <CustomButton
+                                                     onClick={openDeleteModal}
+                                                     label={t("forum.list.dp")}
+                                                     icon={Trash2}
+                                                     bgColor="bg-red-600"
+                                                     hoverColor="rgba(0, 128, 255, 0.4)"
+                                                     shadowColor="rgba(255, 0, 0, 0.4)"
+                                                     disabled={readOnly && !fullAccess && !writeOnly}
+                                                     cursor={true}
+                                                 />
+                                            </span>
+                                        </Tooltip>
+                                    )
+                                }
+
+
+                                {
+                                    (fullAccess || writeOnly) && (
+                                        <CustomButton
+                                            onClick={openDeleteModal}
+                                            label={t("forum.list.dp")}
+                                            icon={Trash2}
+                                            bgColor="bg-red-600"
+                                            hoverColor="rgba(0, 128, 255, 0.4)"
+                                            shadowColor="rgba(255, 0, 0, 0.4)"
+                                        />
+                                    )
+                                }
                                 {/*<button*/}
                                 {/*    onClick={restorePost}*/}
                                 {/*    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-green-600 shadow-red-400/40 cursor-pointer">*/}

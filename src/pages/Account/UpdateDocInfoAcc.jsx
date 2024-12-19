@@ -14,14 +14,15 @@ import isEqual from 'lodash.isequal';
 import ViewProofModal from "./ViewProofModal";
 import {SquareCheckBig, RotateCcw, AlarmClock} from "lucide-react"
 import CustomButton from "../../components/button/CustomButton";
-import {FaTrashRestoreAlt} from "react-icons/fa";
+import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import * as doctorService from "../../service/DoctorService";
+import {Tooltip} from "@mui/material";
 
 
 
 const UpdateDocInfoAcc = () => {
     const {id} = useParams();
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const navigate = useNavigate();
     const {t} = useTranslation();
     const [isVerify, setIsVerify] = useState(false);
@@ -37,7 +38,7 @@ const UpdateDocInfoAcc = () => {
         region: '',
     });
     const [account, setAccount] = useState(null);
-
+    const [read, setRead] = useState(false);
     const initialAccountRef = useRef(null);
     const [listModal, setListModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
@@ -75,13 +76,16 @@ const UpdateDocInfoAcc = () => {
                 console.log("Fetched account details:", result);
                 // console.log('proof', proof)
                 // console.log('proof', result.proof)
+                if(readOnly && !writeOnly && !fullAccess){
+                    setRead(true)
+                }
             }
         } catch (error) {
             console.log("Error fetching account details:", error);
             toast.error("Could not load account details.");
         }
     };
-    //
+
     // useEffect(() => {
     //     console.log('Updated proof:', proof);
     // }, [proof]);
@@ -258,14 +262,40 @@ const UpdateDocInfoAcc = () => {
                     {/*    {t("account.updateDocInfo.reset")}*/}
                     {/*</button>*/}
 
-                    <CustomButton
-                        onClick={resetPass}
-                        label={t("account.updateDocInfo.reset")}
-                        icon={RotateCcw}
-                        bgColor="bg-[rgba(0,_166,_169,_1)]"
-                        hoverColor="rgba(0, 166, 169, 1)"
-                        shadowColor="rgba(0, 166, 169, 1)"
-                    />
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                    <CustomButton
+                                        onClick={resetPass}
+                                        label={t("account.updateDocInfo.reset")}
+                                        icon={RotateCcw}
+                                        bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                        hoverColor="rgba(0, 166, 169, 1)"
+                                        shadowColor="rgba(0, 166, 169, 1)"
+                                        disabled={readOnly && !fullAccess && !writeOnly}
+                                        cursor={true}
+                                    />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={resetPass}
+                                label={t("account.updateDocInfo.reset")}
+                                icon={RotateCcw}
+                                bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                hoverColor="rgba(0, 166, 169, 1)"
+                                shadowColor="rgba(0, 166, 169, 1)"
+                            />
+                        )
+                    }
+
+
 
                     {
                         isVerify && <CustomButton
@@ -308,7 +338,7 @@ const UpdateDocInfoAcc = () => {
                                 alt="Upload Area"
                             />
                         </label>
-                        <input onChange={handleImageChange} type="file" id="doc-img" hidden/>
+                        <input onChange={handleImageChange} type="file" id="doc-img" hidden disabled={read}/>
                         <div className="text-center">
                             <p className="text-sm text-black font-semibold">{t("account.update.upload")}
                             </p>
@@ -345,9 +375,11 @@ const UpdateDocInfoAcc = () => {
                                 <input
                                     type="file"
                                     accept="application/pdf"
+                                    disabled={read}
                                     className="border rounded-lg px-4 py-3 text-gray-700"
                                     onChange={(e) => setProof(e.target.files[0])}
                                 />
+
                             </div>
                         )}
 
@@ -385,9 +417,11 @@ const UpdateDocInfoAcc = () => {
                             value={account?.username}
                             className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                             type="text"
-                            placeholder="Customer Name"
+                            placeholder="Dr.Bevis"
                             required
                             autoFocus
+                            disabled={read}
+
                         />
                     </div>
 
@@ -418,8 +452,10 @@ const UpdateDocInfoAcc = () => {
                             value={account?.phone}
                             className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                             type="text"
-                            placeholder="Customer Phone Number"
+                            placeholder="123456789"
                             required
+                            disabled={read}
+
                         />
                     </div>
 
@@ -454,6 +490,8 @@ const UpdateDocInfoAcc = () => {
                             className="border rounded-lg px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                             type="date"
                             required
+                            disabled={read}
+
                         />
                     </div>
 
@@ -490,6 +528,8 @@ const UpdateDocInfoAcc = () => {
                             type="text"
                             placeholder="Customer Address"
                             required={account?.address === "none"}
+                            disabled={read}
+
                         />
                     </div>
 
@@ -520,6 +560,7 @@ const UpdateDocInfoAcc = () => {
                             onChange={(e) => setDocData((prev) => ({...prev, speciality: e.target.value}))}
                             value={docData.speciality}
                             required
+                            disabled={read}
                         >
                             <option value="" disabled>{t("account.update.spec")}</option>
                             {specialities?.map((item, index) => (
@@ -556,6 +597,8 @@ const UpdateDocInfoAcc = () => {
                             onChange={(e) => setDocData((prev) => ({...prev, region: e.target.value}))}
                             value={docData.region}
                             required
+                            disabled={read}
+
                         >
                             <option value="" disabled> {t("account.updateDocInfo.select")}</option>
                             {provinces?.map((item, index) => (
@@ -593,6 +636,7 @@ const UpdateDocInfoAcc = () => {
                             type="text"
                             placeholder="Customer Email"
                             disabled
+
                         />
                     </div>
 
@@ -657,6 +701,8 @@ const UpdateDocInfoAcc = () => {
                             onChange={(e) => setDocData((prev) => ({...prev, bio: e.target.value}))}
                             value={docData.bio}
                             required
+                            disabled={read}
+
                         />
                     </div>
                 </div>
@@ -682,12 +728,13 @@ const UpdateDocInfoAcc = () => {
                         !isFormValid ? (
                             <motion.button
                                 type="submit"
-                                className="bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition"
+                                className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition`}
                                 whileHover={{scale: 1.05}}
                                 whileTap={{scale: 0.95}}
                                 initial={{opacity: 0, y: -10}}
                                 animate={{opacity: 1, y: 0}}
                                 transition={{duration: 0.3}}
+                                disabled={read}
                             >
                                 {t("account.updateDocInfo.save")}
                             </motion.button>

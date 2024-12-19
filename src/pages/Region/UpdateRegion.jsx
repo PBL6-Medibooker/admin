@@ -15,6 +15,7 @@ const UpdateRegion = ({open, onClose, id}) => {
     const {t} = useTranslation();
     const [provinces, setProvinces] = useState([]);
 
+
     const getAllProvinces = async () => {
         try {
             const result = await provincesService.apiGetPublicProvinces()
@@ -26,6 +27,7 @@ const UpdateRegion = ({open, onClose, id}) => {
 
     const getRegionDetails = async () => {
         const result = await regionService.getRegionDetails(id, aToken);
+
         if (result?.success) {
             setName(result.data.name);
         } else {

@@ -8,6 +8,7 @@ import * as appointmentService from "../service/AppointmentService";
 import * as adminService from "../service/AdminService";
 import {findAll} from "../service/AdminService";
 import * as regionService from "../service/RegionService";
+import Swal from "sweetalert2";
 
 
 export const AdminContext = createContext();
@@ -16,14 +17,14 @@ const AdminContextProvider = (props) => {
     const [aToken, setAToken] = useState(localStorage.getItem('aToken')
         ? localStorage.getItem('aToken') : '');
 
-    const [read, setReadOnly] = useState(false);
-    const [write, setWriteOnly] = useState(false);
+    const [readOnly, setReadOnly] = useState(false);
+    const [writeOnly, setWriteOnly] = useState(false);
     const [fullAccess, setFullAccess] = useState(false);
 
     const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
     // const backendUrl = import.meta.env?.BACKEND_URL || 'https://backend-nc0v.onrender.com';
 
-    const { data: verifiedDoctor = [], isLoading, isError, refetch: rVerifyDoctorData } = useQuery({
+    const {data: verifiedDoctor = [], isLoading, refetch: rVerifyDoctorData} = useQuery({
         queryKey: ["verify"],
         queryFn: async () => {
             try {
@@ -41,9 +42,9 @@ const AdminContextProvider = (props) => {
         aToken && localStorage.removeItem("aToken");
     };
 
-    const {data: specialities, refetch: refetchSpec  } = useQuery({
+    const {data: specialities, refetch: refetchSpec} = useQuery({
         queryKey: ['specList'],
-        queryFn: async () =>{
+        queryFn: async () => {
             try {
                 return await specialityService.findAll(false, aToken)
             } catch (e) {
@@ -53,7 +54,7 @@ const AdminContextProvider = (props) => {
         }
     })
 
-    const { data: regionList = [], refetch: refetchRegionList } = useQuery({
+    const {data: regionList = [], refetch: refetchRegionList} = useQuery({
         queryKey: ["access"],
         queryFn: async () => {
             try {
@@ -67,7 +68,7 @@ const AdminContextProvider = (props) => {
         enabled: !!aToken,
     })
 
-    const { data: appointmentList,  isLoading:aListLoading, isError:aListError, refetch: refetchAList } = useQuery({
+    const {data: appointmentList, isLoading: aListLoading, isError: aListError, refetch: refetchAList} = useQuery({
         queryKey: ["aList"],
         queryFn: async () => {
             try {
@@ -82,11 +83,12 @@ const AdminContextProvider = (props) => {
     });
 
 
-    const { data: adminList = [], refetch: refetchAdminList } = useQuery({
+    const {data: adminList = [], refetch: refetchAdminList} = useQuery({
         queryKey: ["access"],
         queryFn: async () => {
             try {
                 const response = await adminService.findAll(aToken);
+
                 return response || [];
             } catch (error) {
                 console.error("Failed to fetch appointments:", error);
@@ -96,11 +98,61 @@ const AdminContextProvider = (props) => {
         enabled: !!aToken,
     })
 
+    const {data: adminData = {}, isLoading: isAdminDataLoading, isError, refetch: refectAdminData} = useQuery({
+        queryKey: ['admin'],
+        queryFn: async () => {
+            try {
+                const result = await accountService.getAdminProfile(aToken);
+                if (result.success) {
+                    console.log(result)
+                    return result.adminData;
+                }
+            } catch (error) {
+                if (error.response.data.error === "Request not authorized") {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Session expired",
+                        text: "You will be logged out.",
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        logout()
+                    });
+                } else {
+                    console.log("Error fetching doctor data:", error);
+                }
+            }
+        },
+        onError: (error) => {
+            console.error('Error:', error.message);
+        },
+        enabled: !!aToken,
+
+    });
+
+
+    const {data: adminDetails = {}, refetch: refetchAdminDetails} = useQuery({
+        queryKey: ["adminDetails"],
+        queryFn: async () => {
+            try {
+                const response = await adminService.getAccessDetail(adminData?._id);
+                setReadOnly(response.read_access)
+                setWriteOnly(response.write_access)
+                setFullAccess(response.admin_write_access)
+                return response || [];
+            } catch (error) {
+                console.error("Failed to fetch appointments:", error);
+                throw new Error("Failed to load appointments");
+            }
+        },
+        enabled: !!adminData?._id,
+    })
+
 
     const value = {
-        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout,rVerifyDoctorData, specialities,
+        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout, rVerifyDoctorData, specialities,
         refetchSpec, appointmentList, refetchAList, aListLoading, aListError, adminList, refetchAdminList,
-        regionList, refetchRegionList
+        regionList, refetchRegionList, adminData, refectAdminData, adminDetails, refetchAdminDetails, readOnly, writeOnly, fullAccess
     }
 
     return (

@@ -8,15 +8,16 @@ import {toast} from "react-toastify";
 import {AppContext} from "../../context/AppContext";
 import {assets} from "../../assets/assets";
 import Modal from "../../components/Modal/Modal";
-import {FaRegTrashAlt} from "react-icons/fa";
+import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {ArrowBigLeftDash, CalendarDays} from "lucide-react";
+import {Tooltip} from "@mui/material";
 
 const AppointmentList = () => {
     const navigate = useNavigate();
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {calculateAge, separateDayAndDate, dateFormat} = useContext(AppContext);
     const [appointments, setAppointments] = useState([]);
     const [open, setOpen] = useState(false)
@@ -158,10 +159,18 @@ const AppointmentList = () => {
                         <div className='ml-10'>
                             {isCompleted ? (
                                 <p className="text-green-500 text-xs font-medium">{t("appointment.list.completed")}</p>
-                            ) : appointment.is_deleted ?
-                                <p className="text-green-500 text-xs font-medium">{t("appointment.list.cancelb")}</p>
-                                :(
+                            ) :  (readOnly && !writeOnly && !fullAccess) ?
+                                (
                                     <img
+                                        alt="pic"
+                                        src={assets.cancel_icon}
+                                        className="w-10 cursor-not-allowed"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                        }}
+                                    />
+                                ): (
+                                <img
                                         alt="pic"
                                         src={assets.cancel_icon}
                                     className="w-10 cursor-pointer"
@@ -215,9 +224,10 @@ const AppointmentList = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAllAppointment();
+            getAllAppointment()
+            refetchAdminDetails()
         }
-    }, [aToken]);
+    }, [aToken, adminDetails]);
 
     return (
         <motion.div
@@ -235,15 +245,42 @@ const AppointmentList = () => {
                     animate={{y: 0}}
                     transition={{duration: 0.5}}
                 >
-                    <p className="text-lg lg:text-2xl text-primary font-medium">{t("appointment.list.title")}</p>
-                    <CustomButton
-                        onClick={() => navigate("/booking-appointment")}
-                        label={t("appointment.list.booking")}
-                        icon={CalendarDays}
-                        bgColor="bg-[rgba(0,_166,_169,_1)]"
-                        hoverColor="rgba(0, 166, 169, 1)"
-                        shadowColor="rgba(0, 166, 169, 1)"
-                    />
+                    <p className="text-lg lg:text-2xl text-primary font-bold">{t("appointment.list.title")}</p>
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+
+                               <span>
+                                     <CustomButton
+                                         onClick={() => navigate("/booking-appointment")}
+                                         label={t("appointment.list.booking")}
+                                         icon={CalendarDays}
+                                         bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                         hoverColor="rgba(0, 166, 169, 1)"
+                                         shadowColor="rgba(0, 166, 169, 1)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={() => navigate("/booking-appointment")}
+                                label={t("appointment.list.booking")}
+                                icon={CalendarDays}
+                                bgColor="bg-[rgba(0,_166,_169,_1)]"
+                                hoverColor="rgba(0, 166, 169, 1)"
+                                shadowColor="rgba(0, 166, 169, 1)"
+                            />
+                        )
+                    }
                 </motion.div>
 
                 <div className="w-full max-w-6xl m-5">
@@ -260,29 +297,7 @@ const AppointmentList = () => {
                     </motion.div>
                 </div>
             </main>
-            {/*<Modal open={open} onClose={() => setOpen(false)}>*/}
-            {/*    <div className="text-center w-72">*/}
-            {/*        <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>*/}
-            {/*        <div className="mx-auto my-4 w-60">*/}
-            {/*            <h3 className="text-lg font-black text-gray-800">{t("appointment.list.confirmDelete")}</h3>*/}
-            {/*            <p className="text-sm text-gray-600">*/}
-            {/*                {t("appointment.list.pCD")}*/}
-            {/*            </p>*/}
-            {/*        </div>*/}
-            {/*        <div className="flex gap-4 mt-6">*/}
-            {/*            <button*/}
-            {/*                className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"*/}
-            {/*                onClick={cancelBooking}>{t("appointment.list.confirm")}*/}
-            {/*            </button>*/}
-            {/*            <button*/}
-            {/*                className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"*/}
-            {/*                onClick={() => setOpen(false)}*/}
-            {/*            >*/}
-            {/*                {t("appointment.list.cancel")}*/}
-            {/*            </button>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</Modal>*/}
+
 
 
             <AnimatePresence>

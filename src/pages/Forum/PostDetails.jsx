@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import * as forumService from "../../service/ForumService";
@@ -15,7 +15,7 @@ import Error from "../../components/Error";
 
 
 const PostDetails = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {dToken} = useContext(DoctorContext);
     const {id} = useParams();
     const navigate = useNavigate();
@@ -76,6 +76,12 @@ const PostDetails = () => {
         }
     };
 
+    useEffect(() => {
+        if (aToken) {
+            refetchAdminDetails()
+        }
+    }, [aToken, adminDetails]);
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
@@ -92,12 +98,6 @@ const PostDetails = () => {
         )
     }
 
-
-    // useEffect(() => {
-    //     if (aToken) {
-    //         getPostDetails()
-    //     }
-    // }, [aToken]);
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>
@@ -150,6 +150,7 @@ const PostDetails = () => {
                                         required
                                         autoFocus
                                         whileFocus={{scale: 1.02}}
+                                        disabled={readOnly && !writeOnly && !fullAccess && aToken}
                                     />
                                 </div>
 
@@ -164,6 +165,8 @@ const PostDetails = () => {
                                         required
                                         rows={6}
                                         whileFocus={{scale: 1.02}}
+                                        disabled={readOnly && !writeOnly && !fullAccess && aToken}
+
                                     />
                                 </div>
 
@@ -174,7 +177,7 @@ const PostDetails = () => {
                         <div className="flex justify-end gap-8 mt-8">
                             <motion.button
                                 onClick={() => openPostBySpecialityList(postData.speciality_id.name)}
-                                className="bg-gray-300 px-8 py-2 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
+                                className="bg-gray-300 px-8 py-2 text-sm text-gray-700 rounded-full hover:bg-gray-400 hover:text-white transition-all"
                                 whileHover={{scale: 1.1}}
                             >
                                 {t("forum.update.back")}
@@ -182,8 +185,10 @@ const PostDetails = () => {
 
                             <motion.button
                                 type="submit"
-                                className="bg-primary px-8 py-2 text-sm text-white rounded-full hover:bg-primary-dark transition-all"
+                                className={`${(readOnly && !writeOnly && !fullAccess && aToken) ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary px-8 py-2 text-sm text-white rounded-full hover:bg-primary-dark transition-all`}
                                 whileHover={{scale: 1.1}}
+                                disabled={readOnly && !writeOnly && !fullAccess && aToken}
+
                             >
                                 {t("forum.update.save")}
                             </motion.button>
@@ -196,6 +201,7 @@ const PostDetails = () => {
                             whileHover={{color: "#00A6A9", textDecoration: "underline", scale: 1.02}}
                             whileTap={{scale: 0.95}}
                             transition={{duration: 0.3}}
+
                         >
                             <MessageCircle className="-scale-x-100"/>
                             {t("forum.list.cs")}

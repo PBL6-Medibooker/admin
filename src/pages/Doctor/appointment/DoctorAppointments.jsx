@@ -14,6 +14,8 @@ import {useTranslation} from "react-i18next";
 import {useQuery} from "@tanstack/react-query";
 import Error from "../../../components/Error";
 import Loader from "../../../components/Loader";
+import {CalendarHeart, AlarmClock} from 'lucide-react'
+import ActiveHourListModal from "../../Account/ActiveHourListModal";
 
 
 const DoctorAppointments = () => {
@@ -24,6 +26,7 @@ const DoctorAppointments = () => {
     const [open, setOpen] = useState(false)
     const [id, setId] =useState('')
     const {t} = useTranslation()
+    const [listModal, setListModal] = useState(false)
 
 
     const cancelBooking = async () =>{
@@ -206,14 +209,25 @@ const DoctorAppointments = () => {
                         transition={{duration: 0.5}}
                     >
                         <p className="mb-1 text-lg lg:text-2xl text-primary font-medium">{t("doctor.appointment.title")}</p>
-                        <motion.button
-                            onClick={() => navigate("/booking-appointment")}
-                            className="bg-primary text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
-                            whileHover={{scale: 1.05}}
-                            whileTap={{scale: 0.95}}
-                        >
-                            {t("doctor.appointment.create")}
-                        </motion.button>
+                        <div className='flex items-center justify-center gap-3'>
+                            <motion.button
+                                onClick={() => navigate("/booking-appointment")}
+                                className="flex items-center gap-2 bg-primary text-white rounded-full px-4 py-3 hover:bg-primary-dark transition-colors"
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
+                            >
+                                <CalendarHeart/> {t("doctor.appointment.create")}
+                            </motion.button>
+
+                            <motion.button
+                                onClick={() => setListModal(true)}
+                                className="flex items-center gap-2 bg-amber-400 text-gray-700 rounded-full px-4 py-3 hover:bg-primary-dark transition-colors"
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
+                            >
+                                <AlarmClock/> {t("account.updateDocInfo.active")}
+                            </motion.button>
+                        </div>
                     </motion.div>
 
                     <div className="w-full max-w-6xl m-5">
@@ -254,8 +268,9 @@ const DoctorAppointments = () => {
                     </div>
                 </Modal>
 
-
             </motion.div>
+            <ActiveHourListModal open={listModal} onClose={() => setListModal(false)} id={docId}/>
+
         </div>
     );
 };

@@ -28,10 +28,11 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {MapPinPlus} from "lucide-react"
+import {Tooltip} from "@mui/material";
 
 
 const RegionList = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken,  refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
     const navigate = useNavigate();
 
@@ -45,33 +46,6 @@ const RegionList = () => {
     const [data, setData] = useState([]);
     const {t} = useTranslation();
 
-    // const members = useQuery({
-    //     queryKey: [workSpace],
-    //     queryFn: async () => {
-    //         if (!workSpace.data?.members) return [];
-    //         const members = await Promise.all(workSpace.data.members.map(async (member) => {
-    //             return (await getUserData(member))
-    //         }))
-    //         members.push({
-    //             id: workSpace.data.owner.id,
-    //             name: workSpace.data.owner.name,
-    //             imageUri: workSpace.data.owner.imageUri,
-    //             email: workSpace.data.owner.email,
-    //         })
-    //         return members
-    //     }
-    // })
-    //
-    //
-    // workSpace.data && members.data && (
-    // or members.isLoading
-    //     <ModalEditCard
-    //         open={openModal}
-    //         onClose={() => setOpenModal(false)}
-    //         card={card}
-    //         members={members}
-    //     />
-    // )
 
     // const { data, isLoading, isError, refetch } = useQuery({
     //     queryKey: ['regions', hiddenState],
@@ -85,7 +59,6 @@ const RegionList = () => {
     //     }
     // });
 
-    // const queryClient = useQueryClient();
 
     // const deleteRegionsMutation = useMutation({
     //     mutationFn: (ids) => regionService.deleteSoftRegion(ids, aToken),
@@ -111,7 +84,7 @@ const RegionList = () => {
     };
 
     const openUpdateModal = (id) => {
-        setUpdateModal(true);
+        !(readOnly && !writeOnly && !fullAccess) && setUpdateModal(true);
         setRegionId(id);
     };
 
@@ -199,9 +172,11 @@ const RegionList = () => {
 
     useEffect(() => {
         if (aToken) {
-            getRegionList();
+            refetchAdminDetails()
+            getRegionList()
+
         }
-    }, [aToken]);
+    }, [aToken, adminDetails]);
 
     return (
         <motion.div className='mb-5  ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll'
@@ -215,23 +190,71 @@ const RegionList = () => {
                 <h1 className="text-xl text-primary lg:text-2xl font-semibold">{t("region.list.title")}</h1>
                 <div className="flex gap-4 mt-4 mr-4">
 
-                    <CustomButton
-                        onClick={() => setCreateModal(true)}
-                        label={''}
-                        icon={MapPinPlus}
-                        bgColor="bg-green-600"
-                        hoverColor="rgba(22, 163, 74, 0.4)"
-                        shadowColor="rgba(22, 163, 74, 0.4)"
-                    />
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                        <CustomButton
+                                            onClick={() => setCreateModal(true)}
+                                            label={''}
+                                            icon={MapPinPlus}
+                                            bgColor="bg-green-600"
+                                            hoverColor="rgba(22, 163, 74, 0.4)"
+                                            shadowColor="rgba(22, 163, 74, 0.4)"
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            cursor={true}
+                                        />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
 
-                    <CustomButton
-                        onClick={openDeleteModal}
-                        label={t("region.list.delete")}
-                        icon={FaTrashRestoreAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={() => setCreateModal(true)}
+                                label={''}
+                                icon={MapPinPlus}
+                                bgColor="bg-green-600"
+                                hoverColor="rgba(22, 163, 74, 0.4)"
+                                shadowColor="rgba(22, 163, 74, 0.4)"
+                            />
+                        )
+                    }
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                       <CustomButton
+                                           onClick={openDeleteModal}
+                                           label={t("region.list.delete")}
+                                           icon={FaTrashRestoreAlt}
+                                           bgColor="bg-red-600"
+                                           hoverColor="rgba(0, 128, 255, 0.4)"
+                                           shadowColor="rgba(255, 0, 0, 0.4)"
+                                           disabled={readOnly && !fullAccess && !writeOnly}
+                                           cursor={true}
+                                       />
+
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={openDeleteModal}
+                                label={t("region.list.delete")}
+                                icon={FaTrashRestoreAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(0, 128, 255, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+
+                        )
+                    }
 
                     <CustomButton
                         onClick={() => navigate('/restore-region')}

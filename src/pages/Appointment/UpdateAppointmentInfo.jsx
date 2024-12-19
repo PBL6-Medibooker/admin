@@ -10,14 +10,15 @@ import UpdateInsuranceModal from "./UpdateInsuranceModal";
 import DetailInsuranceModal from "./DetailInsuranceModal";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
-
+import CustomButton from "../../components/button/CustomButton";
+import {Shield} from "lucide-react";
 
 const UpdateAppointmentInfo = () => {
 
     const navigate = useNavigate();
     const {id} = useParams();
 
-    const {aToken} = useContext(AdminContext);
+    const {aToken,refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const [doctorId, setDoctorId] = useState('')
 
     const [users, setUsers] = useState([]);
@@ -192,10 +193,11 @@ const UpdateAppointmentInfo = () => {
 
     useEffect(() => {
         if (aToken) {
-            getDoctorAccountList();
-            getAccountList();
+            getDoctorAccountList()
+            getAccountList()
+            refetchAdminDetails()
         }
-    }, [aToken]);
+    }, [aToken, adminDetails]);
 
 
     useEffect(() => {
@@ -220,39 +222,39 @@ const UpdateAppointmentInfo = () => {
                     transition={{duration: 0.5}}
                     className="flex justify-between items-center mb-6"
                 >
-                    <p className="text-xl text-primary lg:text-2xl">
+                    <p className="text-xl font-bold text-primary lg:text-2xl">
                         {t("appointment.update.title")}
                         {users?.find(user => user._id === appointmentData.user_id)?.username || t("appointment.update.nodata")}
 
                     </p>
 
+
                     {/*<motion.button*/}
                     {/*    type="button"*/}
-                    {/*    onClick={() => setUpdateModal(true)}*/}
+                    {/*    onClick={() => setDetailModal(true)}*/}
                     {/*    className="bg-amber-400 text-gray-700 px-6 py-2 rounded-full shadow-md transition mr-4"*/}
                     {/*    whileHover={{scale: 1.05}}*/}
                     {/*    whileTap={{scale: 0.95}}*/}
                     {/*    initial={{opacity: 0}}*/}
                     {/*    animate={{opacity: 1}}*/}
                     {/*    transition={{delay: 0.3, duration: 0.5}}*/}
+
                     {/*>*/}
-                    {/*    Insurance Information*/}
+                    {/*    {t("appointment.update.insurance")}*/}
                     {/*</motion.button>*/}
 
-                    <motion.button
-                        type="button"
-                        onClick={() => setDetailModal(true)}
-                        className="bg-amber-400 text-gray-700 px-6 py-2 rounded-full shadow-md transition mr-4"
-                        whileHover={{scale: 1.05}}
-                        whileTap={{scale: 0.95}}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        transition={{delay: 0.3, duration: 0.5}}
-                        disabled={isCompeletd}
-                    >
-                        {t("appointment.update.insurance")}
-                    </motion.button>
+                   <div className='mr-8'>
+                       <CustomButton
+                           onClick={() => setDetailModal(true)}
+                           label= {t("appointment.update.insurance")}
+                           icon={Shield}
+                           bgColor="bg-amber-400"
+                           hoverColor="rgba(251, 191, 36, 1)"
+                           shadowColor="rgba(251, 191, 36, 1)"
+                           textColor='text-gray-700'
+                       />
 
+                   </div>
 
                 </motion.div>
 
@@ -309,7 +311,7 @@ const UpdateAppointmentInfo = () => {
 
                                             const isSelected = appointmentData.appointment_time_start === time.start_time && appointmentData.appointment_time_end === time.end_time;
 
-                                            const isDisabled = isFullyBooked || isSelected;
+                                            const isDisabled = isFullyBooked || isSelected || isCompeletd || (readOnly && !writeOnly && !fullAccess) ;
 
                                             return (
                                                 <button
@@ -327,7 +329,7 @@ const UpdateAppointmentInfo = () => {
                                                             ? 'bg-gray-400 text-white cursor-not-allowed'
                                                             : 'bg-white text-black border rounded'
                                                     } px-6 py-2 rounded-lg transition-all hover:bg-primary focus:outline-none focus:bg-primary focus:text-white focus:ring-2 hover:text-white focus:border-transparent`}
-                                                    disabled={isDisabled || isCompeletd}
+                                                    disabled={isDisabled}
                                                 >
                                                     {`${time.start_time} - ${time.end_time}`}
                                                 </button>
@@ -359,7 +361,7 @@ const UpdateAppointmentInfo = () => {
                                 placeholder="Describe your health issue here..."
                                 required
                                 aria-required="true"
-                                disabled={isCompeletd}
+                                disabled={isCompeletd || (readOnly && !writeOnly && !fullAccess)}
                             />
                         </motion.div>
 
@@ -379,12 +381,13 @@ const UpdateAppointmentInfo = () => {
 
                             <motion.button
                                 onClick={updateAppointmentInfo}
-                                className="bg-primary text-white px-6 py-2 rounded-full shadow-md transition"
+                                className={`${isCompeletd || (readOnly && !writeOnly && !fullAccess) ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white px-6 py-2 rounded-full shadow-md transition`}
                                 whileHover={{scale: 1.05}} // Scale up on hover
                                 whileTap={{scale: 0.95}} // Scale down on click
                                 initial={{opacity: 0}}
                                 animate={{opacity: 1}}
                                 transition={{delay: 0.3, duration: 0.5}}
+                                disabled={isCompeletd || (readOnly && !writeOnly && !fullAccess)}
                             >
                                 {t("appointment.update.save")}
                             </motion.button>
@@ -407,6 +410,7 @@ const UpdateAppointmentInfo = () => {
                     id={id}
                     name={name}
                     onClose={onLoad}
+                    isCompleted={isCompeletd}
 
                 />
 

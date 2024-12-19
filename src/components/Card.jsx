@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {CircleEllipsis} from 'lucide-react'
 import {motion, AnimatePresence} from "framer-motion";
@@ -14,7 +14,7 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [open, setOpen] = useState(false)
     const {t} = useTranslation()
-    const {aToken} = useContext(AdminContext)
+    const {aToken,refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext)
     const [idP, setIdP] = useState('')
     const navigate = useNavigate()
 
@@ -56,6 +56,10 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
             alert("Error deleting posts: " + error.message);
         }
     };
+
+    useEffect(() => {
+        refetchAdminDetails()
+    }, [adminDetails]);
     return (
         <StyledWrapper>
             <div className="task" draggable="true">
@@ -77,9 +81,14 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                                     <button className='hover:text-sky-500' onClick={handleEdit}>
                                         {t("forum.list.edit")}
                                     </button>
-                                    <button className='hover:text-red-600' onClick={handleDelete}>
-                                        {t("forum.list.confirm")}
-                                    </button>
+
+                                        <button className={`${(readOnly && !writeOnly && !fullAccess && aToken) ? 'cursor-not-allowed' : 'cursor-pointer'} hover:text-red-600`}
+                                                onClick={handleDelete}
+                                                disabled={readOnly && !writeOnly && !fullAccess && aToken}
+                                        >
+                                            {t("forum.list.confirm")}
+                                        </button>
+
                                 </motion.div>
                             )}
                         </AnimatePresence>

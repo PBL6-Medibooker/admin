@@ -16,7 +16,7 @@ import ButtonDelete from "../../components/button/ButtonDelete";
 
 const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
     const {t} = useTranslation()
-    const {aToken} = useContext(AdminContext)
+    const {aToken,refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext)
     const [openD, setOpenD] = useState(false)
     const [cId, setCId] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
@@ -70,6 +70,7 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
 
                             <button
                                 onClick={onClose}
+
                                 className="p-1 rounded-full text-red-500 bg-white hover:text-white hover:bg-red-500 transition duration-150"
                             >
                                 <X size={20}/>
@@ -131,10 +132,15 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                 {/*    <Trash2*/}
                                                 {/*        className="text-stone-500 transition-colors duration-300 hover:text-red-500"/>*/}
                                                 {/*</motion.button>*/}
-                                                <ButtonDelete
-                                                    onClick={() => openDeleteModal(item._id)}
-                                                    text={t("forum.list.delete")}
-                                                />
+
+
+                                                {
+                                                    !(readOnly && !writeOnly && !fullAccess && aToken) &&
+                                                    <ButtonDelete
+                                                        onClick={() => openDeleteModal(item._id)}
+                                                        text={t("forum.list.delete")}
+                                                    />
+                                                }
                                             </div>
 
                                         </motion.div>

@@ -19,9 +19,9 @@ import {useLocation} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import Loader from "../../components/Loader";
 import SearchInput from "../../components/SearchInput";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import CustomButton from "../../components/button/CustomButton";
-
+import {Tooltip} from "@mui/material";
 
 
 const RestoreAccount = () => {
@@ -36,7 +36,7 @@ const RestoreAccount = () => {
     const location = useLocation();
     const {isVerify} = location.state || ""
 
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
 
     const columns = [
 
@@ -210,10 +210,10 @@ const RestoreAccount = () => {
     // }, [aToken, hiddenState]);
 
     useEffect(() => {
-        if(aToken){
+        if (aToken) {
             refetch()
         }
-    }, [aToken]);
+    }, [aToken, adminDetails]);
 
     if (isLoading) {
         return (
@@ -229,23 +229,76 @@ const RestoreAccount = () => {
                 <h1 className='text-lg lg:text-2xl text-primary font-medium'>{isVerify ? t("account.dvd.title") : t("account.dvd.utitle")}</h1>
                 <div className='flex gap-4 mr-4'>
 
-                    <CustomButton
-                        onClick={restoreDocAccount}
-                        label={t("account.dvd.putBack")}
-                        icon={FaTrashRestoreAlt}
-                        bgColor="bg-green-600"
-                        hoverColor="rgba(22, 163, 74, 0.4)"
-                        shadowColor="rgba(22, 163, 74, 0.4)"
-                    />
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
 
-                    <CustomButton
-                        onClick={() => setOpen(true)}
-                        label={t("account.dvd.dp")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(255, 0, 0, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                               <span>
+                                     <CustomButton
+                                         onClick={restoreDocAccount}
+                                         label={t("account.dvd.putBack")}
+                                         icon={FaTrashRestoreAlt}
+                                         bgColor="bg-green-600"
+                                         hoverColor="rgba(22, 163, 74, 0.4)"
+                                         shadowColor="rgba(22, 163, 74, 0.4)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <CustomButton
+                                onClick={restoreDocAccount}
+                                label={t("account.dvd.putBack")}
+                                icon={FaTrashRestoreAlt}
+                                bgColor="bg-green-600"
+                                hoverColor="rgba(22, 163, 74, 0.4)"
+                                shadowColor="rgba(22, 163, 74, 0.4)"
+                            />
+                        )
+                    }
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                        <CustomButton
+                                            onClick={() => setOpen(true)}
+                                            label={t("account.dvd.dp")}
+                                            icon={FaRegTrashAlt}
+                                            bgColor="bg-red-600"
+                                            hoverColor="rgba(255, 0, 0, 0.4)"
+                                            shadowColor="rgba(255, 0, 0, 0.4)"
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            cursor={true}
+                                        />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+
+                            <CustomButton
+                                onClick={() => setOpen(true)}
+                                label={t("account.dvd.dp")}
+                                icon={FaRegTrashAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(255, 0, 0, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+
+
+                        )
+                    }
 
 
                 </div>
@@ -305,7 +358,6 @@ const RestoreAccount = () => {
                         </motion.div>
                     </motion.div>
                 </Modal>
-
 
 
             </div>

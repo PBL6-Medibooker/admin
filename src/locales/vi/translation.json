@@ -1,5 +1,8 @@
 {
   "common": {
+    "access": {
+      "permission": "Không đủ thẩm quyền"
+    },
     "button": {
       "search": "Tìm kiếm",
       "cancel": "Hủy",
@@ -281,7 +284,8 @@
     "dashboard": {
       "total": "Thành Phố",
       "ctitle": "Số lượng bác sĩ mỗi vùng ",
-      "doctor": "bác sĩ"
+      "doctor": "bác sĩ",
+      "name": "Thành phố"
     },
     "list": {
       "region": "Thành Phố",

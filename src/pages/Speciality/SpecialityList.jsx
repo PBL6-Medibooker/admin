@@ -16,11 +16,23 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {useQuery} from "@tanstack/react-query";
 import {assets} from "../../assets/assets";
-import {ArchiveRestore} from "lucide-react"
+import {ArchiveRestore, Plus} from "lucide-react"
+import * as adminService from "../../service/AdminService";
+import Error from "../../components/Error";
+import {Tooltip} from '@mui/material';
 
 
 const SpecialityList = () => {
-    const {aToken} = useContext(AdminContext);
+    const {
+        aToken,
+        adminData,
+        refectAdminData,
+        refetchAdminDetails,
+        adminDetails,
+        readOnly,
+        writeOnly,
+        fullAccess
+    } = useContext(AdminContext);
     const navigate = useNavigate();
     const [specialities, setSpecialities] = useState([]);
     const [hiddenState, setHiddenState] = useState('true');
@@ -221,13 +233,26 @@ const SpecialityList = () => {
         }
     }
 
+    const hoverSettings = (readOnly && !fullAccess && !writeOnly)
+        ? {}
+        : {
+            whileHover: {
+                scale: 1.1,
+                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+            },
+            whileTap: {scale: 0.95},
+            transition: {type: "spring", stiffness: 300},
+        };
+
 
     useEffect(() => {
         if (aToken) {
+            refectAdminData()
             findAllSpecialities()
+            refetchAdminDetails()
         }
 
-    }, [isDeleted, aToken, hiddenState]);
+    }, [isDeleted, aToken, hiddenState, adminDetails, adminData, readOnly]);
 
 
     return (
@@ -240,65 +265,147 @@ const SpecialityList = () => {
                     {isDeleted ? (
                         <div className="flex gap-3 mr-6">
 
-                            <motion.button
-                                onClick={restoreSpeciality}
-                                className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md"
-                                whileHover={{
-                                    scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
-                                }}
-                                whileTap={{scale: 0.95}}
-                                transition={{type: "spring", stiffness: 300}}
-                            >
-                                <ArchiveRestore/> {t("account.restore.putBack")}
-                            </motion.button>
+                            {
+                                (readOnly && !writeOnly && !fullAccess) && (
+                                    <Tooltip title={t("common.access.permission")} arrow>
+                                        <motion.button
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            onClick={restoreSpeciality}
+                                            className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md cursor-not-allowed"
+                                            {...hoverSettings}
+                                        >
+                                            <ArchiveRestore/> {t("account.restore.putBack")}
+                                        </motion.button>
+                                    </Tooltip>
+                                )
+                            }
 
-                            <motion.button
-                                onClick={openDeleteModal}
-                                className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
-                                whileHover={{
-                                    scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
-                                }}
-                                whileTap={{scale: 0.95}}
-                                transition={{type: "spring", stiffness: 300}}
-                            >
-                                <FaRegTrashAlt/>
-                                {t("account.restore.deleteP")}
-                            </motion.button>
+
+                            {
+                                (fullAccess || writeOnly) && (
+                                    <motion.button
+                                        onClick={restoreSpeciality}
+                                        className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md"
+                                        whileHover={{
+                                            scale: 1.1,
+                                            boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                        }}
+                                        whileTap={{scale: 0.95}}
+                                        transition={{type: "spring", stiffness: 300}}
+                                    >
+                                        <ArchiveRestore/> {t("account.restore.putBack")}
+                                    </motion.button>
+                                )
+                            }
+
+                            {
+                                (readOnly && !writeOnly && !fullAccess) && (
+                                    <Tooltip title={t("common.access.permission")} arrow>
+
+                                        <motion.button
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            onClick={openDeleteModal}
+                                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md cursor-not-allowed"
+                                            {...hoverSettings}
+                                        >
+                                            <FaRegTrashAlt/>
+                                            {t("account.restore.deleteP")}
+                                        </motion.button>
+                                    </Tooltip>
+                                )
+                            }
+
+
+                            {
+                                (fullAccess || writeOnly) && (
+                                    <motion.button
+                                        onClick={openDeleteModal}
+                                        className="flex  items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                        whileHover={{
+                                            scale: 1.1,
+                                            boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                        }}
+                                        whileTap={{scale: 0.95}}
+                                        transition={{type: "spring", stiffness: 300}}
+                                    >
+                                        <FaRegTrashAlt/>
+                                        {t("account.restore.deleteP")}
+                                    </motion.button>
+                                )
+                            }
+
+
                         </div>
                     ) : (
                         <div className="flex gap-4 mr-3">
 
-                            <motion.button
-                                onClick={() => navigate(`/add-speciality`)}
-                                className="bg-primary px-9 py-3 mt-4 text-white rounded-full flex justify-center items-center shadow-md"
-                                whileHover={{
-                                    scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
-                                }}
-                                whileTap={{scale: 0.95}}
-                                transition={{type: "spring", stiffness: 300}}
-                            >
-                                {t("speciality.list.add")}
-                            </motion.button>
+                            {
+                                (readOnly && !writeOnly && !fullAccess) && (
+                                    <Tooltip title={t("common.access.permission")} arrow>
+                                        <motion.button
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            onClick={() => navigate(`/add-speciality`)}
+                                            className="bg-primary px-9 py-3 mt-4 text-white rounded-full flex justify-center items-center shadow-md cursor-not-allowed"
+                                            {...hoverSettings}
+                                        >
+                                            <Plus/>
+                                            {t("speciality.list.add")}
+                                        </motion.button>
+                                    </Tooltip>
+                                )
+                            }
+                            {
+                                (fullAccess || writeOnly) && (
+                                    <motion.button
+                                        onClick={() => navigate(`/add-speciality`)}
+                                        className="bg-primary px-9 py-3 mt-4 text-white rounded-full flex justify-center items-center shadow-md"
+                                        {...hoverSettings}
+                                    >
+                                        <Plus/>
+                                        {t("speciality.list.add")}
+                                    </motion.button>
+                                )
+                            }
+
+                            {
+                                (readOnly && !writeOnly && !fullAccess) && (
+                                    <Tooltip title={t("common.access.permission")} arrow>
+                                        <motion.button
+                                            disabled={readOnly && !fullAccess && !writeOnly}
+                                            onClick={openDeleteModal}
+                                            className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md cursor-not-allowed"
+
+                                            {...hoverSettings}
+
+                                        >
+                                            <FaRegTrashAlt/>
+                                            {t("speciality.list.delete")}
+                                        </motion.button>
+                                    </Tooltip>
+                                )
+                            }
 
 
-                            <motion.button
-                                onClick={openDeleteModal}
-                                className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
-                                whileHover={{
-                                    scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
-                                }}
-                                whileTap={{scale: 0.95}}
-                                transition={{type: "spring", stiffness: 300}}
-                            >
-                                <FaRegTrashAlt/>
-                                {t("speciality.list.delete")}
-                            </motion.button>
+                            {
+                                (fullAccess || writeOnly) && (
+                                    <motion.button
+                                        onClick={openDeleteModal}
+                                        className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                        whileHover={{
+                                            scale: 1.1,
+                                            boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                        }}
+                                        whileTap={{scale: 0.95}}
+                                        transition={{type: "spring", stiffness: 300}}
+                                    >
+                                        <FaRegTrashAlt/>
+                                        {t("speciality.list.delete")}
+                                    </motion.button>
+                                )
+                            }
 
                             <motion.button
+
                                 onClick={() => navigate('/speciality', {state: {isDeleted: true}})}
                                 className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-gray-500 shadow-md"
                                 whileHover={{
@@ -433,6 +540,8 @@ const SpecialityList = () => {
                                                     alt="Speciality"
                                                     className="w-full h-full object-cover rounded-full transition-opacity duration-300 hover:opacity-90"
                                                 />
+
+
                                                 <button
                                                     onClick={() => navigate(`/get-speciality/${item._id}`)}
                                                     className="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-semibold px-4 py-2 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"
@@ -444,12 +553,16 @@ const SpecialityList = () => {
                                             <div className="flex gap-2 mt-6 text-center items-center">
                                                 <p className="text-xl font-semibold text-gray-800 mb-2">{item.name}</p>
 
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedSpecialityIds.includes(item._id)}
-                                                    onChange={() => toggleAccountSelection(item._id)}
-                                                    className="text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mb-1"
-                                                />
+
+                                                {
+                                                    (!readOnly || writeOnly || fullAccess) &&
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedSpecialityIds.includes(item._id)}
+                                                        onChange={() => toggleAccountSelection(item._id)}
+                                                        className="text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mb-1"
+                                                    />
+                                                }
 
 
                                             </div>

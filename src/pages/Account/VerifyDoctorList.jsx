@@ -4,7 +4,6 @@ import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import {
     createColumnHelper,
-    flexRender,
     getCoreRowModel,
     getFilteredRowModel, getPaginationRowModel,
     useReactTable
@@ -19,7 +18,8 @@ import Swal from "sweetalert2";
 import Loader from "../../components/Loader";
 import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
-import * as regionService from "../../service/RegionService";
+import {Tooltip} from "@mui/material";
+import {ArchiveRestore} from "lucide-react";
 
 const VerifyDoctorList = () => {
 
@@ -29,13 +29,11 @@ const VerifyDoctorList = () => {
     const [globalFilter, setGlobalFilter] = useState("");
     const [open, setOpen] = useState(false);
     const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec,
-     regionList, refetchRegionList} = useContext(AdminContext);
+     regionList, refetchRegionList, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {t} = useTranslation();
     const [specialityFilterValue, setSpecialityFilterValue] = useState("");
     const [regionFilterValue, setRegionFilterValue] = useState("");
     const [filteredDoctors, setFilteredDoctors] = useState([]);
-
-
 
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
@@ -170,14 +168,26 @@ const VerifyDoctorList = () => {
         }
     };
 
+    const hoverSettings = (readOnly && !fullAccess && !writeOnly)
+        ? {}
+        : {
+            whileHover: {
+                scale: 1.1,
+                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+            },
+            whileTap: {scale: 0.95},
+            transition: {type: "spring", stiffness: 300},
+        };
+
     useEffect(() => {
         if(aToken){
             getAccountList()
             rVerifyDoctorData()
             refetchSpec()
             refetchRegionList()
+            refetchAdminDetails()
         }
-    }, [aToken, verifiedDoctor]);
+    }, [aToken, verifiedDoctor, adminDetails]);
 
 
     if (isLoading) {
@@ -196,19 +206,43 @@ const VerifyDoctorList = () => {
                     {t("account.verified.title")}
                 </h1>
                 <div className="flex gap-3 mr-5">
-                    <motion.button
-                        onClick={openDeleteModal}
-                        className="flex items-center gap-2 px-8 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
-                        whileHover={{
-                            scale: 1.1,
-                            boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
-                        }}
-                        whileTap={{scale: 0.95}}
-                        transition={{type: "spring", stiffness: 300}}
-                    >
-                        <FaRegTrashAlt/>
-                        {t("account.verified.delete")}
-                    </motion.button>
+
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+
+                                <motion.button
+                                    onClick={openDeleteModal}
+                                    className="flex items-center gap-2 px-8 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md cursor-not-allowed"
+                                    {...hoverSettings}
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                >
+                                    <FaRegTrashAlt/>
+                                    {t("account.verified.delete")}
+                                </motion.button>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <motion.button
+                                onClick={openDeleteModal}
+                                className="flex items-center gap-2 px-8 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <FaRegTrashAlt/>
+                                {t("account.verified.delete")}
+                            </motion.button>
+                        )
+                    }
 
                     <motion.button
                         onClick={() => navigate('/restore-account', {state: {isVerify: true}})}
@@ -223,6 +257,8 @@ const VerifyDoctorList = () => {
                         <FaRegTrashAlt/>
                         {t("account.verified.restore")}
                     </motion.button>
+
+
                 </div>
             </div>
 
@@ -315,15 +351,20 @@ const VerifyDoctorList = () => {
                                     >
                                         {t("speciality.list.edit")}
                                     </button>
+
                                 </div>
                                 <div className="p-4">
-                                    <div className="flex justify-end">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedAccountIds.includes(item._id)}
-                                            onChange={() => toggleAccountSelection(item._id)}
-                                        />
-                                    </div>
+
+                                    {
+                                        (writeOnly || fullAccess) &&
+                                        <div className="flex justify-end">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedAccountIds.includes(item._id)}
+                                                onChange={() => toggleAccountSelection(item._id)}
+                                            />
+                                        </div>
+                                    }
                                     <p className="text-neutral-800 text-lg font-bold">{item.username}</p>
                                     <p className="text-zinc-600 text-sm">{item.speciality_id?.name}</p>
                                 </div>
