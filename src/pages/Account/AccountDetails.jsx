@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {AdminContext} from "../../context/AdminContext";
 import * as accountService from "../../service/AccountService"
 import * as adminService from "../../service/AdminService"
@@ -29,13 +29,14 @@ const AccountDetails = () => {
     });
 
     const [image, setImage] = useState(null);
-    const [accountRole, setAccountRole] = useState('')
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
     const [userName, setUserName] = useState('');
     const {t} = useTranslation();
     const [gOpen, setGOpen] = useState(false);
     const [read, setRead] = useState(false);
+    const location = useLocation()
+    const {selectedId} = location.state || {}
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -49,7 +50,6 @@ const AccountDetails = () => {
             setAccount(response);
             setUserId(response._id)
             setUserName(response.username)
-            setAccountRole(response.role)
             if(readOnly && !writeOnly && !fullAccess){
                 setRead(true)
             }
@@ -275,7 +275,6 @@ const AccountDetails = () => {
                         </div>
 
                         <div className="absolute right-0">
-                            {/*<Button onClick={openChangeRoleModal} t={t("account.update.crole")}/>*/}
                             {
                                 fullAccess &&
                                 <Button onClick={openAccess} t={t("account.update.crole")}/>
@@ -479,7 +478,9 @@ const AccountDetails = () => {
                 </motion.div>
             </form>
 
-            <GrantAdminModel open={gOpen} id={userId} onClose={() => setGOpen(false)}/>
+            <GrantAdminModel open={gOpen} id={userId} onClose={() => setGOpen(false)}
+            selectedId={selectedId}
+            />
         </div>
     );
 };

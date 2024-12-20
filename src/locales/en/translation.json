@@ -73,7 +73,9 @@
       "w": "Grant permission to update data",
       "a": "Full Access",
       "gtitle": "Grant Administrator Permission",
-      "gsuccess": "Grant Administrator Permission Successful"
+      "gsuccess": "Grant Administrator Permission Successful",
+      "usuccess": "Change Administrator Permission Successful!"
+
     },
     "addNewCustomerAcc": {
       "success": "Add New Customer Account Successful!",
@@ -507,12 +509,18 @@
   },
   "doctor": {
     "dashboard": {
+      "title": "Overall",
       "da": "Deleted Article",
       "dp": "Deleted Topic",
       "tap": "Total Appointment",
       "ta": "Total Article",
-      "tp": "Total Post"
-
+      "tp": "Total Post",
+      "labela": "Total appointment",
+      "labelar": "Total article",
+      "labelp": "Total post",
+      "legendp": "Total post in a month",
+      "legenda": "Total article in a month",
+      "legendap": "Total appointment in a month"
     },
     "profile": {
       "success": "Updated Doctor Information",
@@ -591,6 +599,11 @@
       "latest": "Latest Bookings",
       "noData": "No data available!",
       "ranking": "Most Active Users"
+    },
+    "list": {
+      "confirmDelete": "Delete Administrator Permission",
+      "pCD": "Are you sure to remove admin access ?"
+
     }
   }
 }

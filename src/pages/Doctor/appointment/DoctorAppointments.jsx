@@ -141,7 +141,9 @@ const DoctorAppointments = () => {
                     return (
                         <div className='ml-10'>
                             {isCompleted ? (
-                                <p className="text-green-500 text-xs font-medium">{t("appointment.list.completed")}</p>
+                                <div className='bg-green-200 rounded-full  py-2 w-[90px]'>
+                                    <p className="text-green-700 text-xs text-center font-medium">{t("appointment.list.completed")}</p>
+                                </div>
                             ) : (
                                 <img
                                     alt="pic"
@@ -191,7 +193,7 @@ const DoctorAppointments = () => {
         );
     }
 
-    return (
+    return dToken && (
         <div className='w-full max-w-6xl m-5'>
             <motion.div
                 className="flex-1 overflow-auto relative z-10"

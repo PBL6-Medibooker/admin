@@ -9,6 +9,7 @@ import Error from "../../components/Error";
 import * as articleService from "../../service/ArticleService";
 import {useQuery} from "@tanstack/react-query";
 import * as forumService from "../../service/ForumService";
+import StatDoctor from "../../components/Chart/StatDoctor";
 
 const DoctorDashboard = () => {
     const {dToken, docId, getDoctorData, doctorData, docEmail} = useContext(DoctorContext);
@@ -55,7 +56,7 @@ const DoctorDashboard = () => {
     };
 
 
-    const { data: postList = [], isLoading:isPostLoading } = useQuery({
+    const {data: postList = [], isLoading: isPostLoading} = useQuery({
         queryKey: ["postsByEmail", docEmail],
         queryFn: fetchPostsByEmail,
     });
@@ -96,9 +97,9 @@ const DoctorDashboard = () => {
 
                 {/* CHARTS */}
 
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                <div className='grid grid-cols-1 lg:grid-cols-1'>
 
-
+                    <StatDoctor/>
                 </div>
             </main>
         </div>

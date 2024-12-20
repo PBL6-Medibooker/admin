@@ -99,3 +99,11 @@ export const getTopDoctors = async (aToken) => {
     }
 };
 
+export const getDoctorStat = async (formData ,dToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + '/stat-doctor', formData,{headers: {dToken}});
+        return result.data;
+    } catch (e) {
+        console.error(e);
+    }
+};

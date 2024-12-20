@@ -43,3 +43,12 @@ export const removeAdminAccessAccount = async (selectedAccountIds, aToken) => {
         console.log(e)
     }
 }
+
+export const updateAdminAccessAccount = async (formData, aToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + '/update-access', formData, {headers: {aToken}});
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}

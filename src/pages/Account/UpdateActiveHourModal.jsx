@@ -7,11 +7,13 @@ import { AdminContext } from "../../context/AdminContext";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import * as doctorService from "../../service/DoctorService";
+import {DoctorContext} from "../../context/DoctorContext";
 
 const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
     const { aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
     const { t } = useTranslation();
     const [read, setRead] = useState(false);
+    const {dToken} = useContext(DoctorContext)
 
     const [activeHour, setActiveHour] = useState({
         day: "",
@@ -45,10 +47,10 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
     };
 
     useEffect(() => {
-        if (aToken) {
+        if (aToken || dToken) {
             getOldActiveHour();
         }
-    }, [aToken, data]);
+    }, [aToken, data, dToken]);
 
     const formatTime = (time) => {
         const [hour, minute] = time.split(":");
@@ -84,6 +86,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                     icon: "error",
                     showConfirmButton: false,
                     timer: 1500,
+                    backdrop: false
                 });
                 return;
             }

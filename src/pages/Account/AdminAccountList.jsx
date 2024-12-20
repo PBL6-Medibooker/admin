@@ -19,7 +19,7 @@ import * as adminService from "../../service/AdminService";
 import {useNavigate} from "react-router-dom";
 
 const AdminAccountList = () => {
-    const {aToken, adminList, refetchAdminList} = useContext(AdminContext);
+    const {aToken, adminList, refetchAdminList, adminData} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
     const {t} = useTranslation();
     const [globalFilter, setGlobalFilter] = useState("");
@@ -176,7 +176,7 @@ const AdminAccountList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
-                <h1 className="text-lg text-primary lg:text-2xl">{t("account.admin.title")}</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("account.admin.title")}</h1>
                 <div className="flex gap-4 mr-2">
 
 
@@ -200,20 +200,22 @@ const AdminAccountList = () => {
                         transition={{duration: 0.3}}
                     >
                         <FaRegTrashAlt size={50} className="mx-auto text-red-500 mb-4"/>
-                        <h3 className="text-lg font-semibold">{t("account.accountList.confirmDelete")}</h3>
-                        <p className="text-gray-600">{t("account.accountList.pCD")}</p>
-                        <div className="flex justify-around mt-6">
+                        <h3 className="text-lg font-semibold">{t("admin.list.confirmDelete")}</h3>
+                        <p className="text-gray-600">{t("admin.list.pCD")}</p>
+                        <div className="flex justify-around gap-4 mt-6">
                             <motion.button
                                 onClick={softDeleteAccounts}
                                 whileHover={{scale: 1.05}}
-                                className="text-white bg-red-600 px-6 py-2 rounded-md"
+                                className="text-white bg-red-600 px-6 py-2 rounded-md
+                                flex-1 bg-gradient-to-r from-red-500 to-red-700  transition duration-150"
                             >
                                 {t("account.accountList.confirm")}
                             </motion.button>
                             <motion.button
                                 onClick={() => setOpen(false)}
                                 whileHover={{scale: 1.05}}
-                                className="bg-gray-200 px-6 py-2 rounded-md"
+                                className="bg-gray-200 px-6 py-2 rounded-md
+                                flex-1 text-gray-600 hover:bg-gray-300 transition duration-150"
                             >
                                 {t("account.accountList.cancel")}
                             </motion.button>
@@ -270,7 +272,7 @@ const AdminAccountList = () => {
                 <tbody>
                 {table?.getRowModel()?.rows?.length ? (
                     table.getRowModel().rows
-                        .filter((row) => row.original.role !== 'admin')
+                        .filter((row) => row.original.user_id?._id !== adminData?._id)
                         .map((row, i) => (
                             <motion.tr
                                 key={row.id}
@@ -292,7 +294,7 @@ const AdminAccountList = () => {
                                     <td
                                         key={cell.id}
                                         className="p-2 cursor-pointer"
-                                        onClick={() => navigate(`/update-cus-account/${row.original.user_id.email}`)}
+                                        onClick={() =>  navigate(`/update-cus-account/${row.original.user_id.email}`,{state: {selectedId: row.original.user_id._id}})}
 
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -12,6 +12,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
     const { aToken } = useContext(AdminContext);
     const { t } = useTranslation();
     const [isAdd, setIsAdd] = useState(false);
+    const [aLimit, setALimit] = useState(false);
 
     const [activeHour, setActiveHour] = useState({
         day: "",
@@ -57,6 +58,11 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                     backdrop: false
                 });
                 return;
+            }
+
+            if(Number(appointment_limit) < 0){
+                setALimit(true)
+                return
             }
 
             const result = await doctorService.addDoctorActiveHours(activeHour, id, aToken);
@@ -119,7 +125,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                     >
                         <div className="flex gap-3">
                             <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                                <label>{t("account.aa.day")}</label>
+                                <label className='font-bold'>{t("account.aa.day")}</label>
                                 <select
                                     name="day"
                                     value={activeHour.day}
@@ -138,7 +144,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                                 </select>
                             </motion.div>
                             <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                                <label>{t("account.aa.start")}</label>
+                                <label  className='font-bold'>{t("account.aa.start")}</label>
                                 <input
                                     type="time"
                                     name="start_time"
@@ -149,7 +155,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                                 />
                             </motion.div>
                             <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                                <label>{t("account.aa.end")}</label>
+                                <label  className='font-bold'>{t("account.aa.end")}</label>
                                 <input
                                     type="time"
                                     name="end_time"
@@ -160,14 +166,14 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
                                 />
                             </motion.div>
                             <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
-                                <label>{t("account.aa.limit")}</label>
+                                <label  className='font-bold'>{t("account.aa.limit")}</label>
                                 <input
                                     type="number"
                                     name="appointment_limit"
                                     value={activeHour.appointment_limit}
                                     onChange={handleInputChange}
                                     required
-                                    className="border w-[90px] p-2 rounded"
+                                    className={`border w-[90px] p-2 rounded ${aLimit ? 'shake' : ''}`}
                                 />
                             </motion.div>
                         </div>

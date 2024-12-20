@@ -32,7 +32,7 @@ const DoctorContextProvider = (props) => {
             }
         } catch (error) {
 
-            if (error.response?.data?.logout) {
+            if (error.response.data.error === "Request not authorized") {
                 Swal.fire({
                     icon: "warning",
                     title: "Session expired",

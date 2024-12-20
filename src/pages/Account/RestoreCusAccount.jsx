@@ -203,7 +203,7 @@ const RestoreCusAccount = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <CustomButton
                             onClick={restoreCusAccount}
                             label={t("account.restore.putBack")}
@@ -234,7 +234,7 @@ const RestoreCusAccount = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <CustomButton
                             onClick={() => setOpen(true)}
                             label={t("account.restore.deleteP")}

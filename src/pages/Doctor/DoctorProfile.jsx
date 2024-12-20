@@ -57,7 +57,6 @@ const DoctorProfile = () => {
             queryKey: ["regions"],
             queryFn: async () => {
                 return await regionService.findAll(false, dToken)
-
             }
         }
     )

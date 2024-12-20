@@ -196,7 +196,7 @@ const AccountList = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <CustomButton
                             onClick={() => navigate(`/add-customer-account`)}
                             label={t("account.accountList.addnewAccount")}
@@ -226,7 +226,7 @@ const AccountList = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <CustomButton
                             onClick={openDeleteModal}
                             label={t("account.accountList.delete")}

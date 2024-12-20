@@ -103,7 +103,8 @@ const DetailInsuranceModal = ({ open, id, cancel, onClose, name, isCompleted }) 
                     title: t("appointment.update.error"),
                     icon: "error",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
         } catch (e) {

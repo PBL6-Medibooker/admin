@@ -180,7 +180,7 @@ const DoctorAccountList = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <motion.button
                             onClick={() => navigate(`/add-doc-account`)}
                             className="bg-primary text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"
@@ -213,7 +213,7 @@ const DoctorAccountList = () => {
                     }
 
                     {
-                        (fullAccess && writeOnly) &&
+                        (fullAccess || writeOnly) &&
                         <motion.button
                             onClick={openDeleteModal}
                             className="bg-red-600 text-white flex items-center gap-2 px-8 py-3 mt-4 rounded-full shadow-md"

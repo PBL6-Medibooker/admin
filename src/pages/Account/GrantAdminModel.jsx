@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import ModalInsuranceMedium from "../../components/Modal/ModalGrant";
 import {AdminContext} from "../../context/AdminContext";
 import {useTranslation} from "react-i18next";
@@ -6,8 +6,11 @@ import * as adminService from "../../service/AdminService";
 import Swal from "sweetalert2";
 import {motion} from "framer-motion";
 import {useNavigate} from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
+import Error from "../../components/Error";
 
-const GrantAdminModel = ({open, id, onClose}) => {
+const GrantAdminModel = ({open, id, onClose, selectedId}) => {
+
     const {aToken} = useContext(AdminContext);
     const {t} = useTranslation();
     const [access, setAccess] = useState({
@@ -17,6 +20,29 @@ const GrantAdminModel = ({open, id, onClose}) => {
         admin_write_access: false
     })
     const navigate = useNavigate()
+
+    const { data: adminDetails = {}, refetch: refetchAdminDetails } = useQuery({
+        queryKey: ["adminDetails"],
+        queryFn: async () => {
+            try {
+                const response = await adminService.getAccessDetail(selectedId);
+                console.log(selectedId)
+                console.log(response)
+                setAccess({
+                    user_id: response.user_id?._id,
+                    read_access: response.read_access,
+                    write_access: response.write_access,
+                    admin_write_access: response.admin_write_access
+                })
+
+                return response
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        enabled: !!aToken,
+    })
+
 
     const openChangeRoleModal = async () => {
         Swal.fire({
@@ -28,7 +54,7 @@ const GrantAdminModel = ({open, id, onClose}) => {
             cancelButtonText: t("account.update.cancel"),
         }).then((result) => {
             if (result.isConfirmed) {
-                // changeAccountRole()
+                grantAdmin()
                 console.log("Access granted!");
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 console.log("Action canceled!");
@@ -37,8 +63,7 @@ const GrantAdminModel = ({open, id, onClose}) => {
 
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const grantAdmin = async () => {
         try {
             const formData = {
                 user_id: id,
@@ -50,7 +75,6 @@ const GrantAdminModel = ({open, id, onClose}) => {
             await adminService.addAdmin(formData, aToken);
             onClose()
             navigate('/admin-account')
-
             await Swal.fire({
                 position: "top-end",
                 title: t("account.admin.gsuccess"),
@@ -64,6 +88,30 @@ const GrantAdminModel = ({open, id, onClose}) => {
         }
     };
 
+    const updateAccess = async () => {
+        try {
+            const formData = {
+                access_id: adminDetails._id,
+                read_access: access.read_access,
+                write_access: access.write_access,
+                admin_write_access: access.admin_write_access
+            }
+            console.log('form data', formData)
+            await adminService.updateAdminAccessAccount(formData, aToken)
+            onClose()
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.admin.usuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            })
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     const handleAccessChange = (type) => {
         setAccess({
             ...access,
@@ -72,6 +120,14 @@ const GrantAdminModel = ({open, id, onClose}) => {
             admin_write_access: type === "admin_write_access",
         });
     };
+
+    useEffect(() => {
+        if (aToken && selectedId) {
+            refetchAdminDetails()
+            console.log('access',access)
+        }
+    }, [aToken, selectedId]);
+
 
     return (
         <ModalInsuranceMedium open={open} onClose={onClose}>
@@ -91,7 +147,7 @@ const GrantAdminModel = ({open, id, onClose}) => {
                     {t("account.admin.gtitle")}
                 </motion.h1>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form  className="space-y-6">
                     <motion.div
                         initial={{opacity: 0, y: 10}}
                         animate={{opacity: 1, y: 0}}
@@ -101,7 +157,6 @@ const GrantAdminModel = ({open, id, onClose}) => {
                         {["read_access", "write_access", "admin_write_access"].map((type, index) => (
                             <motion.div
                                 key={type}
-                                whileHover={{scale: 1.05}}
                                 transition={{duration: 0.2}}
                                 className="flex items-center gap-2"
                             >
@@ -109,6 +164,7 @@ const GrantAdminModel = ({open, id, onClose}) => {
                                     type="radio"
                                     id={type}
                                     name="accessOption"
+                                    value={access}
                                     checked={access[type]}
                                     onChange={() => handleAccessChange(type)}
                                     className="focus:ring-primary h-4 w-4 text-primary border-gray-300"
@@ -126,18 +182,32 @@ const GrantAdminModel = ({open, id, onClose}) => {
                             whileHover={{scale: 1.05}}
                             type="button"
                             onClick={onClose}
-                            className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 transition"
+                            className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 hover:text-white transition"
                         >
                             {t("appointment.update.back")}
                         </motion.button>
-                        <motion.button
-                            whileTap={{scale: 0.95}}
-                            whileHover={{scale: 1.05}}
-                            type="submit"
-                            className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
-                        >
-                            {t("appointment.update.save")}
-                        </motion.button>
+                        {
+                            access.user_id !== ''
+                                ?
+                                <motion.button
+                                    whileTap={{scale: 0.95}}
+                                    whileHover={{scale: 1.05}}
+                                    type="button"
+                                    onClick={updateAccess}
+                                    className="bg-primary text-white w-32 p-2 rounded-lg transition"
+                                >
+                                    {t("appointment.update.save")}
+                                </motion.button>
+                                : <motion.button
+                                    whileTap={{scale: 0.95}}
+                                    whileHover={{scale: 1.05}}
+                                    type="button"
+                                    onClick={openChangeRoleModal}
+                                    className="bg-primary text-white w-32 p-2 rounded-lg transition"
+                                >
+                                    {t("appointment.update.save")}
+                                </motion.button>
+                        }
                     </div>
                 </form>
             </motion.div>
