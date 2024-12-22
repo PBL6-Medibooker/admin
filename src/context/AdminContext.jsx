@@ -135,7 +135,7 @@ const AdminContextProvider = (props) => {
         queryKey: ["adminDetails"],
         queryFn: async () => {
             try {
-                const response = await adminService.getAccessDetail(adminData?._id);
+                const response = await adminService.getAccessDetail(adminData?._id, aToken);
                 setReadOnly(response.read_access)
                 setWriteOnly(response.write_access)
                 setFullAccess(response.admin_write_access)

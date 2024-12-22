@@ -25,7 +25,7 @@ const GrantAdminModel = ({open, id, onClose, selectedId}) => {
         queryKey: ["adminDetails"],
         queryFn: async () => {
             try {
-                const response = await adminService.getAccessDetail(selectedId);
+                const response = await adminService.getAccessDetail(selectedId, aToken);
                 console.log(selectedId)
                 console.log(response)
                 setAccess({
