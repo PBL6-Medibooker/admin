@@ -13,6 +13,7 @@ import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/r
 import {useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 import Card from "../../../components/Card";
+import {MessageCircleDashed} from 'lucide-react'
 
 const PostList = () => {
     const {t} = useTranslation();
@@ -129,7 +130,7 @@ const PostList = () => {
         <div className="m-5 w-[90vw] h-[100vh]">
             <div className='flex justify-between'>
                 <motion.p
-                    className="pb-3 mt-4 font-medium text-primary lg:text-2xl border-b"
+                    className="pb-3 mt-4 font-bold text-primary lg:text-2xl border-b"
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
                     transition={{duration: 0.5}}
@@ -139,12 +140,12 @@ const PostList = () => {
                 <div className='mr-10'>
                     <motion.button
                         onClick={() => navigate('/doctor-create-post')}
-                        className='bg-primary px-10 py-3 mt-4 text-white rounded-full'
+                        className='flex items-center gap-2 bg-primary px-10 py-3 mt-4 text-white rounded-full'
                         whileHover={{scale: 1.05, boxShadow: '0px 4px 8px rgba(0,0,0,0.2)'}}
                         whileTap={{scale: 0.95}}
                         transition={{duration: 0.2}}
                     >
-                        {t("doctor.post.add")}
+                        <MessageCircleDashed/>{t("doctor.post.add")}
                     </motion.button>
                 </div>
             </div>

@@ -263,7 +263,7 @@ const UpdateAppointment = () => {
                             initial={{opacity: 0}}
                             animate={{opacity: 1}}
                             transition={{duration: 0.5}}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-1"
+                            className="grid grid-cols-1 lg:grid-rows-1 gap-8 mb-1"
                         >
                             <div className="mb-6">
                                 <div className="mb-6">

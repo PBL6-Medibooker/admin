@@ -15,7 +15,7 @@ import {DoctorContext} from "../../context/DoctorContext";
 
 
 const AddAppointment = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken, adminData} = useContext(AdminContext);
     const {dToken, docId} = useContext(DoctorContext);
 
     const [datePicker, setDatePicker] = useState({
@@ -61,7 +61,8 @@ const AddAppointment = () => {
     const getAccountList = async () => {
         try {
             const result = await accountService.findAll(true, false, false, aToken);
-            setUsers(result);
+            const filterData = result.filter(acc => acc._id !== adminData._id)
+            setUsers(filterData);
         } catch (e) {
             console.log(e.error);
         }
@@ -210,17 +211,6 @@ const AddAppointment = () => {
         }
     }, [aToken, dToken]);
 
-    // useEffect(() => {
-    //     if (aToken) {
-    //
-    //     }
-    // }, [aToken]);
-    //
-    // useEffect(() => {
-    //     if (aToken) {
-    //
-    //     }
-    // }, [aToken]);
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>

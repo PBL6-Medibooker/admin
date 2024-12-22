@@ -52,10 +52,6 @@ const RestoreCusAccount = () => {
             ),
             header: t("account.accountList.profile"),
         }),
-        columnHelper.accessor("role", {
-            cell: (info) => <span>{info?.getValue()}</span>,
-            header: t("account.accountList.role"),
-        }),
         columnHelper.accessor("email", {
             cell: (info) => <span>{info?.getValue()}</span>,
             header: "Email",

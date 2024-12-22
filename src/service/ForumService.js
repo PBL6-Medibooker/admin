@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-const REST_API_BASE_URL = "http://localhost:4000/post";
-// const REST_API_BASE_URL = "https://backend-nc0v.onrender.com/post";
+// const REST_API_BASE_URL = "http://localhost:4000/post";
+const REST_API_BASE_URL = "https://backend-nc0v.onrender.com/post";
 
 
 export const findAll = async (aToken) => {
@@ -120,6 +120,17 @@ export const deleteComment = async (post_id, comment_id, aToken) => {
     try {
         const result = await axios.post(REST_API_BASE_URL + `/${post_id}/comment/${comment_id}/del`,
             {}, {headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const getPostByMonth = async (selectedYear ,aToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + '/get-post-month',
+            {selectedYear},
+            {headers: {aToken}})
         return result.data
     } catch (e) {
         console.log(e)

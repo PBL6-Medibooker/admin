@@ -189,7 +189,7 @@ const DeletedArticle = () => {
                 >
                     <motion.button
                         onClick={() => handleRestore(selectedArticleIds)}
-                        className="flex items-center justify-center gap-1 bg-green-600 w-[180px] text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
+                        className="flex items-center justify-center gap-1  bg-green-600 w-[180px] text-white rounded-full px-4 py-4 hover:bg-primary-dark transition-colors"
                         whileHover={{scale: 1.05}}
                         whileTap={{scale: 0.95}}
                     >
@@ -198,7 +198,7 @@ const DeletedArticle = () => {
 
                     <motion.button
                         onClick={() => setOpen(true)}
-                        className="bg-red-600 text-white w-[150px] rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
+                        className="bg-red-600 text-white w-[150px] rounded-full px-4 py-4 hover:bg-primary-dark transition-colors"
                         whileHover={{scale: 1.05}}
                         whileTap={{scale: 0.95}}
                     >

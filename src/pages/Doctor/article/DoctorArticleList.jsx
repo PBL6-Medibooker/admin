@@ -12,7 +12,7 @@ import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/r
 import Loader from "../../../components/Loader";
 import {useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
-import {XCircle} from "lucide-react";
+import {XCircle, Newspaper} from "lucide-react";
 
 
 const DoctorArticleList = () => {
@@ -96,26 +96,6 @@ const DoctorArticleList = () => {
         (pagination.pageIndex + 1) * pagination.pageSize
     );
 
-    // const { data = [], isLoading, isError, refetch } = useQuery({
-    //     queryKey: ["articles", email],
-    //     queryFn: async () => {
-    //         try {
-    //             console.log(email)
-    //             const data = await articleService.getAllArticleByDoctor(email, dToken);
-    //             console.log(data)
-    //             return data;
-    //         } catch (e) {
-    //             console.error(e);
-    //             throw new Error("Failed to load data");
-    //         }
-    //     }
-    // });
-    // useEffect(() => {
-    //     if(dToken){
-    //         getDoctorData()
-    //         setEmail(doctorData?.email)
-    //     }
-    // }, [dToken, email]);
 
     if (isLoading) {
         return (
@@ -136,23 +116,23 @@ const DoctorArticleList = () => {
     return (
         <div className="m-5 w-[90vw] h-[100vh]">
             <motion.div
-                className="flex justify-end mb-4 gap-2"
+                className="flex justify-end mb-4 gap-2 mr-2"
                 initial={{y: -20}}
                 animate={{y: 0}}
                 transition={{duration: 0.5}}
             >
                 <motion.button
                     onClick={() => navigate("/create-article")}
-                    className="bg-primary w-[180px] text-white rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
+                    className="flex items-center justify-center gap-2 bg-primary w-[180px] text-white rounded-full px-4 py-3 hover:bg-primary-dark transition-colors"
                     whileHover={{scale: 1.05}}
                     whileTap={{scale: 0.95}}
                 >
-                    {t("doctor.article.create")}
+                   <Newspaper/> {t("doctor.article.create")}
                 </motion.button>
 
                 <motion.button
                     onClick={() => setOpen(true)}
-                    className="flex items-center justify-center gap-1 bg-red-600 text-white w-[150px] rounded-full px-4 py-2 hover:bg-primary-dark transition-colors"
+                    className="flex items-center justify-center gap-2 bg-red-600 text-white w-[150px] rounded-full px-4 py-3 hover:bg-primary-dark transition-colors"
                     whileHover={{scale: 1.05}}
                     whileTap={{scale: 0.95}}
                 >

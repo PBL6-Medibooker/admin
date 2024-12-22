@@ -8,6 +8,7 @@ import {useTranslation} from "react-i18next";
 import {useLocation, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 
+
 const CreatePost = () => {
     const {dToken, docEmail, doctorData} = useContext(DoctorContext);
     const {t} = useTranslation();

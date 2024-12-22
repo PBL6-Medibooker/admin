@@ -49,7 +49,8 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                 title: t("forum.list.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);

@@ -53,7 +53,7 @@ const AccountList = () => {
         columnHelper.accessor("profile_image", {
             cell: (info) => (
                 <img className="rounded-full w-10 h-10 object-cover bg-white"
-                     src={info?.getValue() ? info.getValue() : assets.user_icon}
+                     src={info?.getValue() ? info.getValue() : assets.patients_icon}
                      alt="..."
                 />
             ),
@@ -95,18 +95,6 @@ const AccountList = () => {
     }, [table.getRowModel().rows, adminList]);
 
 
-    const getAccountList = async () => {
-
-        try {
-            const result = await accountService.findAll(isUser, isVerify, hiddenState, aToken);
-            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
-            setData(filter);
-        } catch (e) {
-            console.log(e.error)
-        }
-
-    }
-
     const toggleAccountSelection = (id) => {
         setSelectedAccountIds((prevSelected) =>
             prevSelected.includes(id)
@@ -128,7 +116,7 @@ const AccountList = () => {
         }
         try {
             await accountService.deleteSoftAccount(selectedAccountIds, aToken)
-            getAccountList();
+            await getAccountList();
             // toast.success(response.message);
             setOpen(false);
             setSelectedAccountIds([]);
@@ -158,6 +146,18 @@ const AccountList = () => {
         }
     }
 
+    const getAccountList = async () => {
+
+        try {
+            const result = await accountService.findAll(isUser, isVerify, hiddenState, aToken);
+            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+            setData(filter);
+        } catch (e) {
+            console.log(e.error)
+        }
+
+    }
+
     useEffect(() => {
         if (aToken) {
             refectAdminData()
@@ -166,7 +166,7 @@ const AccountList = () => {
             refetchAdminList()
             getAccountList()
         }
-    }, [aToken, adminDetails, adminData]);
+    }, [aToken, adminDetails, adminData, adminList]);
     return (
         <motion.div
             className="mb-5 ml-5 mr-5 max-h-[90vh] w-[90vw] overflow-y-scroll"
@@ -174,7 +174,7 @@ const AccountList = () => {
             animate={{opacity: 1}}
             transition={{duration: 0.5}}
         >
-            <div className="flex justify-between items-center mb-6 mt-3 mr-2">
+            <div className="flex justify-between items-center mb-6 mt-3 mr-4">
                 <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("account.accountList.userAccounts")}</h1>
                 <div className="flex gap-4">
                     {
@@ -242,8 +242,8 @@ const AccountList = () => {
                         label={''}
                         icon={Trash}
                         bgColor="bg-gray-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(0, 128, 255, 0.4)"
+                        hoverColor="rgba(75,85,99,1)"
+                        shadowColor="rgba(75,85,99,1)"
                     />
                 </div>
 
@@ -258,18 +258,20 @@ const AccountList = () => {
                         <FaRegTrashAlt size={50} className="mx-auto text-red-500 mb-4"/>
                         <h3 className="text-lg font-semibold">{t("account.accountList.confirmDelete")}</h3>
                         <p className="text-gray-600">{t("account.accountList.pCD")}</p>
-                        <div className="flex justify-around mt-6">
+                        <div className="flex justify-around mt-6 gap-4">
                             <motion.button
                                 onClick={softDeleteAccounts}
                                 whileHover={{scale: 1.05}}
-                                className="text-white bg-red-600 px-6 py-2 rounded-md"
+                                className="text-white bg-red-600 px-6 py-2 rounded-md
+                                flex-1 bg-gradient-to-r from-red-500 to-red-700  transition duration-150"
                             >
                                 {t("account.accountList.confirm")}
                             </motion.button>
                             <motion.button
                                 onClick={() => setOpen(false)}
                                 whileHover={{scale: 1.05}}
-                                className="bg-gray-200 px-6 py-2 rounded-md"
+                                className="bg-gray-200 px-6 py-2 rounded-md
+                                flex-1 text-gray-600 hover:bg-gray-300 transition duration-150"
                             >
                                 {t("account.accountList.cancel")}
                             </motion.button>

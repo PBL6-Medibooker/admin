@@ -219,8 +219,8 @@ const ArticleList = () => {
                         label={t("article.list.restore")}
                         icon={Trash}
                         bgColor="bg-gray-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(0, 128, 255, 0.4)"
+                        hoverColor="rgba(75,85,99,1)"
+                        shadowColor="rgba(75,85,99,1)"
                     />
                 </div>
             </div>

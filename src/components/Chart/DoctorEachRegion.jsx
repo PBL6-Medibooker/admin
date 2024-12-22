@@ -111,14 +111,7 @@ const DoctorEachRegion = () => {
                                     />
                                 ))}
                             </Bar>
-                            <Area
-                                type="monotone"
-                                dataKey="appointmentCount"
-                                stroke="#2563EB"
-                                fill="#2563EB"
-                                fillOpacity={0.3}
-                                name={t("appointment.dashboard.label")}
-                            />
+
                         </ComposedChart>
                     ) : (
                         <motion.p

@@ -19,20 +19,27 @@ import ActiveHourListModal from "../../Account/ActiveHourListModal";
 
 
 const DoctorAppointments = () => {
-    const {dToken, getDoctorData, docId, doctorAppointments, isDoctorAppointmentsLoading,reFetchDA} = useContext(DoctorContext);
+    const {
+        dToken,
+        getDoctorData,
+        docId,
+        doctorAppointments,
+        isDoctorAppointmentsLoading,
+        reFetchDA
+    } = useContext(DoctorContext);
     const {calculateAge, dateFormat, separateDayAndDate} = useContext(AppContext);
 
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
-    const [id, setId] =useState('')
+    const [id, setId] = useState('')
     const {t} = useTranslation()
     const [listModal, setListModal] = useState(false)
 
 
-    const cancelBooking = async () =>{
+    const cancelBooking = async () => {
         try {
             const data = await appointmentService.softDeleteAppointment(id, dToken);
-            if (data){
+            if (data) {
                 reFetchDA()
                 setOpen(false);
                 await Swal.fire({
@@ -61,9 +68,14 @@ const DoctorAppointments = () => {
                     </span>
                 ),
                 customBodyRenderLite: (dataIndex) => (
-                    <div style={{ textAlign: "left", marginLeft: "20px" }}>
+                    <motion.div
+                        initial={{opacity: 0, x: -20}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.3, delay: dataIndex * 0.1}}
+                        style={{textAlign: "left", marginLeft: "20px"}}
+                    >
                         {dataIndex + 1}
-                    </div>
+                    </motion.div>
                 ),
                 filter: false,
             },
@@ -77,16 +89,25 @@ const DoctorAppointments = () => {
                     </span>
                 ),
                 customBodyRenderLite: (dataIndex) => (
-                    <div className="flex ml-4 items-center gap-2">
-                        <div className='w-8 h-8'>
-                            <img
-                                className="w-full h-full rounded-full"
-                                src={doctorAppointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
-                                alt=""
-                            />
+                    <motion.div
+                        initial={{opacity: 0, x: -20}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.3, delay: dataIndex * 0.1}}
+                        style={{textAlign: "left", marginLeft: "20px"}}
+                    >
+                        <div className="flex ml-4 items-center gap-2">
+                            <div className='w-8 h-8'>
+                                <img
+                                    className="w-full h-full rounded-full"
+                                    src={doctorAppointments[dataIndex]?.user_id?.profile_image || assets.patients_icon}
+                                    alt=""
+                                />
+                            </div>
+                            <p>{doctorAppointments[dataIndex]?.user_id?.username}</p>
                         </div>
-                        <p>{doctorAppointments[dataIndex]?.user_id?.username}</p>
-                    </div>
+                    </motion.div>
+
+
                 ),
             },
         },
@@ -99,9 +120,15 @@ const DoctorAppointments = () => {
                     </span>
                 ),
                 customBodyRenderLite: (dataIndex) => (
-                    <div style={{ marginLeft: "20px" }}>
+
+                    <motion.div
+                        initial={{opacity: 0, x: -20}}
+                        animate={{opacity: 1, x: 0}}
+                        transition={{duration: 0.3, delay: dataIndex * 0.1}}
+                        style={{marginLeft: "30px"}}
+                    >
                         {calculateAge(doctorAppointments[dataIndex]?.user_id?.date_of_birth)}
-                    </div>
+                    </motion.div>
                 ),
             },
         },
@@ -114,11 +141,16 @@ const DoctorAppointments = () => {
                     </span>
                 ),
                 customBodyRenderLite: (dataIndex) => {
-                    const { dayOfWeek, date } = separateDayAndDate(doctorAppointments[dataIndex]?.appointment_day);
+                    const {dayOfWeek, date} = separateDayAndDate(doctorAppointments[dataIndex]?.appointment_day);
                     return (
-                        <div style={{ marginLeft: "20px" }}>
+                        <motion.div
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{duration: 0.3, delay: dataIndex * 0.1}}
+                            style={{marginLeft: "20px"}}
+                        >
                             {`${dayOfWeek}, ${dateFormat(date)} | ${doctorAppointments[dataIndex]?.appointment_time_start} - ${doctorAppointments[dataIndex]?.appointment_time_end}`}
-                        </div>
+                        </motion.div>
                     );
                 },
             },
@@ -139,7 +171,12 @@ const DoctorAppointments = () => {
                     const appointmentDate = new Date(appointment.appointment_day);
                     const isCompleted = appointmentDate < now;
                     return (
-                        <div className='ml-10'>
+                        <motion.div
+                            initial={{opacity: 0, x: -20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{duration: 0.3, delay: dataIndex * 0.1}}
+                            style={{marginLeft: "40px"}}
+                        >
                             {isCompleted ? (
                                 <div className='bg-green-200 rounded-full  py-2 w-[90px]'>
                                     <p className="text-green-700 text-xs text-center font-medium">{t("appointment.list.completed")}</p>
@@ -156,7 +193,8 @@ const DoctorAppointments = () => {
                                     }}
                                 />
                             )}
-                        </div>
+                        </motion.div>
+
                     );
                 },
                 filter: false,
@@ -185,10 +223,10 @@ const DoctorAppointments = () => {
         }
     }, [dToken, docId])
 
-    if(isDoctorAppointmentsLoading){
+    if (isDoctorAppointmentsLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-                <Loader />
+                <Loader/>
             </div>
         );
     }
@@ -202,7 +240,7 @@ const DoctorAppointments = () => {
                 exit={{opacity: 0}}
                 transition={{duration: 0.5}}
             >
-                <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
+                <main className="max-w-8xl mx-auto py-6 px-4 lg:px-8">
 
                     <motion.div
                         className="flex justify-between mb-4"
@@ -210,8 +248,8 @@ const DoctorAppointments = () => {
                         animate={{y: 0}}
                         transition={{duration: 0.5}}
                     >
-                        <p className="mb-1 text-lg lg:text-2xl text-primary font-medium">{t("doctor.appointment.title")}</p>
-                        <div className='flex items-center justify-center gap-3'>
+                        <p className="mb-1 ml-4 text-lg lg:text-2xl text-primary font-bold">{t("doctor.appointment.title")}</p>
+                        <div className='flex items-center justify-center gap-3 ml-5'>
                             <motion.button
                                 onClick={() => navigate("/booking-appointment")}
                                 className="flex items-center gap-2 bg-primary text-white rounded-full px-4 py-3 hover:bg-primary-dark transition-colors"

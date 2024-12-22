@@ -78,7 +78,7 @@
 
     },
     "addNewCustomerAcc": {
-      "success": "Add New Customer Account Successful!",
+      "success": "Please check email to verification!",
       "title": "Add New Customer Account",
       "phone": "Phone Number",
       "username": "Username",
@@ -452,7 +452,13 @@
   },
   "forum": {
     "dashboard": {
-      "title": "Total Post"
+      "title": "Total Post",
+      "month": "Monthly Post",
+      "posts": "posts",
+      "npost": "Number of post",
+      "months": "Month"
+
+
     },
     "ps": {
       "title": "Post By Speciality",

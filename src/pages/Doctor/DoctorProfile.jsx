@@ -38,7 +38,6 @@ const DoctorProfile = () => {
 
     const getDoctorData = async () => {
         try {
-            // const result = await accountService.getDoctorProfile(dToken);
             const result = await doctorService.getDoctorProfile(dToken);
             console.log(result)
             if (result.success) {
@@ -90,7 +89,8 @@ const DoctorProfile = () => {
                 title: t("account.updateDocInfo.error"),
                 icon: "error",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             })
         }
     }
@@ -199,7 +199,8 @@ const DoctorProfile = () => {
                 title: t("doctor.profile.csuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             })
 
         } catch (e) {
@@ -256,6 +257,7 @@ const DoctorProfile = () => {
         try {
             const result = await accountService.forgotPassword(doctorData.email, dToken);
             if (result) {
+                console.log(result)
 
                 await Swal.fire({
                     position: "top-end",
@@ -266,9 +268,6 @@ const DoctorProfile = () => {
                     backdrop: false
                 })
 
-                setTimeout(() => {
-                    logout();
-                }, 3000);
             } else {
                 toast.error(result.error)
             }
@@ -304,7 +303,7 @@ const DoctorProfile = () => {
         if (dToken) {
             getDoctorData();
         }
-    }, [dToken]);
+    }, [dToken, hashPass]);
 
     return (
         <div>

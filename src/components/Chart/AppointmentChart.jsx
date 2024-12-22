@@ -127,13 +127,19 @@ const AppointmentChart = () => {
                                     return '';
                                 }}
                             />
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
                             <Area
                                 syncId="anyId"
                                 type="monotone"
                                 dataKey="appointmentCountBar"
-                                stroke="#2563EB"
-                                fill="#2563EB"
-                                fillOpacity={0.3}
+                                stroke="#8884d8"
+                                fill="url(#colorUv)"
+                                fillOpacity={1}
                                 name="Number of Appointments in a Month"
                             />
                         </ComposedChart>

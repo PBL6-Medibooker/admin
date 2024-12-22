@@ -6,6 +6,7 @@ import StatCard from "../../components/StatCard";
 import {EthernetPort} from "lucide-react";
 import {useTranslation} from "react-i18next";
 import PostMostComment from "../../components/Chart/PostMostComment";
+import PostByMonth from "../../components/Chart/PostByMonth";
 
 const ForumDashboard = () => {
 
@@ -48,8 +49,8 @@ const ForumDashboard = () => {
                 {/* CHARTS */}
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+                    <PostByMonth />
                     <PostMostComment />
-
                 </div>
             </main>
         </div>

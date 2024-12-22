@@ -78,7 +78,7 @@
 
     },
     "addNewCustomerAcc": {
-      "success": "Thêm tài khoản thành công!",
+      "success": "Vui lòng truy cập email để xác nhận tài khoản!",
       "title": "Thêm Tài Khoản Khách Hàng",
       "phone": "Số điện thoại",
       "username": "Tên người dùng",
@@ -454,7 +454,12 @@
   },
   "forum": {
     "dashboard": {
-      "title": "Tất cả bài đăng"
+      "title": "Tất cả bài đăng",
+      "month": "Số bài đăng hàng tháng",
+      "posts": "bài đăng",
+      "npost": "Số bài đăng",
+      "months": "Tháng"
+
     },
     "ps": {
       "title": "Bài Đăng Theo Chuyên Khoa",

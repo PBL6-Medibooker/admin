@@ -27,7 +27,6 @@ const AccountDetails = () => {
         email: "",
         profile_image: "",
     });
-
     const [image, setImage] = useState(null);
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
@@ -35,7 +34,7 @@ const AccountDetails = () => {
     const {t} = useTranslation();
     const [gOpen, setGOpen] = useState(false);
     const [read, setRead] = useState(false);
-    const location = useLocation()
+    const location = useLocation();
     const {selectedId} = location.state || {}
 
     const handleImageChange = (e) => {
@@ -457,7 +456,7 @@ const AccountDetails = () => {
                     >
                         <motion.button
                             onClick={() => navigate("/account")}
-                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 font-bold rounded-full hover:bg-gray-400 transition-all"
+                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 font-bold rounded-full hover:bg-gray-400 hover:text-white transition-all"
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
                         >

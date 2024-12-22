@@ -84,7 +84,9 @@ const DeletedPost = () => {
                 title: t("forum.list.dsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
+
             });
         } catch (error) {
             console.error(error.message);
@@ -113,7 +115,9 @@ const DeletedPost = () => {
                 title: t("forum.list.rsuccess"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
+
             });
         } catch (error) {
             console.error(error.message);

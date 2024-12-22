@@ -11,8 +11,8 @@ import Swal from "sweetalert2";
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-    const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
-    // const backendUrl = import.meta.env?.BACKEND_URL || 'https://backend-nc0v.onrender.com';
+    // const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
+    const backendUrl = import.meta.env?.BACKEND_URL || 'https://backend-nc0v.onrender.com';
 
     const [dToken, setDToken] = useState(localStorage.getItem('dToken') ? localStorage.getItem('dToken') : '')
 

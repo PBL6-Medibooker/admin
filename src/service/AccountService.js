@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-const REST_API_BASE_URL = "http://localhost:4000/acc";
-// const REST_API_BASE_URL = "https://backend-nc0v.onrender.com/acc";
+// const REST_API_BASE_URL = "http://localhost:4000/acc";
+const REST_API_BASE_URL = "https://backend-nc0v.onrender.com/acc";
 
 export const login = async (email, password) => {
     try {
@@ -126,8 +126,6 @@ export const updateDocInfoAcc = async (formData, id, aToken) => {
 }
 
 
-
-
 export const getAccountActiveHourList = async (id, aToken) => {
     try {
         const result = await axios.get(REST_API_BASE_URL + `/active-hour-list/${id}`, {headers: {aToken}})
@@ -139,9 +137,9 @@ export const getAccountActiveHourList = async (id, aToken) => {
 
 
 
-export const forgotPassword = async (email, id, aToken) => {
+export const forgotPassword = async (email) => {
     try {
-        const result = await axios.post(REST_API_BASE_URL + '/forgot-pass', {email}, {headers: {aToken}});
+        const result = await axios.post(REST_API_BASE_URL + '/forgot-pass', {email});
         return result.data;
     } catch (e) {
         console.error(e);

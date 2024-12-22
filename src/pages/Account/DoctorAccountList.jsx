@@ -324,7 +324,7 @@ const DoctorAccountList = () => {
                                 </td>
                                 {row.getVisibleCells().map((cell) => (
                                     <td key={cell.id} className="p-2"
-                                        onClick={() => navigate(`/update-doc-account/${row.original._id}`)}>
+                                        onClick={() => navigate(`/update-doc-account/${row.original._id}`, {state:{un: true}})}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}

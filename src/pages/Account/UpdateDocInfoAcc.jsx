@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {AdminContext} from "../../context/AdminContext";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import * as accountService from "../../service/AccountService";
 import {toast} from "react-toastify";
 import * as regionService from "../../service/RegionService";
@@ -43,6 +43,8 @@ const UpdateDocInfoAcc = () => {
     const [listModal, setListModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
     const [proofModal, setProofModal] = useState(false);
+    const location = useLocation()
+    const {un} = location.state || {}
 
 
     const getAllProvinces = async () => {
@@ -710,7 +712,7 @@ const UpdateDocInfoAcc = () => {
                 <div className="flex justify-end gap-4 mt-8">
                     <motion.button
                         type="button"
-                        onClick={() => navigate('/verified-doc-account')}
+                        onClick={() => navigate(!un ? '/verified-doc-account' : '/doc-account')}
                         className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md transition"
                         whileHover={{
                             scale: 1.05,

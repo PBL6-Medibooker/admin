@@ -32,6 +32,29 @@ const Login = () => {
         return true;
     }
 
+    const resetPass = async () => {
+        try {
+            const result = await accountService.forgotPassword(email);
+            if (result) {
+                console.log(result)
+                setIsForgot(false)
+                await Swal.fire({
+                    position: "top-end",
+                    title: "Your password has been successfully reset! Please check your email!",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: false
+                })
+            } else {
+                toast.error(result.error)
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         try {
@@ -120,7 +143,6 @@ const Login = () => {
     }, []);
 
     return (
-
         <motion.form
             onSubmit={onSubmitHandler}
             className="min-h-[80vh] flex items-center"
@@ -207,12 +229,11 @@ const Login = () => {
                         </label>
                     </motion.div>
                 )}
-
-
                 {
                     isForgot
                         ? <motion.button
                             type="button"
+                            onClick={resetPass}
                             className="bg-primary text-white w-full py-2 rounded-md text-base
                             hover:tracking-widest transition-all duration-500 uppercase mt-4"
                             whileHover={{scale: 1.05}}
