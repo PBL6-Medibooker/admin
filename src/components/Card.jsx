@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import * as forumService from "../service/ForumService";
 import {AdminContext} from "../context/AdminContext";
 import {useNavigate} from "react-router-dom";
+import {Tooltip} from "@mui/material";
 
 const Card = ({email, image, content, title, date, totalComments, name, id, refetch, value}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,7 +66,11 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
         <StyledWrapper>
             <div className="task" draggable="true">
                 <div className="tags">
-                    <span className="tag">{title}</span>
+
+                    <Tooltip title={title} arrow>
+                        <span className="tag">{title}</span>
+                    </Tooltip>
+
                     <div className="menu-wrapper">
                         <button className="options" onClick={toggleMenu}>
                             <CircleEllipsis/>
@@ -83,12 +88,13 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                                         {t("forum.list.edit")}
                                     </button>
 
-                                        <button className={`${(readOnly && !writeOnly && !fullAccess && aToken) ? 'cursor-not-allowed' : 'cursor-pointer'} hover:text-red-600`}
-                                                onClick={handleDelete}
-                                                disabled={readOnly && !writeOnly && !fullAccess && aToken}
-                                        >
-                                            {t("forum.list.confirm")}
-                                        </button>
+                                    <button
+                                        className={`${(readOnly && !writeOnly && !fullAccess && aToken) ? 'cursor-not-allowed' : 'cursor-pointer'} hover:text-red-600`}
+                                        onClick={handleDelete}
+                                        disabled={readOnly && !writeOnly && !fullAccess && aToken}
+                                    >
+                                        {t("forum.list.confirm")}
+                                    </button>
 
                                 </motion.div>
                             )}
@@ -122,16 +128,17 @@ const Card = ({email, image, content, title, date, totalComments, name, id, refe
                     </div>
                     <div className="author">
                         <div className='author-image'>
-                            <img className='user-image' src={image} alt={email}/>
-                            <p>{name}</p>
+                            <img className='user-image' src={image} alt={''}/>
+                            <Tooltip title={name}>
+                                <p className='author-name'>{name}</p>
+                            </Tooltip>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-                {open && (
-                    <Modal open={open} onClose={() => setOpen(false)}>
+            {open && (
+                <Modal open={open} onClose={() => setOpen(false)}>
                         <motion.div className="text-center w-72" initial={{scale: 0.8, opacity: 0}}
                                     animate={{scale: 1, opacity: 1}} exit={{scale: 0.8, opacity: 0}}>
                             <FaRegTrashAlt size={56} className="mx-auto text-red-500"/>
@@ -168,30 +175,45 @@ const StyledWrapper = styled.div`
         background-color: #fff;
         padding: 1rem;
         border-radius: 8px;
-        box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+        box-shadow: rgba(99, 99, 99, 0.1) 0 2px 8px 0;
         margin-bottom: 1rem;
         border: 3px dashed transparent;
         max-width: 350px;
         width: 350px;
-        height: 150px;
+        height: 160px;
 
     }
-
+    .author{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: end;
+    }
+    .author-name {
+        max-width: 100px; 
+        font-size: 15px;
+        overflow: hidden; 
+        text-overflow: ellipsis; /* Adds the "..." */
+        white-space: nowrap; /* Prevents text wrapping */
+    }
+    .author-image {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: 75px;
+        height: 100px;
+        align-items: center;
+        overflow: visible;
+    }
+    
     .content {
+        cursor: pointer;
         max-width: 300px;
+        display: inline-block;
         max-height: 100px;
         overflow: hidden; /* Ensures content does not overflow the container */
         text-overflow: ellipsis; /* Adds ... for overflowed text */
         white-space: nowrap; /* Prevents text wrapping to the next line */
-    }
-
-
-    .author-image {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        width: 25px;
-        height: 25px;
     }
 
     .user-image {
@@ -217,6 +239,11 @@ const StyledWrapper = styled.div`
         font-size: 12px;
         color: #ffffff;
         background-color: #1389eb;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: default;
     }
 
     .tags {
@@ -249,8 +276,9 @@ const StyledWrapper = styled.div`
     }
 
     .stats div {
+        margin-top: 5px;
         margin-right: 1rem;
-        height: 20px;
+        height: 25px;
         display: flex;
         align-items: center;
         cursor: pointer;

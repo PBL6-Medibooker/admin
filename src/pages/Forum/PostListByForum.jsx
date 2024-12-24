@@ -63,7 +63,7 @@ const PostListByForum = () => {
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
         columnHelper.accessor("post_title", {
-            cell: (info) => <span>{info?.getValue()}</span>,
+            cell: (info) => <span className="truncate max-w-[500px] block">{info?.getValue()}</span>,
             header: t("forum.list.ttitle")
         }),
         columnHelper.accessor("speciality_id.name", {
@@ -211,7 +211,7 @@ const PostListByForum = () => {
                 {
                     !isDelete
                         ? <div className="flex justify-between items-center">
-                            <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("forum.list.spec")}: {name}</h1>
+                            <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("forum.list.spec")}: {name}</h1>
                             <div className="flex mr-6">
 
                                 <CustomButton

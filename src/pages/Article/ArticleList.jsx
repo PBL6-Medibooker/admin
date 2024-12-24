@@ -104,9 +104,9 @@ const ArticleList = () => {
                                  src={info?.getValue() || assets.user_icon} alt="..."/>,
             header: t("article.list.image")
         }),
-        columnHelper.accessor("article_title", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.title")}),
+        columnHelper.accessor("article_title", {cell: (info) => <span className="truncate max-w-[400px] block">{info?.getValue()}</span>, header: t("article.list.title")}),
         columnHelper.accessor("doctor_id.username", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.doctor")}),
-        columnHelper.accessor("doctor_id.speciality_id.name", {cell: (info) => <span>{info?.getValue()}</span>, header: t("article.list.spec")}),
+        columnHelper.accessor("doctor_id.speciality_id.name", {cell: (info) => <span>{info?.getValue() ? info?.getValue() : <span className='text-red-200'>Không thuộc chuyên khoa</span> }</span>, header: t("article.list.spec")}),
         columnHelper.accessor("date_published", {cell: (info) => {
                 const date = new Date(info?.getValue())
                 return <span>{date.toLocaleDateString("en-GB")}</span>
@@ -142,7 +142,7 @@ const ArticleList = () => {
             transition={{duration: 0.5}}
         >
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">{t("article.list.ctitle")}</h1>
+                <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("article.list.ctitle")}</h1>
                 <div className="flex gap-4 mr-4">
 
                     {

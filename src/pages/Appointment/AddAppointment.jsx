@@ -383,7 +383,7 @@ const AddAppointment = () => {
                         <button
                             type="button"
                             onClick={() => navigate(aToken ? '/all-appointment' : '/doctor-appointments')}
-                            className="bg-gray-300 px-6 py-3 text-sm text-black text-center rounded-full hover:bg-gray-400 transition-all"
+                            className="bg-gray-300 px-6 py-3 text-sm text-black text-center rounded-full hover:bg-gray-400 hover:text-white transition-all"
                         >
                             <i className="fas fa-arrow-left mr-2"></i> {t("appointment.add.back")}
                         </button>

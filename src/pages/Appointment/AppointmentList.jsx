@@ -73,7 +73,7 @@ const AppointmentList = () => {
                         initial={{opacity: 0, x: -20}}
                         animate={{opacity: 1, x: 0}}
                         transition={{duration: 0.3, delay: dataIndex * 0.1}}
-                        style={{marginLeft: "32px"}}
+                        style={{marginLeft: "20px"}}
                     >
                         {dataIndex + 1}
                     </motion.div>
@@ -94,7 +94,7 @@ const AppointmentList = () => {
                         initial={{opacity: 0, x: -20}}
                         animate={{opacity: 1, x: 0}}
                         transition={{duration: 0.3, delay: dataIndex * 0.1}}
-                        style={{marginLeft: "32px"}}
+                        style={{marginLeft: "2px"}}
                     >
                         <div className="flex w-8 h-8 items-center gap-2">
                             <img
@@ -102,7 +102,7 @@ const AppointmentList = () => {
                                 src={appointments[dataIndex]?.user_id?.profile_image ? appointments[dataIndex]?.user_id?.profile_image : assets.user_icon}
                                 alt=""
                             />
-                            <p>{appointments[dataIndex]?.user_id?.username}</p>
+                            <p className='whitespace-nowrap overflow-ellipsis'>{appointments[dataIndex]?.user_id?.username}</p>
                         </div>
 
                     </motion.div>
@@ -170,7 +170,7 @@ const AppointmentList = () => {
                         initial={{opacity: 0, x: -20}}
                         animate={{opacity: 1, x: 0}}
                         transition={{duration: 0.3, delay: dataIndex * 0.1}}
-                        style={{marginLeft: "20px"}}
+                        style={{marginLeft: "2px"}}
                     >
                         <div className="flex items-center ml-5 gap-2">
                             <p>{appointments[dataIndex]?.doctor_id?.username}</p>
@@ -205,7 +205,9 @@ const AppointmentList = () => {
                                 style={{marginLeft: "40px"}}
                             >
                                 {isCompleted ? (
-                                    <p className="text-green-500 text-xs font-medium">{t("appointment.list.completed")}</p>
+                                    <div className='bg-green-200 rounded-full py-2 w-[90px]'>
+                                        <p className="text-green-700 text-xs text-center font-medium">{t("appointment.list.completed")}</p>
+                                    </div>
                                 ) : (readOnly && !writeOnly && !fullAccess) ?
                                     (
                                         <img

@@ -28,6 +28,7 @@ import open from './eye-open.png'
 import ranking from './ranking.svg'
 import logo from './logo.png'
 import doctor from './doctor.svg'
+import banner from './banner.png'
 
 export const assets = {
     add_icon,
@@ -59,5 +60,6 @@ export const assets = {
     open,
     ranking,
     logo,
-    doctor
+    doctor,
+    banner
 }

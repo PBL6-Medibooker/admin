@@ -25,50 +25,28 @@ const UserAppointments = () => {
     const {name} = location.state || {};
     const [open, setOpen] = useState(false);
     const [appointmentId, setAppointmentId] = useState('');
-    const [isInitialLoading, setIsInitialLoading] = useState(true); // Track initial loading phase
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 3,
     });
 
-    // const {data = [], isLoading, refetch} = useQuery({
-    //     queryKey: ["appointments", id],
-    //     queryFn: async () => {
-    //         try {
-    //
-    //             const data = await appointmenttService.getAppointmentByUser(id, aToken);
-    //             console.log(data);
-    //             return data;
-    //         } catch (e) {
-    //             console.error(e);
-    //             throw new Error("Failed to load appointments");
-    //         }
-    //     },
-    // });
 
     const { data = [], isLoading, isError, refetch } = useQuery({
         queryKey: ["appointments", id],
         queryFn: async () => {
             try {
-                const data = await appointmentService.getAppointmentByUser(id, aToken);
-                return data;
+                return  await appointmentService.getAppointmentByUser(id, aToken);
+
             } catch (e) {
                 console.error(e);
                 throw new Error("Failed to load appointments");
             }
         },
         onSuccess: () => {
-            setIsInitialLoading(false);
+
         }
     });
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsInitialLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     const handleCancel = async (appointmentId) => {
         try {
@@ -122,7 +100,7 @@ const UserAppointments = () => {
 
 
 
-    if (isInitialLoading || isLoading) {
+    if (isLoading) {
         return (
             <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
                 <Loader />
@@ -145,78 +123,99 @@ const UserAppointments = () => {
                 {name} {t("account.user.na")}
             </p>
             <div>
-                {paginatedData.reverse().map((item, index) => {
-                    const {dayOfWeek, date} = separateDayAndDate(item.appointment_day);
-                    const appointmentDate = new Date(item.appointment_day);
-                    const isCompleted = appointmentDate < now;
+                {paginatedData.length > 0
+                    ? paginatedData.reverse().map((item, index) => {
+                        const {dayOfWeek, date} = separateDayAndDate(item.appointment_day);
+                        const appointmentDate = new Date(item.appointment_day);
+                        const isCompleted = appointmentDate < now;
 
-                    return (
-                        <motion.div
-                            key={item._id}
-                            className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
-                            initial={{opacity: 0, y: 20}}
-                            animate={{opacity: 1, y: 0}}
-                            transition={{duration: 0.5, delay: index * 0.05}}
-                        >
-                            <div className='w-32 h-32'>
-                                <motion.img
-                                    className="w-full h-full object-cover bg-indigo-50"
-                                    src={item.doctor_id.profile_image ? item.doctor_id.profile_image : assets.user_icon}
-                                    alt="Doctor"
-                                    initial={{scale: 0.9}}
-                                    animate={{scale: 1}}
-                                    transition={{duration: 0.3, ease: "easeInOut"}}
-                                />
-                            </div>
+                        return (
+                            <motion.div
+                                key={item._id}
+                                className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
+                                initial={{opacity: 0, y: 20}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.5, delay: index * 0.05}}
+                            >
+                                <div className='w-32 h-32'>
+                                    <motion.img
+                                        className="w-full h-full object-cover bg-indigo-50"
+                                        src={item.doctor_id?.profile_image ? item.doctor_id?.profile_image : assets.user_icon}
+                                        alt="Doctor"
+                                        initial={{scale: 0.9}}
+                                        animate={{scale: 1}}
+                                        transition={{duration: 0.3, ease: "easeInOut"}}
+                                    />
+                                </div>
 
-                            <div className="flex-1 text-sm text-zinc-600">
-                                <p className="text-neutral-800 font-semibold">{item.doctor_id.username}</p>
-                                <p>{item.doctor_id.speciality}</p>
-                                <p className="text-black font-medium mt-1">
-                                    {t("account.user.address")}: <span className="text-xs">{item.doctor_id.address}</span>
-                                </p>
-                                <p className="text-xs mt-1">
-                                    <span className="text-black text-sm font-medium"> {t("account.user.dnt")}:</span>{" "}
-                                    {`${dayOfWeek}, ${dateFormat(date)} | ${item.appointment_time_start} - ${item.appointment_time_end}`}
-                                </p>
-                            </div>
+                                <div className="flex-1 text-sm text-zinc-600 mt-5">
+                                    <p className="text-neutral-800 font-semibold">{item.doctor_id?.username}</p>
+                                    <p>  {t("sidebar.speciality")}:
+                                        {item.doctor_id?.speciality_id?.name}</p>
+                                    <p className="text-black font-medium mt-1">
+                                        <span>{t("account.user.address")}:</span> <span
+                                        className="text-xs">{item.doctor_id?.address}</span>
+                                    </p>
+                                    <p className="text-xs mt-1">
+                                        <span
+                                            className="text-black text-sm font-medium"> {t("account.user.dnt")}:</span>{" "}
+                                        {`${dayOfWeek}, ${dateFormat(date)} | ${item.appointment_time_start} - ${item.appointment_time_end}`}
+                                    </p>
+                                </div>
 
-                            <div className="flex flex-col justify-end gap-2">
-                                {!item.is_deleted && !isCompleted && (
-                                    <motion.button
-                                        whileHover={{scale: 1.05}}
-                                        whileTap={{scale: 0.95}}
-                                        onClick={() => openCancelModal(item._id)}
-                                        className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"
-                                    >
-                                        {t("account.user.cancela")}
-                                    </motion.button>
-                                )}
-                                {item.is_deleted && !isCompleted && (
-                                    <motion.button
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: 1}}
-                                        transition={{duration: 0.3}}
-                                        className="w-48 sm:w-min-48 py-2 px-1 border border-red-500 rounded text-red-500 hover:bg-red-100 hover:shadow-md transition-all duration-300"
-                                    >
-                                        {t("account.user.cancelled")}
-                                    </motion.button>
-                                )}
+                                <div className="flex flex-col justify-end gap-2">
+                                    {!item.is_deleted && !isCompleted && (
+                                        <motion.button
+                                            whileHover={{scale: 1.05}}
+                                            whileTap={{scale: 0.95}}
+                                            onClick={() => openCancelModal(item._id)}
+                                            className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border hover:bg-red-600 hover:text-white hover:shadow-md transition-all duration-300"
+                                        >
+                                            {t("account.user.cancela")}
+                                        </motion.button>
+                                    )}
+                                    {item.is_deleted && !isCompleted && (
+                                        <motion.button
+                                            initial={{opacity: 0}}
+                                            animate={{opacity: 1}}
+                                            transition={{duration: 0.3}}
+                                            className="w-48 sm:w-min-48 py-2 px-1 border border-red-500 rounded text-red-500 hover:bg-red-100 hover:shadow-md transition-all duration-300"
+                                        >
+                                            {t("account.user.cancelled")}
+                                        </motion.button>
+                                    )}
 
-                                {isCompleted && (
-                                    <motion.button
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: 1}}
-                                        transition={{duration: 0.3}}
-                                        className="w-48 sm:w-min-48 py-2 px-1 border border-green-500 rounded text-green-500 hover:bg-green-100 hover:shadow-md transition-all duration-300"
-                                    >
-                                        {t("account.user.completed")}
-                                    </motion.button>
-                                )}
-                            </div>
-                        </motion.div>
-                    );
-                })}
+                                    {isCompleted && (
+                                        <motion.button
+                                            initial={{opacity: 0}}
+                                            animate={{opacity: 1}}
+                                            transition={{duration: 0.3}}
+                                            className="w-48 sm:w-min-48 py-2 px-1 border border-green-500 rounded text-green-500 hover:bg-green-100 hover:shadow-md transition-all duration-300"
+                                        >
+                                            {t("account.user.completed")}
+                                        </motion.button>
+                                    )}
+                                </div>
+                            </motion.div>
+                        );
+                    }) : <motion.div
+                        className="flex justify-center items-center w-full h-full py-12"
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.5}}
+                    >
+                        <div className="text-center">
+                            <motion.p
+                                className="text-lg font-semibold text-gray-600"
+                                initial={{scale: 0.8}}
+                                animate={{scale: 1}}
+                                transition={{duration: 0.3}}
+                            >
+                                {t("account.dvd.nodata")}
+                            </motion.p>
+                        </div>
+                    </motion.div>
+                }
             </div>
 
             {/* Pagination */}

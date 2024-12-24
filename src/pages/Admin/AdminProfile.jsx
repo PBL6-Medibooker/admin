@@ -124,45 +124,18 @@ const AdminProfile = () => {
                 email: adminData.email,
                 new_password: newPass,
             }
-            const result = accountService.changePassword(data, aToken)
-            if (result.email) {
-                setIsChangePassword(false)
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("doctor.profile.csuccess"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
+            await accountService.changePassword(data, aToken)
+            setIsChangePassword(false)
+            await Swal.fire({
+                position: "top-end",
+                title: t("doctor.profile.csuccess"),
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+            })
         } catch (e) {
             console.log(e)
-        }
-    }
-
-    const resetPass = async () => {
-        try {
-            const result = await accountService.forgotPassword(adminData.email, aToken);
-            if (result) {
-
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("doctor.profile.rsuccess"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    backdrop: false
-                })
-
-                setTimeout(() => {
-                    logout();
-                }, 3000);
-            } else {
-                toast.error(result.error)
-            }
-
-        } catch (e) {
-            console.log(e);
         }
     }
 
@@ -193,7 +166,8 @@ const AdminProfile = () => {
                 title: t("adminProfile.success"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
 
             // formData.forEach((value, key) => {
@@ -206,13 +180,6 @@ const AdminProfile = () => {
     }
 
 
-    useEffect(() => {
-        if (aToken) {
-            refetch();
-            console.log(aToken)
-        }
-    }, [aToken]);
-
     const fadeIn = {
         hidden: {opacity: 0, y: 10},
         visible: {opacity: 1, y: 0, transition: {duration: 0.4}},
@@ -222,6 +189,12 @@ const AdminProfile = () => {
         hidden: {opacity: 0, scale: 0.9},
         visible: {opacity: 1, scale: 1, transition: {duration: 0.3}},
     };
+
+    useEffect(() => {
+        if (aToken) {
+            refetch();
+        }
+    }, [aToken]);
 
     if (isLoading) {
         return (
@@ -298,7 +271,6 @@ const AdminProfile = () => {
                                                     type="file"
                                                     id="image"
                                                     hidden
-                                                    // accept="image/jpg"
                                                 />
                                             </label>
                                         ) : (
@@ -329,7 +301,7 @@ const AdminProfile = () => {
                                     className="mb-6"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary mb-2">
                                         {t("doctor.profile.old")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -364,7 +336,7 @@ const AdminProfile = () => {
                                     className="mb-6"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary mb-2">
                                         {t("doctor.profile.new")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -376,6 +348,7 @@ const AdminProfile = () => {
                                             required
                                             aria-required="true"
                                             tabIndex='2'
+                                            type={isNewPasswordVisible ? 'text' : 'password'}
                                         />
                                         <motion.img
                                             id='eye-icon'
@@ -395,7 +368,7 @@ const AdminProfile = () => {
                                     className="mb-6"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary mb-2">
                                         {t("doctor.profile.cnew")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -408,6 +381,7 @@ const AdminProfile = () => {
                                             required
                                             aria-required="true"
                                             tabIndex='3'
+                                            type={isCNewPasswordVisible ? 'text' : 'password'}
                                         />
                                         <motion.img
                                             id='eye-icon'
@@ -560,7 +534,13 @@ const AdminProfile = () => {
 
                                 <motion.div className='flex justify-end mt-3 mr-72 gap-2'>
                                     <motion.button
-                                        onClick={() => setIsChangePassword(false)}
+                                        onClick={() => {
+                                            setOldPass('');
+                                            setNewPass('');
+                                            setCheckNewPass('');
+                                            setIsChangePassword(false);
+                                        }}
+
                                         className="px-4 py-1 border border-red-600 text-sm rounded-full hover:bg-red-700 hover:text-white transition-all"
                                         whileHover={{scale: 1.05}}
                                         whileTap={{scale: 0.95}}
@@ -581,21 +561,21 @@ const AdminProfile = () => {
                                 <motion.div className='flex justify-end mt-3 gap-2'>
                                     <motion.button
                                         onClick={() => setIsChangePassword(!isChangePassword)}
-                                        className="text-primary text-sm transition-all italic"
+                                        className="text-primary text-sm transition-all italic mr-2"
                                         whileHover={{scale: 1.05}}
                                         whileTap={{scale: 0.95}}
                                     >
                                         {t("doctor.profile.change")}
                                     </motion.button>
-                                    |
-                                    <motion.button
-                                        onClick={resetPass}
-                                        className="text-primary text-sm transition-all italic"
-                                        whileHover={{scale: 1.05}}
-                                        whileTap={{scale: 0.95}}
-                                    >
-                                        {t("doctor.profile.forgot")}
-                                    </motion.button>
+                                    {/*|*/}
+                                    {/*<motion.button*/}
+                                    {/*    onClick={resetPass}*/}
+                                    {/*    className="text-primary text-sm transition-all italic"*/}
+                                    {/*    whileHover={{scale: 1.05}}*/}
+                                    {/*    whileTap={{scale: 0.95}}*/}
+                                    {/*>*/}
+                                    {/*    {t("doctor.profile.forgot")}*/}
+                                    {/*</motion.button>*/}
                                 </motion.div>
                         }
 

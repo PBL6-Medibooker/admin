@@ -28,7 +28,6 @@ const AddNewCustomerAcc = () => {
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-
         if (!validator.isStrongPassword(password)) {
             setIsCheck(true)
             await Swal.fire({

@@ -40,6 +40,7 @@ const AddRegion = ({open, onClose}) => {
                 icon: "success",
                 showConfirmButton: false,
                 timer: 1500,
+                backdrop: false
             });
             handleClearForm();
         } catch (e) {

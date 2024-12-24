@@ -70,6 +70,7 @@ const AddSpeciality = () => {
         try {
             const data = await specialityService.addSpec(formData, aToken);
             if (data) {
+                navigate("/speciality")
                 await Swal.fire({
                     position: "top-end",
                     title: t("speciality.add.success"),
@@ -77,7 +78,7 @@ const AddSpeciality = () => {
                     showConfirmButton: false,
                     timer: 1500,
                 });
-                navigate("/speciality");
+
             } else {
                 await Swal.fire({
                     position: "top-end",
@@ -162,7 +163,7 @@ const AddSpeciality = () => {
                     <div className="mb-6">
                         <label
                             htmlFor="name"
-                            className="block text-gray-700 font-medium mb-2"
+                            className="block text-gray-700 font-bold mb-2"
                         >
                             {t("speciality.add.sname")}
                         </label>
@@ -181,7 +182,7 @@ const AddSpeciality = () => {
                     <div className="mb-8">
                         <label
                             htmlFor="description"
-                            className="block text-gray-700 font-medium mb-2"
+                            className="block text-gray-700 font-bold mb-2"
                         >
                             {t("speciality.add.des")}
                         </label>
@@ -201,7 +202,7 @@ const AddSpeciality = () => {
                         <motion.button
                             type="button"
                             onClick={() => navigate("/speciality")}
-                            className="flex items-center bg-red-500 text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            className="flex items-center bg-red-500 text-white px-5 py-3 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -209,7 +210,7 @@ const AddSpeciality = () => {
                         </motion.button>
                         <motion.button
                             type="submit"
-                            className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium"
+                            className="bg-primary text-white px-5 py-3 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >

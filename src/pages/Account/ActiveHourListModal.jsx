@@ -208,7 +208,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
     const getActiveHourList = async () => {
         try {
             // const response = await accountService.getAccountActiveHourList(id, aToken);
-            const response = await doctorService.getAccountActiveHourList(id, aToken);
+            const token = aToken || dToken
+            const response = await doctorService.getAccountActiveHourList(id, token);
             console.log('Full response:', response);
             const { active_hours, booked, fully_booked } = response;
 

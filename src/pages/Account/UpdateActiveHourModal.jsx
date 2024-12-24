@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import * as doctorService from "../../service/DoctorService";
 import {DoctorContext} from "../../context/DoctorContext";
+import * as appointmentService from "../../service/AppointmentService";
 
 const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
     const { aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
@@ -67,6 +68,26 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
         setActiveHour((prev) => ({ ...prev, [name]: formattedValue }));
     };
 
+
+    // const changeAppointmentTime = async () => {
+    //     try {
+    //         const { day, start_time, end_time } = activeHour;
+    //
+    //         const data = {
+    //             doctor_id: accountId,
+    //             appointment_day: day,
+    //             appointment_time_start: start_time,
+    //             appointment_time_end: end_time,
+    //         }
+    //         const result = await appointmentService.changeAppointmentInfo(data, id, aToken);
+    //         if (result) {
+    //             console.log('appointment time', result)
+    //         }
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -93,6 +114,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
 
             const result = await doctorService.updateDoctorActiveHour(activeHour, accountId, aToken);
 
+            console.log(result)
             if (result) {
                 onClose();
                 await Swal.fire({
@@ -101,6 +123,7 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                     icon: "success",
                     showConfirmButton: false,
                     timer: 1500,
+                    backdrop: false
                 });
             } else {
                 await Swal.fire({
@@ -112,7 +135,15 @@ const UpdateActiveHourModal = ({ open, onClose, data, accountId, cancel }) => {
                 });
             }
         } catch (e) {
-            toast.error(e.message || "Error updating active hour.");
+            await Swal.fire({
+                position: "top-end",
+                title: t("account.active.emessage"),
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1500,
+                backdrop: false
+
+            });
         }
     };
 

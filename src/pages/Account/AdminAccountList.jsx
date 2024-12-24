@@ -17,9 +17,10 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import * as adminService from "../../service/AdminService";
 import {useNavigate} from "react-router-dom";
+import {Tooltip} from "@mui/material";
 
 const AdminAccountList = () => {
-    const {aToken, adminList, refetchAdminList, adminData} = useContext(AdminContext);
+    const {aToken, adminList, refetchAdminList, adminData, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const columnHelper = createColumnHelper();
     const {t} = useTranslation();
     const [globalFilter, setGlobalFilter] = useState("");
@@ -178,16 +179,42 @@ const AdminAccountList = () => {
             <div className="flex justify-between items-center mb-6 mt-3 mr-2">
                 <h1 className="text-lg text-primary lg:text-2xl font-bold">{t("account.admin.title")}</h1>
                 <div className="flex gap-4 mr-2">
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                               <span>
+                                     <CustomButton
+                                         onClick={openDeleteModal}
+                                         label={t("account.admin.delete")}
+                                         icon={FaRegTrashAlt}
+                                         bgColor="bg-red-600"
+                                         hoverColor="rgba(0, 128, 255, 0.4)"
+                                         shadowColor="rgba(255, 0, 0, 0.4)"
+                                         disabled={readOnly && !fullAccess && !writeOnly}
+                                         cursor={true}
+                                     />
+                               </span>
+                            </Tooltip>
+                        )
+                    }
 
 
-                    <CustomButton
-                        onClick={openDeleteModal}
-                        label={t("account.admin.delete")}
-                        icon={FaRegTrashAlt}
-                        bgColor="bg-red-600"
-                        hoverColor="rgba(0, 128, 255, 0.4)"
-                        shadowColor="rgba(255, 0, 0, 0.4)"
-                    />
+                    {
+                        (fullAccess || writeOnly) && (
+
+                            <CustomButton
+                                onClick={openDeleteModal}
+                                label={t("account.admin.delete")}
+                                icon={FaRegTrashAlt}
+                                bgColor="bg-red-600"
+                                hoverColor="rgba(0, 128, 255, 0.4)"
+                                shadowColor="rgba(255, 0, 0, 0.4)"
+                            />
+                        )
+                    }
+
+
+
 
                 </div>
 

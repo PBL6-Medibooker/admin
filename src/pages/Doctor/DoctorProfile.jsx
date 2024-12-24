@@ -12,6 +12,7 @@ import * as specialityService from "../../service/SpecialityService";
 import bcrypt from 'bcryptjs';
 import validator from "validator";
 import * as doctorService from "../../service/DoctorService";
+import Loader from "../../components/Loader";
 
 
 const DoctorProfile = () => {
@@ -35,23 +36,28 @@ const DoctorProfile = () => {
     const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
     const [isCNewPasswordVisible, setIsCNewPasswordVisible] = useState(false);
 
-
-    const getDoctorData = async () => {
-        try {
-            const result = await doctorService.getDoctorProfile(dToken);
-            console.log(result)
-            if (result.success) {
-                setDoctorData(result.profileData)
-                setDocId(result.profileData._id)
-                setInitialDoctorData(result.profileData)
-                setHashPass(result.profileData.password)
+    const {data: docData = {}, isLoading, refetch} = useQuery(
+        {
+            queryKey: ["docData"],
+            queryFn: async () => {
+                try {
+                    const result = await doctorService.getDoctorProfile(dToken);
+                    console.log(result)
+                    if (result.success) {
+                        setDoctorData(result.profileData)
+                        setDocId(result.profileData._id)
+                        setInitialDoctorData(result.profileData)
+                        setHashPass(result.profileData.password)
+                    }
+                    return result
+                } catch (e) {
+                    console.log(e);
+                }
             }
-        } catch (e) {
-            console.log(e);
         }
-    };
+    )
 
-    const {data: regionData} = useQuery(
+    const {data: regionData = []} = useQuery(
         {
             queryKey: ["regions"],
             queryFn: async () => {
@@ -79,7 +85,7 @@ const DoctorProfile = () => {
             region: doctorData.region_id.name,
         }
 
-        const result = await accountService.updateDocInfoAcc(data, doctorData._id, dToken);
+        const result = await doctorService.updateDocInfoAcc(data, doctorData._id, dToken);
 
         if (result?.status === 200) {
             setIsEdit(false)
@@ -233,8 +239,9 @@ const DoctorProfile = () => {
             await accountService.updateCusAcc(formData, doctorData._id, dToken);
 
             setIsEdit(false)
-            await getDoctorData()
+            // await getDoctorData()
 
+            refetch()
             await Swal.fire({
                 position: "top-end",
                 title: t("doctor.profile.success"),
@@ -253,29 +260,6 @@ const DoctorProfile = () => {
         }
     }
 
-    const resetPass = async () => {
-        try {
-            const result = await accountService.forgotPassword(doctorData.email, dToken);
-            if (result) {
-                console.log(result)
-
-                await Swal.fire({
-                    position: "top-end",
-                    title: t("doctor.profile.rsuccess"),
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    backdrop: false
-                })
-
-            } else {
-                toast.error(result.error)
-            }
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -301,9 +285,19 @@ const DoctorProfile = () => {
 
     useEffect(() => {
         if (dToken) {
-            getDoctorData();
+            // getDoctorData();
+            console.log(regionData)
+            refetch()
         }
-    }, [dToken, hashPass]);
+    }, [dToken]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -392,10 +386,10 @@ const DoctorProfile = () => {
                                     initial={{opacity: 0}}
                                     animate={{opacity: 1}}
                                     transition={{delay: 0.6, duration: 0.5}}
-                                    className="mb-6"
+                                    className="mb-6 flex flex-col items-start justify-center"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary left-0">
                                         {t("doctor.profile.old")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -414,7 +408,7 @@ const DoctorProfile = () => {
                                             id='eye-icon'
                                             src={isPasswordVisible ? assets.open : assets.close}
                                             alt="close"
-                                            className="w-[25px] cursor-pointer absolute right-[296px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                            className="w-[25px] cursor-pointer absolute right-[12px] top-[33px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
                                             onClick={togglePasswordVisibility}
                                         />
                                     </motion.div>
@@ -430,7 +424,7 @@ const DoctorProfile = () => {
                                     className="mb-6"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary">
                                         {t("doctor.profile.new")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -464,7 +458,7 @@ const DoctorProfile = () => {
                                     className="mb-6"
                                 >
                                     <label htmlFor="health-issue"
-                                           className="block text-lg font-medium text-primary mb-2">
+                                           className="block text-lg font-bold text-primary">
                                         {t("doctor.profile.cnew")}
                                     </label>
                                     <motion.div className="flex items-center space-x-3 relative">
@@ -619,8 +613,8 @@ const DoctorProfile = () => {
                                                 }
                                                 value={doctorData.region_id?.name || ""}
                                             >
-                                                {regionData.map((region) => (
-                                                    <option key={region._id} value={region.name}>
+                                                {regionData?.map((region, index) => (
+                                                    <option key={index} value={region.name}>
                                                         {region.name}
                                                     </option>
                                                 ))}
@@ -716,7 +710,7 @@ const DoctorProfile = () => {
                                 <motion.div className='flex justify-end mt-3 mr-72 gap-2'>
                                     <motion.button
                                         onClick={() => setIsChangePassword(false)}
-                                        className="px-4 py-1 border border-red-600 text-sm rounded-full hover:bg-primary hover:text-white transition-all"
+                                        className="px-4 py-1 border border-red-600 text-sm rounded-full hover:bg-red-600 hover:text-white transition-all"
                                         whileHover={{scale: 1.05}}
                                         whileTap={{scale: 0.95}}
                                     >
@@ -735,21 +729,21 @@ const DoctorProfile = () => {
                                 <motion.div className='flex justify-end mt-3 gap-2'>
                                     <motion.button
                                         onClick={() => setIsChangePassword(!isChangePassword)}
-                                        className="text-primary text-sm transition-all italic"
+                                        className="text-primary text-sm transition-all italic mr-2"
                                         whileHover={{scale: 1.05}}
                                         whileTap={{scale: 0.95}}
                                     >
                                         {t("doctor.profile.change")}
                                     </motion.button>
-                                    |
-                                    <motion.button
-                                        onClick={resetPass}
-                                        className="text-primary text-sm transition-all italic"
-                                        whileHover={{scale: 1.05}}
-                                        whileTap={{scale: 0.95}}
-                                    >
-                                        {t("doctor.profile.forgot")}
-                                    </motion.button>
+                                    {/*|*/}
+                                    {/*<motion.button*/}
+                                    {/*    onClick={resetPass}*/}
+                                    {/*    className="text-primary text-sm transition-all italic"*/}
+                                    {/*    whileHover={{scale: 1.05}}*/}
+                                    {/*    whileTap={{scale: 0.95}}*/}
+                                    {/*>*/}
+                                    {/*    {t("doctor.profile.forgot")}*/}
+                                    {/*</motion.button>*/}
                                 </motion.div>
                         }
 

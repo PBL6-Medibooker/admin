@@ -7,37 +7,51 @@ import * as specialityService from "../../service/SpecialityService";
 import SpecialityByDoctorChart from "../../components/Chart/SpecialityByDoctorChart";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
 
 const SpecialityDashBoard = () => {
     const {aToken} = useContext(AdminContext);
-    const [specialities, setSpecialities] = useState([]);
     const [totalSpecialities, setTotalSpecialities] = useState(0);
     const {t} = useTranslation();
-    const navigate = useNavigate();
 
-    const getAllSpeciality = async () => {
-        try {
-            const data = await specialityService.findAll(false, aToken);
+
+    // const getAllSpeciality = async () => {
+    //     try {
+    //         const data = await specialityService.findAll('false', aToken);
+    //         if (data) {
+    //             setTotalSpecialities(data.length);
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // };
+
+    const { refetch, isLoading} = useQuery({
+        queryKey:['specLength'],
+        queryFn: async () => {
+            const data = await specialityService.findAll('false', aToken);
             if (data) {
-                setSpecialities(data);
-                console.log(data);
                 setTotalSpecialities(data.length);
             }
-        } catch (e) {
-            console.log(e);
+            return data
         }
-    };
+    })
 
-    const handleNavigate = () => {
-        // Passing the state is important here
-        navigate('/speciality', { state: { isDeleted: false } });
-    };
 
     useEffect(() => {
         if (aToken) {
-            getAllSpeciality();
+            refetch()
         }
     }, [aToken]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>
@@ -50,15 +64,13 @@ const SpecialityDashBoard = () => {
                 >
                     <StatCard
                         name={t("speciality.dashboard.title")}
-                        to={'/speciality'}  // No need to pass state here
+                        to={'/speciality'}
                         icon={ClipboardList}
                         value={totalSpecialities}
                         color='#6366F1'
-                        onClick={handleNavigate}  // State is passed when handleNavigate is called
                     />
                 </motion.div>
 
-                {/* CHARTS */}
                 <div className='grid grid-cols-1 lg:grid-cols-1 gap-8'>
                     <SpecialityByDoctorChart />
                 </div>

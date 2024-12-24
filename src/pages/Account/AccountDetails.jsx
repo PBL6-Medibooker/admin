@@ -160,7 +160,8 @@ const AccountDetails = () => {
                         (readOnly && !writeOnly && !fullAccess) && (
                             <Tooltip title={t("common.access.permission")} arrow>
                                 <motion.button
-                                    className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-white bg-primary rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                    className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-white bg-primary
+                                    rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
                                     onClick={resetPass}
                                     {...hoverSettings}
                                     disabled={readOnly && !fullAccess && !writeOnly}
@@ -175,11 +176,12 @@ const AccountDetails = () => {
                     {
                         (fullAccess || writeOnly) && (
                             <motion.button
-                                className="flex items-center gap-2 px-8 py-3 text-white bg-primary rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
+                                className="flex items-center gap-2 px-8 py-3 text-white bg-primary rounded-full shadow-md
+                                hover:bg-primary-dark focus:outline-none transition-all"
                                 onClick={resetPass}
                                 whileHover={{
                                     scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                    boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
                                 }}
                                 whileTap={{scale: 0.95}}
                                 transition={{type: "spring", stiffness: 300}}
@@ -190,51 +192,52 @@ const AccountDetails = () => {
                         )
                     }
 
+                    <motion.button
+                        className="flex items-center gap-2 px-8 py-3 text-gray-700 bg-amber-400
+                                rounded-full hover:bg-amber-dark focus:outline-none transition-all"
+                        onClick={() =>
+                            navigate(`/user-appointments/${account._id}`, {
+                                state: {name: account.username},
+                            })
+                        }
+                        whileHover={{
+                            scale: 1.1,
+                            boxShadow: "0px 8px 20px rgba(245, 158, 11, 1)",
+                        }}
+                        whileTap={{scale: 0.95}}
+                        transition={{type: "spring", stiffness: 300}}
+                    >
+                        <CalendarFold/>{t("account.update.appointments")}
+                    </motion.button>
 
 
+                    {/*{*/}
+                    {/*    (readOnly && !writeOnly && !fullAccess) && (*/}
+                    {/*        <Tooltip title={t("common.access.permission")} arrow>*/}
 
-                    {
-                        (readOnly && !writeOnly && !fullAccess) && (
-                            <Tooltip title={t("common.access.permission")} arrow>
-
-                                <motion.button
-                                    className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
-                                    onClick={() =>
-                                        navigate(`/user-appointments/${account._id}`, {
-                                            state: {name: account.username},
-                                        })
-                                    }
-                                    {...hoverSettings}
-                                    disabled={readOnly && !fullAccess && !writeOnly}
-                                >
-                                    <CalendarFold/>{t("account.update.appointments")}
-                                </motion.button>
-                            </Tooltip>
-                        )
-                    }
+                    {/*            <motion.button*/}
+                    {/*                className="flex items-center gap-2 px-8 py-3 cursor-not-allowed text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"*/}
+                    {/*                onClick={() =>*/}
+                    {/*                    navigate(`/user-appointments/${account._id}`, {*/}
+                    {/*                        state: {name: account.username},*/}
+                    {/*                    })*/}
+                    {/*                }*/}
+                    {/*                {...hoverSettings}*/}
+                    {/*                disabled={readOnly && !fullAccess && !writeOnly}*/}
+                    {/*            >*/}
+                    {/*                <CalendarFold/>{t("account.update.appointments")}*/}
+                    {/*            </motion.button>*/}
+                    {/*        </Tooltip>*/}
+                    {/*    )*/}
+                    {/*}*/}
 
 
-                    {
-                        (fullAccess || writeOnly) && (
-                            <motion.button
-                                className="flex items-center gap-2 px-8 py-3 text-gray-700 bg-amber-400 rounded-full shadow-md hover:bg-primary-dark focus:outline-none transition-all"
-                                onClick={() =>
-                                    navigate(`/user-appointments/${account._id}`, {
-                                        state: {name: account.username},
-                                    })
-                                }
-                                whileHover={{
-                                    scale: 1.1,
-                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
-                                }}
-                                whileTap={{scale: 0.95}}
-                                transition={{type: "spring", stiffness: 300}}
-                            >
-                                <CalendarFold/>{t("account.update.appointments")}
-                            </motion.button>
+                    {/*{*/}
+                    {/*    (fullAccess || writeOnly) && (*/}
+                    {/*    */}
 
-                        )
-                    }
+                    {/*    )*/}
+                    {/*}*/}
                 </div>
             </motion.div>
 
@@ -455,7 +458,7 @@ const AccountDetails = () => {
                         transition={{duration: 0.5, delay: 0.4}}
                     >
                         <motion.button
-                            onClick={() => navigate("/account")}
+                            onClick={() => navigate(selectedId ? "/admin-account" : "/account")}
                             className="bg-gray-300 px-6 py-3 text-sm text-gray-700 font-bold rounded-full hover:bg-gray-400 hover:text-white transition-all"
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}

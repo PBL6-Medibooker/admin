@@ -178,7 +178,7 @@ const DoctorAppointments = () => {
                             style={{marginLeft: "40px"}}
                         >
                             {isCompleted ? (
-                                <div className='bg-green-200 rounded-full  py-2 w-[90px]'>
+                                <div className='bg-green-200 rounded-full py-2 w-[90px]'>
                                     <p className="text-green-700 text-xs text-center font-medium">{t("appointment.list.completed")}</p>
                                 </div>
                             ) : (

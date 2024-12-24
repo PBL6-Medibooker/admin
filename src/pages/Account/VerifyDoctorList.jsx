@@ -63,7 +63,7 @@ const VerifyDoctorList = () => {
         getFilteredRowModel: getFilteredRowModel(),
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        initialState: {pagination: {pageSize: 7}}
+        initialState: {pagination: {pageSize: 8}}
     });
 
     const toggleAccountSelection = (id) => {
@@ -202,11 +202,10 @@ const VerifyDoctorList = () => {
         <motion.div className="mr-5 mt-5 mb-5 pl-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
                     animate={{opacity: 1}} exit={{opacity: 0}}>
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">
+                <h1 className="text-lg text-primary lg:text-2xl font-bold">
                     {t("account.verified.title")}
                 </h1>
                 <div className="flex gap-3 mr-5">
-
 
                     {
                         (readOnly && !writeOnly && !fullAccess) && (
@@ -366,7 +365,9 @@ const VerifyDoctorList = () => {
                                         </div>
                                     }
                                     <p className="text-neutral-800 text-lg font-bold">{item.username}</p>
-                                    <p className="text-zinc-600 text-sm">{item.speciality_id?.name}</p>
+                                    <p className="text-zinc-600 text-sm">{item.speciality_id?.name ? item.speciality_id?.name : <span className='text-red-600'>
+                                        Vui lòng cập nhật chuyên khoa
+                                    </span>}</p>
                                 </div>
                             </motion.div>
                         );

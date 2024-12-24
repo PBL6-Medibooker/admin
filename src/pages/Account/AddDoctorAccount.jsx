@@ -51,7 +51,7 @@ const AddDoctorAccount = () => {
             navigate("/doc-account");
             await Swal.fire({
                 position: "top-end",
-                title: t("account.addDoctor.success"),
+                title: t("account.addNewCustomerAcc.success"),
                 icon: "success",
                 showConfirmButton: false,
                 timer: 1500,

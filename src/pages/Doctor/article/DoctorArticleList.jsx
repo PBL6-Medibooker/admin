@@ -140,98 +140,117 @@ const DoctorArticleList = () => {
                 </motion.button>
             </motion.div>
             <div>
-                {paginatedData.map((item, index) => {
+                {paginatedData.length > 0
+                    ? paginatedData.map((item, index) => {
 
-                    const date = new Date(item.date_published)
-                    const d = date.toLocaleDateString("en-GB")
+                        const date = new Date(item.date_published)
+                        const d = date.toLocaleDateString("en-GB")
 
-                    return (
-                        <motion.div
-                            key={item._id}
-                            className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
-                            initial={{opacity: 0, y: 20}}
-                            animate={{opacity: 1, y: 0}}
-                            transition={{duration: 0.5, delay: index * 0.05}}
-                        >
+                        return (
+                            <motion.div
+                                key={item._id}
+                                className="flex w-full gap-4 sm:flex sm:gap-6 py-2 border-b bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-300"
+                                initial={{opacity: 0, y: 20}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.5, delay: index * 0.05}}
+                            >
 
-                            <div className='w-32 h-32'>
-                                <motion.img
-                                    className="w-full h-full object-cover  bg-indigo-50"
-                                    src={item.article_image ? item.article_image : assets.user_icon}
-                                    alt="Doctor"
-                                    initial={{scale: 0.9}}
-                                    animate={{scale: 1}}
-                                    transition={{duration: 0.3, ease: "easeInOut"}}
-                                />
-                            </div>
-
-
-                            <div className="flex-1 gap-2 text-sm text-zinc-600">
-
-
-                                <motion.p
-                                    className="text-lg font-semibold"
-                                    whileHover={{color: "#4A90E2"}}
-                                    transition={{duration: 0.3}}
-                                >
-                                    {item.article_title}
-                                </motion.p>
-
-                                <motion.p
-                                    className="text-gray-500"
-                                    initial={{opacity: 0}}
-                                    animate={{opacity: 1}}
-                                    transition={{duration: 0.5, delay: 0.1}}
-                                >
-                                    {item.doctor_id.speciality_id.name}
-                                </motion.p>
-
-                                <motion.p
-                                    className="mt-2 text-gray-600"
-                                    initial={{opacity: 0}}
-                                    animate={{opacity: 1}}
-                                    transition={{duration: 0.5, delay: 0.2}}
-                                >
-                                    {t("doctor.article.date")}: <span className="text-xs">{d}</span>
-                                </motion.p>
-                            </div>
-
-
-                            <div className="flex flex-col justify-end gap-2">
-
-                                <motion.div
-                                    className="flex  justify-between items-center "
-                                    initial={{opacity: 0, y: 10}}
-                                    animate={{opacity: 1, y: 0}}
-                                    transition={{duration: 0.5}}
-                                    whileHover={{scale: 1.02}}
-                                >
-                                    <motion.input
-                                        type="checkbox"
-                                        checked={selectedArticleIds.includes(item._id)}
-                                        onChange={() => selectedArticle(item._id)}
-                                        className="cursor-pointer mb-16 ml-40"
-                                        whileTap={{scale: 0.9}}
-                                        initial={{opacity: 0, scale: 0.9}}
-                                        animate={{opacity: 1, scale: 1}}
+                                <div className='w-32 h-32'>
+                                    <motion.img
+                                        className="w-full h-full object-cover  bg-indigo-50"
+                                        src={item.article_image ? item.article_image : assets.user_icon}
+                                        alt="Doctor"
+                                        initial={{scale: 0.9}}
+                                        animate={{scale: 1}}
                                         transition={{duration: 0.3, ease: "easeInOut"}}
                                     />
+                                </div>
 
-                                </motion.div>
 
-                                <motion.button
-                                    onClick={() => navigate(`/update-article/${item._id}`)}
-                                    initial={{opacity: 0}}
-                                    animate={{opacity: 1}}
-                                    transition={{duration: 0.3}}
-                                    className="w-48 sm:w-min-48 py-2 px-1 border border-green-500 rounded text-green-500 hover:bg-green-100 hover:shadow-md transition-all duration-300"
-                                >
-                                    {t("doctor.article.edit")}
-                                </motion.button>
-                            </div>
-                        </motion.div>
-                    );
-                })}
+                                <div className="flex-1 gap-2 text-sm text-zinc-600">
+
+
+                                    <motion.p
+                                        className="text-lg font-semibold"
+                                        whileHover={{color: "#4A90E2"}}
+                                        transition={{duration: 0.3}}
+                                    >
+                                        {item.article_title}
+                                    </motion.p>
+
+                                    <motion.p
+                                        className="text-gray-500"
+                                        initial={{opacity: 0}}
+                                        animate={{opacity: 1}}
+                                        transition={{duration: 0.5, delay: 0.1}}
+                                    >
+                                        {item.doctor_id.speciality_id.name}
+                                    </motion.p>
+
+                                    <motion.p
+                                        className="mt-2 text-gray-600"
+                                        initial={{opacity: 0}}
+                                        animate={{opacity: 1}}
+                                        transition={{duration: 0.5, delay: 0.2}}
+                                    >
+                                        {t("doctor.article.date")}: <span className="text-xs">{d}</span>
+                                    </motion.p>
+                                </div>
+
+
+                                <div className="flex flex-col justify-end gap-2">
+
+                                    <motion.div
+                                        className="flex  justify-between items-center "
+                                        initial={{opacity: 0, y: 10}}
+                                        animate={{opacity: 1, y: 0}}
+                                        transition={{duration: 0.5}}
+                                        whileHover={{scale: 1.02}}
+                                    >
+                                        <motion.input
+                                            type="checkbox"
+                                            checked={selectedArticleIds.includes(item._id)}
+                                            onChange={() => selectedArticle(item._id)}
+                                            className="cursor-pointer mb-16 ml-40"
+                                            whileTap={{scale: 0.9}}
+                                            initial={{opacity: 0, scale: 0.9}}
+                                            animate={{opacity: 1, scale: 1}}
+                                            transition={{duration: 0.3, ease: "easeInOut"}}
+                                        />
+
+                                    </motion.div>
+
+                                    <motion.button
+                                        onClick={() => navigate(`/update-article/${item._id}`)}
+                                        initial={{opacity: 0}}
+                                        animate={{opacity: 1}}
+                                        transition={{duration: 0.3}}
+                                        className="w-48 sm:w-min-48 py-2 px-1 border border-green-500 rounded text-green-500 hover:bg-green-100 hover:shadow-md transition-all duration-300"
+                                    >
+                                        {t("doctor.article.edit")}
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        );
+                    }) :
+                    <motion.div
+                        className="flex justify-center items-center w-full h-full py-12"
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.5}}
+                    >
+                        <div className="text-center">
+                            <motion.p
+                                className="text-lg font-semibold text-gray-600"
+                                initial={{scale: 0.8}}
+                                animate={{scale: 1}}
+                                transition={{duration: 0.3}}
+                            >
+                                {t("account.dvd.nodata")}
+                            </motion.p>
+                        </div>
+                    </motion.div>
+                }
             </div>
 
             {/* Pagination */}

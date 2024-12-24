@@ -102,7 +102,7 @@ const ActiveHourModal = ({ open, onClose, id, cancel }) => {
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h1 className="text-primary font-medium text-xl">
+            <h1 className="text-primary font-bold text-xl">
                 {t("account.aa.title")}
             </h1>
             <motion.div

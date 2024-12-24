@@ -6,6 +6,7 @@ import axios from "axios";
 import { AdminContext } from "../../context/AdminContext";
 import { motion } from "framer-motion";
 import {useTranslation} from "react-i18next";
+import {ArrowBigLeft} from "lucide-react"
 
 const UpdateSpeciality = () => {
     const { aToken, backendUrl, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess } = useContext(AdminContext);
@@ -139,7 +140,7 @@ const UpdateSpeciality = () => {
                     <div className="mb-6">
                         <label
                             htmlFor="name"
-                            className="block text-gray-700 font-medium mb-2"
+                            className="block text-gray-700 font-bold mb-2"
                         >
                             {t("speciality.add.sname")}
                         </label>
@@ -162,7 +163,7 @@ const UpdateSpeciality = () => {
                     <div className="mb-8">
                         <label
                             htmlFor="description"
-                            className="block text-gray-700 font-medium mb-2"
+                            className="block text-gray-700 font-bold mb-2"
                         >
                             {t("speciality.add.des")}
                         </label>
@@ -189,11 +190,11 @@ const UpdateSpeciality = () => {
                         <motion.button
                             type="button"
                             onClick={() => navigate("/speciality")}
-                            className="bg-red-500 text-white px-8 py-2 rounded-full text-lg font-medium"
+                            className="flex items-center bg-red-500 text-white px-8 py-2 rounded-full text-lg font-medium"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            {t("speciality.add.back")}
+                            <ArrowBigLeft /> {t("speciality.add.back")}
                         </motion.button>
                         <motion.button
                             type="submit"

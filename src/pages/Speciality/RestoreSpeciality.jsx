@@ -7,15 +7,64 @@ import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import axios from "axios";
 import {assets} from "../../assets/assets";
+import {Tooltip} from "@mui/material";
+import {motion} from "framer-motion";
+import {ArchiveRestore} from "lucide-react";
+import {useTranslation} from "react-i18next";
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    useReactTable
+} from "@tanstack/react-table";
+import Swal from "sweetalert2";
 
 const RestoreSpeciality = () => {
-    const {aToken} = useContext(AdminContext);
+    const {aToken, refetchAdminDetails,
+        adminDetails,
+        readOnly,
+        writeOnly,
+        fullAccess} = useContext(AdminContext);
     const [specialities, setSpecialities] = useState([]);
 
     const [hiddenState, setHiddenState] = useState("true");
     const [open, setOpen] = useState(false);
-
+    const {t} = useTranslation();
     const [selectedSpecialityIds, setSelectedSpecialityIds] = useState([]);
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 8,
+    });
+    const columnHelper = createColumnHelper();
+    const columns = [
+        columnHelper.accessor("_id", {
+            id: "_id",
+            cell: (info) => <span>{info.row.index + 1}</span>,
+            header: "S.No",
+        }),
+        columnHelper.accessor("name", {
+            cell: (info) => <span>{info?.getValue()}</span>,
+            header: t("speciality.restore.spec"),
+        })
+    ];
+
+
+    const table = useReactTable({
+        data: specialities || [],
+        columns,
+        state: {
+            pagination,
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onPaginationChange: setPagination,
+    });
+
+    const paginatedData = specialities?.slice(
+        pagination.pageIndex * pagination.pageSize,
+        (pagination.pageIndex + 1) * pagination.pageSize
+    );
 
     const findAllDeletedSpecialities = async () => {
         const result = await specialityService.findAllDeleted(hiddenState, aToken)
@@ -34,24 +83,40 @@ const RestoreSpeciality = () => {
 
     const openDeleteModal = () => {
         if (selectedSpecialityIds?.length === 0) {
-            toast.warn('No speciality selected for deletion')
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("speciality.list.message"),
+            });
         } else {
             setOpen(true)
         }
 
     }
-    const permanentSpecialityRegions = async () => {
+    const deletePermanentSpeciality = async () => {
         if (selectedSpecialityIds?.length === 0 && open) {
-            toast.warn('No speciality selected for deletion')
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("speciality.list.message"),
+            });
             return;
         }
         try {
             const data = await specialityService.permanentDeleteAccount(selectedSpecialityIds, aToken)
-            if (data){
+            if (data) {
                 await findAllDeletedSpecialities();
-                toast.success(data.message);
+                // toast.success(data.message);
                 setSelectedSpecialityIds([]);
                 setOpen(false)
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("speciality.restore.p"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: false
+                });
             }
         } catch (error) {
             console.error(error.message);
@@ -61,17 +126,30 @@ const RestoreSpeciality = () => {
 
     const restoreSpeciality = async () => {
         if (selectedSpecialityIds?.length === 0) {
-            toast.warn('No speciality selected for restoration')
+
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("speciality.restore.rwarn"),
+            });
             return;
         }
 
         try {
             const response = await specialityService.restoreSpeciality(selectedSpecialityIds, aToken);
             if (response.message !== '') {
-                findAllDeletedSpecialities();
-                toast.success(response.message);
+                await findAllDeletedSpecialities();
                 setSelectedSpecialityIds([]);
                 setOpen(false);
+
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("speciality.restore.rsuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: false
+                });
             } else {
                 toast.error('Error')
             }
@@ -80,6 +158,17 @@ const RestoreSpeciality = () => {
             toast.error(e.message);
         }
     }
+
+    const hoverSettings = (readOnly && !fullAccess && !writeOnly)
+        ? {}
+        : {
+            whileHover: {
+                scale: 1.1,
+                boxShadow: "0px 8px 20px rgba(0, 166, 169, 0.4)",
+            },
+            whileTap: {scale: 0.95},
+            transition: {type: "spring", stiffness: 300},
+        };
 
 
     useEffect(() => {
@@ -93,57 +182,155 @@ const RestoreSpeciality = () => {
 
 
             <div className='flex justify-between items-center'>
-                <h1 className='text-lg text-primary lg:text-2xl font-medium'>All Deleted Specialities</h1>
-                <div className='flex gap-1'>
-                    <button
-                        onClick={restoreSpeciality}
-                        className='bg-green-700 px-10 py-3 mt-4 text-white rounded-full'>
-                        Put Back
-                    </button>
+                <h1 className='text-lg text-primary lg:text-2xl font-bold'>{t("speciality.restore.title")}</h1>
+                <div className="flex gap-5 mr-6">
 
-                    <button
-                        className='flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-red-400/40 cursor-pointer'
-                        onClick={openDeleteModal}>
-                        <FaRegTrashAlt/> Delete
-                    </button>
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+                                <motion.button
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                    onClick={restoreSpeciality}
+                                    className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md cursor-not-allowed"
+                                    {...hoverSettings}
+                                >
+                                    <ArchiveRestore/> {t("account.restore.putBack")}
+                                </motion.button>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <motion.button
+                                onClick={restoreSpeciality}
+                                className="bg-green-700 px-10 py-3 mt-4 text-white gap-2 rounded-full flex justify-center items-center shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(72, 187, 120, 0.5)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <ArchiveRestore/> {t("account.restore.putBack")}
+                            </motion.button>
+                        )
+                    }
+
+                    {
+                        (readOnly && !writeOnly && !fullAccess) && (
+                            <Tooltip title={t("common.access.permission")} arrow>
+
+                                <motion.button
+                                    disabled={readOnly && !fullAccess && !writeOnly}
+                                    onClick={openDeleteModal}
+                                    className="flex items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md cursor-not-allowed"
+                                    {...hoverSettings}
+                                >
+                                    <FaRegTrashAlt/>
+                                    {t("account.restore.deleteP")}
+                                </motion.button>
+                            </Tooltip>
+                        )
+                    }
+
+
+                    {
+                        (fullAccess || writeOnly) && (
+                            <motion.button
+                                onClick={openDeleteModal}
+                                className="flex  items-center gap-2 px-10 py-3 mt-4 rounded-full text-white bg-red-600 shadow-md"
+                                whileHover={{
+                                    scale: 1.1,
+                                    boxShadow: "0px 8px 20px rgba(255, 82, 82, 0.6)",
+                                }}
+                                whileTap={{scale: 0.95}}
+                                transition={{type: "spring", stiffness: 300}}
+                            >
+                                <FaRegTrashAlt/>
+                                {t("account.restore.deleteP")}
+                            </motion.button>
+                        )
+                    }
+
+
                 </div>
 
             </div>
 
             <div className='w-full flex flex-wrap gap-4 pt-5 gap-y-6'>
-                {
-                    specialities?.length > 0 ? (specialities?.map((item, index) => {
-
-                        return (
-                            <div
-                                className="border border-indigo-200 rounded-xl w-56 overflow-hidden cursor-pointer group"
-                                key={index}
-                            >
-                                <img
-                                    className="w-full h-56 bg-indigo-50 object-cover group-hover:bg-primary transition-all duration-500"
-                                    src={item.speciality_image}
-                                    alt="img"
+                <motion.table
+                    className="w-full text-left text-white border border-gray-600 rounded-lg shadow-lg mt-5"
+                    initial={{y: 20, opacity: 0}}
+                    animate={{y: 0, opacity: 1}}
+                    transition={{delay: 0.3}}
+                >
+                    <thead className="bg-gray-700">
+                    {table?.getHeaderGroups()?.map((headerGroup) => (
+                        <tr key={headerGroup.id}>
+                            <th className="p-2">
+                                <input
+                                    type="checkbox"
+                                    checked={
+                                        table.getRowModel().rows.length > 0 &&
+                                        table.getRowModel().rows.every((row) =>
+                                            selectedSpecialityIds.includes(row.original._id)
+                                        )
+                                    }
+                                    onChange={(e) =>
+                                        setSelectedSpecialityIds(
+                                            e.target.checked
+                                                ? table.getRowModel().rows.map((row) => row.original._id)
+                                                : []
+                                        )
+                                    }
                                 />
-                                <div className="p-4">
-                                    <div className="flex justify-end">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedSpecialityIds.includes(item._id)}
-                                            onChange={(e) => {
-                                                toggleAccountSelection(item._id);
-                                            }}
-                                        />
-                                    </div>
-                                    <p className="text-neutral-800 text-lg font-medium">{item.name}</p>
-                                    <p className="text-zinc-600 text-sm">{item.description}</p>
-                                </div>
-                            </div>
-
-                        );
-                    })) : <div className='max-h-[90h] w-[90vw]'>
-                        <img className='w-[50vw]' src={assets.no_data} alt='no records'/>
-                    </div>
-                }
+                            </th>
+                            {headerGroup.headers.map((header) => (
+                                <th key={header.id} className="p-2 capitalize">
+                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                </th>
+                            ))}
+                        </tr>
+                    ))}
+                    </thead>
+                    <tbody>
+                    {table?.getRowModel()?.rows?.length > 0 ? (
+                        table?.getRowModel()?.rows?.map((row, i) => (
+                            <motion.tr
+                                key={row.id}
+                                className={`${
+                                    i % 2 === 0 ? 'bg-cyan-600' : 'bg-cyan-900'
+                                }`}
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                transition={{delay: i * 0.05}}
+                            >
+                                <td className="p-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedSpecialityIds.includes(row.original._id)}
+                                        onChange={() => toggleAccountSelection(row.original._id)}
+                                    />
+                                </td>
+                                {row.getVisibleCells().map((cell) => (
+                                    <td
+                                        key={cell.id}
+                                        className="p-2 cursor-pointer"
+                                    >
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </td>
+                                ))}
+                            </motion.tr>
+                        ))
+                    ) : (
+                        <tr className="text-center h-32 text-blue-400">
+                            <td colSpan={12}>{t("account.accountList.nodata")}</td>
+                        </tr>
+                    )}
+                    </tbody>
+                </motion.table>
             </div>
 
             <Modal open={open} onClose={() => setOpen(false)}>
@@ -158,7 +345,7 @@ const RestoreSpeciality = () => {
                     <div className="flex gap-4 mt-6">
                         <button
                             className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md shadow-red-400/40 hover:from-red-600 hover:to-red-800 py-2 rounded-md transition duration-150"
-                            onClick={permanentSpecialityRegions}>Delete
+                            onClick={deletePermanentSpeciality}>Delete
                         </button>
                         <button
                             className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"

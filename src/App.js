@@ -57,6 +57,7 @@ import PostList from "./pages/Doctor/post/PostList";
 import DeletedPost from "./pages/Doctor/post/DeletedPost";
 import ADoctorDashboard from "./pages/ADoctor/ADoctorDashboard";
 import AdminAccountList from "./pages/Account/AdminAccountList";
+import StartPage from "./pages/StartPage";
 
 
 function App() {
@@ -70,11 +71,12 @@ function App() {
             <div className='flex items-start'>
                 <Sidebar/>
                 <Routes>
-                    <Route path='/' element={<></>} />
+                    <Route path='/' element={<StartPage/>} />
                     {/*<Route path='/' element={<Test />} />*/}
                     {/*<Route path='/admin-dashboard' element={<Dashboard/>}/>*/}
+                    {/*<Route path='/' element={<></>} />*/}
+
                     <Route path='/admin-dashboard' element={<Dashboard/>}/>
-                    {/*<Route path='/admin-profile' element={<AdminProfile/>}/>*/}
                     <Route path='/admin-profile' element={<AdminProfile/>}/>
 
                     <Route path='/speciality-dashboard' element={<SpecialityDashBoard/>} />

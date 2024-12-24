@@ -157,7 +157,7 @@ const DoctorAccountList = () => {
         <motion.div className="m-5 max-h-[90vh] w-[90vw] overflow-y-scroll" initial={{opacity: 0}}
                     animate={{opacity: 1}} exit={{opacity: 0}}>
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-2xl font-medium">
+                <h1 className="text-lg text-primary lg:text-2xl font-bold">
                     {t("account.unverified.title")}
                 </h1>
                 <div className="flex gap-4 mr-4">

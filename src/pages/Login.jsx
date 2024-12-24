@@ -6,6 +6,7 @@ import {motion, AnimatePresence} from "framer-motion";
 import Swal from "sweetalert2";
 import * as accountService from "../service/AccountService";
 import validator from 'validator'
+import {Eye, EyeClosed} from "lucide-react";
 
 
 const Login = () => {
@@ -15,6 +16,7 @@ const Login = () => {
     const {setAToken} = useContext(AdminContext);
     const {setDToken} = useContext(DoctorContext);
     const [isForgot, setIsForgot] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const checkEmail = async () => {
         if (!validator.isEmail(email)) {
@@ -56,6 +58,9 @@ const Login = () => {
     }
 
     const onSubmitHandler = async (event) => {
+        // const fullEmail = email.includes("@") ? email : `${email}@gmail.com`;
+        const isEmail = await checkEmail(email);
+        if (!isEmail) return;
         event.preventDefault();
         try {
             const isEmail = await checkEmail();
@@ -185,6 +190,10 @@ const Login = () => {
 
                 <motion.div className="relative w-full mt-6" whileHover={{scale: 1.05}}>
                     <input
+                        // onChange={(e) => {
+                        //     const username = e.target.value;
+                        //     setEmail(username); // Only store the username part in state
+                        // }}
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
                         tabIndex="1"
@@ -208,25 +217,39 @@ const Login = () => {
 
                 {!isForgot && (
                     <motion.div className="relative w-full mt-6" whileHover={{scale: 1.05}}>
-                        <input
-                            onChange={(e) => setPassword(e.target.value)}
-                            value={password}
-                            tabIndex="2"
-                            className="peer bg-transparent border-b outline-none border-gray-300 w-full p-2 mt-1
-                        focus:border-primary focus:ring-2 focus:ring-primary
-                        transition-all duration-300"
-                            type="password"
-                            required
-                        />
-                        <label
-                            className="text-gray-500 absolute left-0 pt-2 pl-2 uppercase pointer-events-none
-                         peer-focus:text-primary peer-valid:text-primary
-                         peer-focus:-translate-y-6 peer-valid:-translate-y-6
-                         peer-focus:tracking-widest peer-valid:tracking-widest
-                         transition-all duration-300"
-                        >
-                            Password
-                        </label>
+
+                        <motion.div className="flex items-center justify-center relative">
+                            <input
+                                onChange={(e) => setPassword(e.target.value)}
+                                value={password}
+                                tabIndex="2"
+                                className="peer bg-transparent border-b outline-none border-gray-300 w-full p-2 mt-1
+                                focus:border-primary focus:ring-2 focus:ring-primary
+                                transition-all duration-300"
+                                type={isPasswordVisible ? 'text' : 'password'}
+                                required
+                            />
+
+                            <button
+                                type='button'
+                                className="w-[25px] cursor-pointer absolute right-[15px] top-[25px] transform -translate-y-1/2 hover:scale-110 transition-transform duration-300"
+                                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                            >
+                                {isPasswordVisible ? <Eye className='text-red-600'/> : <EyeClosed/>}
+                            </button>
+
+                            <label
+                                className="text-gray-500 absolute left-0 pt-2 pl-2 uppercase pointer-events-none
+                                peer-focus:text-primary peer-valid:text-primary
+                                peer-focus:-translate-y-8 peer-valid:-translate-y-8
+                                peer-focus:tracking-widest peer-valid:tracking-widest
+                                transition-all duration-300"
+                            >
+                                Password
+                            </label>
+                        </motion.div>
+
+
                     </motion.div>
                 )}
                 {

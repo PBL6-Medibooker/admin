@@ -1,12 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AdminContext} from "../../context/AdminContext";
-import * as accountService from "../../service/AccountService";
 import * as doctorService from "../../service/DoctorService";
 import {motion} from "framer-motion";
 import {
      Cell,
-    Legend,
-
     Pie,
     PieChart,
     ResponsiveContainer,
@@ -14,6 +11,7 @@ import {
 
 } from "recharts";
 import {useTranslation} from "react-i18next";
+
 const COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FED766", "#2AB7CA"];
 
 const TopDoctorChart = () => {
@@ -37,26 +35,28 @@ const TopDoctorChart = () => {
             console.error(e);
         }
     };
-    const renderLegend = () => {
-
-        return (
-            <div className="flex justify-center space-x-6">
-                {doctorData.map((entry, index) => (
-                    <div key={`legend-${index}`} className="flex items-center space-x-2">
-                        <div
-                            style={{
-                                backgroundColor: COLORS[index % COLORS.length],
-                                width: 12,
-                                height: 12,
-                                borderRadius: "50%",
-                            }}
-                        />
-                        <span className="text-gray-800">{entry.name}</span>
-                    </div>
-                ))}
-            </div>
-        );
-    };
+    // const renderLegend = () => {
+    //
+    //     return (
+    //         <div className="flex justify-center space-x-6">
+    //             {doctorData.map((entry, index) => (
+    //                 <div key={`legend-${index}`} className="flex items-center space-x-2">
+    //                     <div
+    //                         style={{
+    //                             backgroundColor: COLORS[index % COLORS.length],
+    //                             width: 12,
+    //                             height: 12,
+    //                             borderRadius: "50%",
+    //                         }}
+    //                     />
+    //                     <Tooltip title={entry.name}>
+    //                         <span className="text-gray-800 truncate max-w-16">{entry.name}</span>
+    //                     </Tooltip>
+    //                 </div>
+    //             ))}
+    //         </div>
+    //     );
+    // };
 
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
@@ -77,7 +77,6 @@ const TopDoctorChart = () => {
                 >
                     <p className="label" style={{ color: "#374151" }}>
                         {name}: {appointmentCount}&nbsp;{t("account.adashboard.appointments")}
-
                     </p>
 
                 </div>
@@ -123,9 +122,9 @@ const TopDoctorChart = () => {
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                                 ))}
                             </Pie>
-                            <Tooltip content={<CustomTooltip/>}/>
+                            <Tooltip content={<CustomTooltip/>} />
 
-                            <Legend content={renderLegend}/>
+                            {/*<Legend content={renderLegend}/>*/}
                         </PieChart>
                     ) : (
                         <p className="text-center text-gray-500">{t("account.adashboard.noDataAvailable")}</p>

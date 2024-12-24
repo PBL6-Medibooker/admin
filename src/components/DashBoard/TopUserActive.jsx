@@ -8,6 +8,7 @@ import {forEach} from "react-bootstrap/ElementChildren";
 import Loader from "../Loader";
 import Error from "../Error";
 import {motion, AnimatePresence} from "framer-motion";
+import {Tooltip} from "@mui/material";
 
 
 const TopUserActive = () => {
@@ -65,7 +66,7 @@ const TopUserActive = () => {
 
             <div className='bg-white'>
                 <div className="flex items-center gap-2.5 px-4 py-4 mt-10 rounded-t border">
-                    <div className='w-8 h-13/2'>
+                    <div className='w-8 h-[25px]'>
                         <motion.img
                             className='w-full h-full object-cover'
                             src={assets.ranking}
@@ -78,7 +79,7 @@ const TopUserActive = () => {
                     <p className="font-semibold">{t("admin.dashboard.ranking")}</p>
                 </div>
 
-                <div className="flex w-full border h-[327px] flex-col">
+                <div className="flex w-full border h-[368px] flex-col">
 
                     <div className="flex flex-col flex-1 items-center justify-center">
                         <div className="flex flex-col items-center justify-center">
@@ -138,14 +139,40 @@ const TopUserActive = () => {
                                         {index + 2}
                                     </div>
                                 </div>
-                                <motion.p
-                                    className="mt-1 text-lg font-medium text-gray-800"
-                                    initial={{opacity: 0, y: -10}}
-                                    animate={{opacity: 1, y: 0}}
-                                    transition={{delay: 0.5 + index * 0.2, duration: 0.4}}
-                                >
-                                    {item.userDetails?.username}
-                                </motion.p>
+                                {/*<motion.p*/}
+                                {/*    className="text-center mt-1 text-sm w-24 text-gray-800 truncate"*/}
+                                {/*    initial={{opacity: 0, y: -10}}*/}
+                                {/*    animate={{opacity: 1, y: 0}}*/}
+                                {/*    transition={{delay: 0.5 + index * 0.2, duration: 0.4}}*/}
+                                {/*>*/}
+                                {/*    {item.userDetails?.username}*/}
+                                {/*</motion.p>*/}
+
+                                <div className="relative group">
+                                    <Tooltip title={item.userDetails?.username} arrow>
+                                        <motion.p
+                                            className="text-center mt-1 text-sm w-24 text-gray-800 truncate cursor-default"
+                                            style={{
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                            }}
+                                            initial={{opacity: 0, y: -10}}
+                                            animate={{opacity: 1, y: 0}}
+                                            transition={{delay: 0.5 + index * 0.2, duration: 0.4}}
+                                        >
+                                            {item.userDetails?.username}
+                                        </motion.p>
+                                    </Tooltip>
+                                    {/*<div*/}
+                                    {/*    className="cursor-default absolute left-1/2 transform -translate-x-1/2 -translate-y-full bg-gray-700 text-white text-sm rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"*/}
+                                    {/*    style={{whiteSpace: "nowrap"}}*/}
+                                    {/*>*/}
+                                    {/*    {item.userDetails?.username}*/}
+                                    {/*</div>*/}
+                                </div>
+
+
                             </motion.div>
                         ))}
                     </div>

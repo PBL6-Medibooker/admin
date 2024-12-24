@@ -154,11 +154,14 @@ const UpdateDocInfoAcc = () => {
 
             await updateDocInfo();
 
-            if (isFormValid) {
-                await changeDoctorVerifyStatus();
+            // if (isFormValid) {
+            //     await changeDoctorVerifyStatus();
+            // }
+
+            if (account.verified === false) {
+                await changeDoctorVerifyStatus()
             }
 
-            // const result = await accountService.updateDocInfoAcc(data, id, aToken);
             const result = await doctorService.updateDocInfoAcc(data, id, aToken);
             let path = aToken ? '/verified-doc-account' : '/doc-account'
 
@@ -195,7 +198,14 @@ const UpdateDocInfoAcc = () => {
             const result = await accountService.forgotPassword(email, aToken);
 
             if (result) {
-                toast.success(result.message);
+                await Swal.fire({
+                    position: "top-end",
+                    title: t("doctor.profile.rsuccess"),
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    backdrop: false
+                })
             } else {
                 toast.error(result.error);
             }
@@ -223,17 +233,17 @@ const UpdateDocInfoAcc = () => {
         setImage(file);
     };
 
-    useEffect(() => {
-        const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address !== 'none'
-            && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
-            && isVerify === false
-        setIsFormValid(isValid);
-    }, [account, docData]);
+    // useEffect(() => {
+    //     const isValid = account?.username && account?.phone && account?.date_of_birth && account?.address !== 'none'
+    //         && docData?.bio !== 'undisclosed' && docData?.region && docData?.speciality && account?.proof
+    //         && isVerify === false
+    //     setIsFormValid(isValid);
+    // }, [account, docData]);
 
-    useEffect(() => {
-        console.log(isFormValid)
-        console.log(isVerify)
-    }, [isFormValid]);
+    // useEffect(() => {
+    //     console.log(isFormValid)
+    //     console.log(isVerify)
+    // }, [isFormValid]);
 
     useEffect(() => {
         if (aToken) {
@@ -726,8 +736,9 @@ const UpdateDocInfoAcc = () => {
                     >
                         {t("account.updateDocInfo.back")}
                     </motion.button>
+
                     {
-                        !isFormValid ? (
+                        account?.verified ? (
                             <motion.button
                                 type="submit"
                                 className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition`}
@@ -754,6 +765,34 @@ const UpdateDocInfoAcc = () => {
                             </motion.button>
                         )
                     }
+                    {/*{*/}
+                    {/*    !isFormValid ? (*/}
+                    {/*        <motion.button*/}
+                    {/*            type="submit"*/}
+                    {/*            className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-primary text-white px-6 py-2 rounded-full shadow-md hover:bg-primary-dark transition`}*/}
+                    {/*            whileHover={{scale: 1.05}}*/}
+                    {/*            whileTap={{scale: 0.95}}*/}
+                    {/*            initial={{opacity: 0, y: -10}}*/}
+                    {/*            animate={{opacity: 1, y: 0}}*/}
+                    {/*            transition={{duration: 0.3}}*/}
+                    {/*            disabled={read}*/}
+                    {/*        >*/}
+                    {/*            {t("account.updateDocInfo.save")}*/}
+                    {/*        </motion.button>*/}
+                    {/*    ) : (*/}
+                    {/*        <motion.button*/}
+                    {/*            type="submit"*/}
+                    {/*            className="bg-amber-400 text-white px-6 py-2 rounded-full shadow-md hover:bg-amber-500 transition"*/}
+                    {/*            whileHover={{scale: 1.05, backgroundColor: "#F59E0B"}}*/}
+                    {/*            whileTap={{scale: 0.95}}*/}
+                    {/*            initial={{opacity: 0, y: -10}}*/}
+                    {/*            animate={{opacity: 1, y: 0}}*/}
+                    {/*            transition={{duration: 0.3}}*/}
+                    {/*        >*/}
+                    {/*            {t("account.updateDocInfo.verify")}*/}
+                    {/*        </motion.button>*/}
+                    {/*    )*/}
+                    {/*}*/}
                 </div>
             </motion.form>
 

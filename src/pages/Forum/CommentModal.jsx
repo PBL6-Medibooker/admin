@@ -96,7 +96,7 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                 <div className="w-12 h-12">
                                                     <motion.img
                                                         className="w-full h-full object-cover rounded-full bg-indigo-50"
-                                                        src={item.replier.profile_image ? item.replier.profile_image : assets.user_icon}
+                                                        src={item.replier?.profile_image ? item.replier?.profile_image : assets.user_icon}
                                                         alt="User"
                                                         initial={{scale: 0.9}}
                                                         animate={{scale: 1}}
@@ -109,7 +109,7 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                         whileHover={{color: "#00A6A9"}}
                                                         transition={{duration: 0.3}}
                                                     >
-                                                        {item.replier.username}
+                                                        {item.replier?.username}
                                                     </motion.p>
                                                     <motion.p
                                                         className="text-xs text-black mt-1
@@ -132,7 +132,6 @@ const CommentModal = ({open, onClose, comments, post_id, refetch}) => {
                                                 {/*    <Trash2*/}
                                                 {/*        className="text-stone-500 transition-colors duration-300 hover:text-red-500"/>*/}
                                                 {/*</motion.button>*/}
-
 
                                                 {
                                                     !(readOnly && !writeOnly && !fullAccess && aToken) &&

@@ -11,25 +11,44 @@ import TopUsers from "../../components/Chart/TopUsers";
 const AccountDashboard = () => {
     const {aToken,  adminList, refetchAdminList} = useContext(AdminContext);
 
-    const [totalUsers, setTotalUser] = useState(0);
+    const [totalUser, setTotalUser] = useState(0);
     const [totalAdmin, setTotalAdmin] = useState(0);
 
     const {t} = useTranslation();
 
-
-    const getAccountList = async () => {
-
+    const getAccounts = async () => {
         try {
-            const result = await accountService.findAll(true, false, false, aToken);
-            console.log(result)
-            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
-            setTotalUser(filter.length);
-        } catch (e) {
-            console.log(e.error)
+            const [userResult, adminResult] = await Promise.all([
+                accountService.findAll(true, false, false, aToken),
+                getAdminAccountList()
+            ]);
+            const filteredUsers = userResult.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id));
+            setTotalUser(filteredUsers.length);
+            setTotalAdmin(adminResult.length);
+        } catch (error) {
+            console.error(error);
         }
+    };
 
-    }
+    useEffect(() => {
+        if (aToken) {
+            getAccounts();
+        }
+    }, [aToken]);
 
+
+    // const getAccountList = async () => {
+    //     try {
+    //         const result = await accountService.findAll(true, false, false, aToken);
+    //         console.log(result)
+    //         const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+    //         setTotalUser(filter.length);
+    //     } catch (e) {
+    //         console.log(e.error)
+    //     }
+    //
+    // }
+    //
     const getAdminAccountList = async () => {
         try {
             refetchAdminList()
@@ -40,12 +59,12 @@ const AccountDashboard = () => {
 
     }
 
-    useEffect(() => {
-        if (aToken) {
-            getAccountList()
-            getAdminAccountList()
-        }
-    }, [aToken, totalAdmin, adminList]);
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getAccountList()
+    //         getAdminAccountList()
+    //     }
+    // }, [aToken, totalAdmin, adminList, totalUser]);
 
 
     return (
@@ -59,7 +78,7 @@ const AccountDashboard = () => {
                     transition={{duration: 1}}
                 >
                     <StatCard name={t('account.adashboard.userAccount')}
-                              to={'/account'} icon={User} value={totalUsers}
+                              to={'/account'} icon={User} value={totalUser}
                               color='#6366F1'/>
 
                     <StatCard name={t('account.adashboard.admin')}
