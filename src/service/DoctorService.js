@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-// const REST_API_BASE_URL = "http://localhost:4000/doc";
-const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/doc";
+const REST_API_BASE_URL = "http://localhost:4000/doc";
+// const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/doc";
 
 export const updateDocInfoAcc = async (formData, id, aToken) => {
     try {

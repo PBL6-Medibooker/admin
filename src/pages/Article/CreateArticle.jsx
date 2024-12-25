@@ -182,7 +182,7 @@ const CreateArticle = () => {
                             value={articleTitle}
                             onChange={(e) => setArticleTitle(e.target.value)}
                             className="w-full p-3 mt-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                            placeholder="Title"
+                            placeholder=" Cách để giữ làn da luôn khoẻ mạnh ? "
                             required
                             aria-required="true"
                         />
@@ -220,7 +220,7 @@ const CreateArticle = () => {
                         <button
                             type="button"
                             onClick={() => navigate(aToken ? '/article' : '/doctor-article')}
-                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 transition-all"
+                            className="bg-gray-300 px-6 py-3 text-sm text-gray-700 rounded-full hover:bg-gray-400 hover:text-white transition-all"
                         >
                             <i className="fas fa-arrow-left mr-2"></i> {t("article.add.back")}
                         </button>

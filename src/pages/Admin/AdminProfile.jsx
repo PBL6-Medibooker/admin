@@ -30,38 +30,80 @@ const AdminProfile = () => {
     const [adminData, setAdminData] = useState([]);
 
 
-    const {isLoading, isError, refetch} = useQuery({
+    // const {isLoading, isError, refetch} = useQuery({
+    //     queryKey: ['admin'],
+    //     queryFn: async () => {
+    //         try {
+    //             const result = await accountService.getAdminProfile(aToken);
+    //             if (result.success) {
+    //                 console.log(result)
+    //                 setAdminData(result.adminData)
+    //                 return result.adminData;
+    //             }
+    //         } catch (error) {
+    //             if (error.response.data.error === "Request not authorized") {
+    //                 Swal.fire({
+    //                     icon: "warning",
+    //                     title: "Session expired",
+    //                     text: "You will be logged out.",
+    //                     timer: 2000,
+    //                     showConfirmButton: false,
+    //                 }).then(() => {
+    //                     // logout()
+    //                         aToken && setAToken("");
+    //                         aToken && localStorage.removeItem("aToken");
+    //
+    //                 });
+    //             } else {
+    //                 console.log("Error fetching doctor data:", error);
+    //             }
+    //         }
+    //     },
+    //     onError: (error) => {
+    //         console.error('Error:', error.message);
+    //     },
+    //     staleTime: 5 * 60 * 1000,
+    //     retry: 1,
+    // });
+
+
+
+    const { isLoading, isError, refetch } = useQuery({
         queryKey: ['admin'],
         queryFn: async () => {
             try {
                 const result = await accountService.getAdminProfile(aToken);
                 if (result.success) {
-                    console.log(result)
-                    setAdminData(result.adminData)
+                    setAdminData(result.adminData);
                     return result.adminData;
                 }
             } catch (error) {
-                if (error.response.data.error === "Request not authorized") {
-                    Swal.fire({
+                if (error.response?.data?.error === "Request not authorized") {
+                    await Swal.fire({
                         icon: "warning",
                         title: "Session expired",
                         text: "You will be logged out.",
                         timer: 2000,
                         showConfirmButton: false,
                     }).then(() => {
-                        logout()
+                        console.log('meoo'); // This will now execute after Swal
+                        logout();
                     });
                 } else {
-                    console.log("Error fetching doctor data:", error);
+                    console.error("Error fetching admin data:", error);
+                    throw error; // Propagate other errors
                 }
             }
         },
         onError: (error) => {
-            console.error('Error:', error.message);
+            console.error("Query Error:", error.message);
         },
         staleTime: 5 * 60 * 1000,
-        retry: 1,
+        retry: false, // Disable retry
+        enabled: !!aToken, // Disable query if token is missing
     });
+
+
 
 
     const showAlert = async (titleKey, icon = "warning") => {

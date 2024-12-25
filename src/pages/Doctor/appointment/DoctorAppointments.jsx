@@ -25,7 +25,7 @@ const DoctorAppointments = () => {
         docId,
         doctorAppointments,
         isDoctorAppointmentsLoading,
-        reFetchDA
+        reFetchDA, refetchDocData, docData, setDocId
     } = useContext(DoctorContext);
     const {calculateAge, dateFormat, separateDayAndDate} = useContext(AppContext);
 
@@ -218,10 +218,10 @@ const DoctorAppointments = () => {
 
     useEffect(() => {
         if (dToken) {
+            refetchDocData()
             reFetchDA()
-            getDoctorData()
         }
-    }, [dToken, docId])
+    }, [dToken])
 
     if (isDoctorAppointmentsLoading) {
         return (

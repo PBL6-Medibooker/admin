@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-// const REST_API_BASE_URL = "http://localhost:4000/region";
-const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/region";
+const REST_API_BASE_URL = "http://localhost:4000/region";
+// const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/region";
 
 
 export const findAll = async (hidden_state, aToken) => {

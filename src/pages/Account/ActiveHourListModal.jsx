@@ -9,12 +9,13 @@ import ActiveHourModal from "./ActiveHourModal";
 import {getAccountActiveHourList} from "../../service/AccountService";
 import UpdateActiveHourModal from "./UpdateActiveHourModal";
 import DeleteActiveHoursModal from "./DeleteActiveHoursModal";
-import { IoMdAddCircle } from "react-icons/io";
+import {IoMdAddCircle} from "react-icons/io";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import * as doctorService from "../../service/DoctorService";
 import {Undo2} from 'lucide-react'
 import {DoctorContext} from "../../context/DoctorContext";
+import {useQuery} from "@tanstack/react-query";
 
 
 const getMuiTheme = () => createTheme({
@@ -154,7 +155,8 @@ const ActiveHourListModal = ({open, onClose, id}) => {
                     };
 
                     return (
-                        <button disabled={read} onClick={handleDelete} className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-red-500 text-white w-16 p-2 rounded`}>
+                        <button disabled={read} onClick={handleDelete}
+                                className={`${read ? 'cursor-not-allowed' : 'cursor-pointer'} bg-red-500 text-white w-16 p-2 rounded`}>
                             {t("account.active.delete")}
                         </button>
                     );
@@ -205,38 +207,62 @@ const ActiveHourListModal = ({open, onClose, id}) => {
     // };
 
 
-    const getActiveHourList = async () => {
-        try {
-            // const response = await accountService.getAccountActiveHourList(id, aToken);
-            const token = aToken || dToken
+    // const getActiveHourList = async () => {
+    //     try {
+    //         // const response = await accountService.getAccountActiveHourList(id, aToken);
+    //         if (id) {
+    //             const token = aToken || dToken
+    //             const response = await doctorService.getAccountActiveHourList(id, token);
+    //             console.log('Full response:', response);
+    //             const {active_hours, booked, fully_booked} = response;
+    //
+    //             setActiveHours(active_hours);
+    //             setBookedHours(booked);
+    //             // console.log('Booked:', booked);
+    //             setFullyBookedHours(fully_booked);
+    //             // console.log('Fully Booked:', fully_booked);
+    //             if (readOnly && !writeOnly && !fullAccess) {
+    //                 setRead(true)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         toast.error("Failed to load active hours.");
+    //     }
+    // };
+
+    const { data: activeHoursData = [], refetch: refetchActiveHours } = useQuery({
+        queryKey: ['activeHours', id],
+        queryFn: async () => {
+            if (!id) return [];
+            const token = aToken || dToken;
             const response = await doctorService.getAccountActiveHourList(id, token);
-            console.log('Full response:', response);
-            const { active_hours, booked, fully_booked } = response;
+            const {active_hours, booked, fully_booked} = response;
 
             setActiveHours(active_hours);
             setBookedHours(booked);
-            // console.log('Booked:', booked);
             setFullyBookedHours(fully_booked);
             // console.log('Fully Booked:', fully_booked);
-            if(readOnly && !writeOnly && !fullAccess){
+            if (readOnly && !writeOnly && !fullAccess) {
                 setRead(true)
             }
-        } catch (error) {
-            toast.error("Failed to load active hours.");
-        }
-    };
+            return response.active_hours || [];
+        },
+        enabled: !!id && !!(aToken || dToken), // Fetch only if `id` and token are available
+    });
+
 
 
     const onLoad = async () => {
         setIsAdd(true)
-        await getActiveHourList();
+        // await getActiveHourList();
+        refetchActiveHours()
         setCreateModal(false);
         setUpdateModal(false);
     };
 
     const cancelModal = () => {
-      setCreateModal(false);
-      setUpdateModal(false);
+        setCreateModal(false);
+        setUpdateModal(false);
     }
 
     const handleDeleteConfirmation = async () => {
@@ -262,16 +288,17 @@ const ActiveHourListModal = ({open, onClose, id}) => {
 
 
     useEffect(() => {
-        if (aToken || dToken) {
-            getActiveHourList();
+        if (id && (aToken || dToken)) {
+            // getActiveHourList();
+            refetchActiveHours()
         }
-    }, [aToken, isAdd, dToken]);
+    }, [aToken, isAdd, dToken, id]);
 
     return (
         <Modal className='w-full max-w-4xl h-full max-h-[80vh]' open={open} onClose={onClose}>
             <ThemeProvider theme={muiTheme}>
                 <MUIDataTable
-                    title= {t("account.active.title")}
+                    title={t("account.active.title")}
                     data={activeHours}
                     columns={columns}
                     options={options}
