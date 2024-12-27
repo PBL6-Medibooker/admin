@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const REST_API_BASE_URL = "http://localhost:4000/access";
-// const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/access";
+// const REST_API_BASE_URL = "http://localhost:4000/access";
+const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/access";
 
 
 export const getAccessDetail = async (id, aToken) => {

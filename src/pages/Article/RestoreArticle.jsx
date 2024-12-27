@@ -44,6 +44,14 @@ const RestoreArticle = () => {
     }
 
     const restoreDeletedArticle = async () => {
+        if (selectedAccountIds?.length === 0) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: t("article.list.restoreW"),
+            });
+            return;
+        }
         try {
             const data = await articleService.restoreDeletedArticle(selectedAccountIds, aToken);
             if(data){

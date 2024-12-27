@@ -61,7 +61,8 @@ const UpdateArticle = () => {
                     title: t("article.update.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             }
         } catch (e){
@@ -139,7 +140,7 @@ const UpdateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                    <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                    <label htmlFor="health-issue" className="block text-lg font-bold">
                             {t("article.add.atitle")}
                         </label>
                         <input
@@ -162,7 +163,7 @@ const UpdateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                        <label htmlFor="health-issue" className="block text-lg font-bold">
                             {t("article.add.content")}
                         </label>
                         <textarea

@@ -17,6 +17,8 @@ import CustomButton from "../../components/button/CustomButton";
 import {FaRegTrashAlt, FaTrashRestoreAlt} from "react-icons/fa";
 import * as doctorService from "../../service/DoctorService";
 import {Tooltip} from "@mui/material";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
 
 
 
@@ -57,41 +59,72 @@ const UpdateDocInfoAcc = () => {
         setSpecialities(result);
     };
 
-    const getAccountDetails = async () => {
-        try {
-            const result = await accountService.getAccDetailsById(id, aToken);
-            if (result) {
-                setDocData({
-                    speciality: result.speciality_id?.name || '',
-                    bio: result.bio || '',
-                    region: result.region_id?.name || '',
+    const {data=  {}, isLoading, refetch: refetch} = useQuery({
+        queryKey: ['acc'],
+        queryFn: async () => {
+            try {
+                const result = await accountService.getAccDetailsById(id, aToken);
+                if (result) {
+                    setDocData({
+                        speciality: result.speciality_id?.name || '',
+                        bio: result.bio || '',
+                        region: result.region_id?.name || '',
 
-                });
-                setAccount(result);
-                setProof(result.proof)
-                setEmail(result.email);
-                setIsVerify(result.verified);
-                if (!initialAccountRef.current) {
-                    initialAccountRef.current = result;
-                }
+                    });
+                    setAccount(result);
+                    setProof(result.proof)
+                    setEmail(result.email);
+                    setIsVerify(result.verified);
+                    if (!initialAccountRef.current) {
+                        initialAccountRef.current = result;
+                    }
 
-                console.log("Fetched account details:", result);
-                // console.log('proof', proof)
-                // console.log('proof', result.proof)
-                if(readOnly && !writeOnly && !fullAccess){
-                    setRead(true)
+                    console.log("Fetched account details:", result);
+                    // console.log('proof', proof)
+                    // console.log('proof', result.proof)
+                    if(readOnly && !writeOnly && !fullAccess){
+                        setRead(true)
+                    }
                 }
+                return result
+            } catch (error) {
+                console.log("Error fetching account details:", error);
+                toast.error("Could not load account details.");
             }
-        } catch (error) {
-            console.log("Error fetching account details:", error);
-            toast.error("Could not load account details.");
         }
-    };
+    })
 
-    // useEffect(() => {
-    //     console.log('Updated proof:', proof);
-    // }, [proof]);
-
+    // const getAccountDetails = async () => {
+    //     try {
+    //         const result = await accountService.getAccDetailsById(id, aToken);
+    //         if (result) {
+    //             setDocData({
+    //                 speciality: result.speciality_id?.name || '',
+    //                 bio: result.bio || '',
+    //                 region: result.region_id?.name || '',
+    //
+    //             });
+    //             setAccount(result);
+    //             setProof(result.proof)
+    //             setEmail(result.email);
+    //             setIsVerify(result.verified);
+    //             if (!initialAccountRef.current) {
+    //                 initialAccountRef.current = result;
+    //             }
+    //
+    //             console.log("Fetched account details:", result);
+    //             // console.log('proof', proof)
+    //             // console.log('proof', result.proof)
+    //             if(readOnly && !writeOnly && !fullAccess){
+    //                 setRead(true)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log("Error fetching account details:", error);
+    //         toast.error("Could not load account details.");
+    //     }
+    // };
+    //
 
     const uploadDoctorDegree = async () => {
         const formData = new FormData();
@@ -247,12 +280,20 @@ const UpdateDocInfoAcc = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAccountDetails()
+            // getAccountDetails()
+            refetch()
             getAllSpecialities()
             getAllProvinces()
         }
     }, [aToken]);
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className="m-5 w-full h-[90vh] flex flex-col items-center overflow-y-scroll">

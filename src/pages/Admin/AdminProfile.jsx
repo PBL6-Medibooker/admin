@@ -98,9 +98,9 @@ const AdminProfile = () => {
         onError: (error) => {
             console.error("Query Error:", error.message);
         },
-        staleTime: 5 * 60 * 1000,
-        retry: false, // Disable retry
-        enabled: !!aToken, // Disable query if token is missing
+        // staleTime: 5 * 60 * 1000,
+        // retry: false, // Disable retry
+        enabled: !!aToken,
     });
 
 

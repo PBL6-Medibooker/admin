@@ -80,28 +80,50 @@ const ActiveHourListModal = ({open, onClose, id}) => {
     const columns = [
         {
             name: "day",
-            label: <span className=' text-primary lg:text-xl'>{t("account.active.day")}</span>,
+            label: t("account.active.day"),
+            options: {
+                customHeadRender: (columnMeta) => (
+                    <th className="text-primary lg:text-xl mr-10">
+                        {columnMeta.label}
+                    </th>
+                ),
+            },
         },
         {
             name: "start_time",
-            label: <span className=' text-primary lg:text-xl'>{t("account.active.start")}</span>,
+            label: t("account.active.start"),
             options: {
+                customHeadRender: (columnMeta) => (
+                    <th className="text-primary lg:text-xl">
+                        {columnMeta.label}
+                    </th>
+                ),
                 customBodyRender: (value) => <p className='capitalize'>{value}</p>,
                 filter: false,
             }
         },
         {
             name: "end_time",
-            label: <span className=' text-primary lg:text-xl'>{t("account.active.end")}</span>,
+            label: t("account.active.end"),
             options: {
+                customHeadRender: (columnMeta) => (
+                    <th className="text-primary lg:text-xl">
+                        {columnMeta.label}
+                    </th>
+                ),
                 customBodyRender: (value) => <p className='capitalize'>{value}</p>,
                 filter: false,
             }
         },
         {
             name: "hour_type",
-            label: <span className=' text-primary lg:text-xl'>{t("account.active.type")}</span>,
+            label: t("account.active.type"),
             options: {
+                customHeadRender: (columnMeta) => (
+                    <th className="text-primary lg:text-xl">
+                        {columnMeta.label}
+                    </th>
+                ),
                 customBodyRender: (value) => (
                     <p className={`capitalize inline-block px-3 py-2 rounded-full ${value === 'working' ? 'bg-primary text-white' : 'bg-blue-200'}`}>
                         {value}
@@ -138,8 +160,13 @@ const ActiveHourListModal = ({open, onClose, id}) => {
         // },
         {
             name: "delete",
-            label: <span className=' text-primary lg:text-xl'>{t("account.active.action")}</span>,
+            label: t("account.active.action"),
             options: {
+                customHeadRender: (columnMeta) => (
+                    <th className="text-primary lg:text-xl">
+                        {columnMeta.label}
+                    </th>
+                ),
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const rowData = tableMeta.rowData;
                     const handleDelete = (e) => {

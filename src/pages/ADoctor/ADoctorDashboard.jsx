@@ -6,44 +6,44 @@ import {motion} from "framer-motion";
 import StatCard from "../../components/StatCard";
 import {BadgeCheck, UserRoundSearch} from "lucide-react";
 import TopDoctorChart from "../../components/Chart/TopDoctorChart";
+import Loader from "../../components/Loader";
 
 const ADoctorDashboard = () => {
-    const {aToken, verifiedDoctor, rVerifyDoctorData} = useContext(AdminContext);
+    const {aToken, verifiedDoctor, rVerifyDoctorData, isVerifyDoctorLoading} = useContext(AdminContext);
 
     const [totalDoctors, setTotalDoctors] = useState(0);
     const [totalUnDoctors, setTotalUnDoctors] = useState(0);
 
     const {t} = useTranslation();
 
-
-    const getDoctorAccountList = async () => {
-        try {
-            rVerifyDoctorData()
-            setTotalDoctors(verifiedDoctor.length);
-
-        } catch (e) {
-            console.log(e.error)
-        }
-
-    }
-
-    const getDoctorUnverifyAccountList = async () => {
+    const getUnverifiedDoctors = async () => {
         try {
             const result = await accountService.findAll(false, false, false, aToken);
             setTotalUnDoctors(result.length);
-
-        } catch (e) {
-            console.log(e.error)
+        } catch (error) {
+            console.error(error);
         }
+    };
 
-    }
+
     useEffect(() => {
         if (aToken) {
-            getDoctorAccountList()
-            getDoctorUnverifyAccountList();
+            getUnverifiedDoctors()
+            rVerifyDoctorData()
         }
     }, [aToken]);
 
+    useEffect(() => {
+        setTotalDoctors(verifiedDoctor.length)
+    }, [verifiedDoctor]);
+
+    if (isVerifyDoctorLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>

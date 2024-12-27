@@ -23,7 +23,6 @@ const AppointmentDashboard = () => {
                 setAppointments(data);
                 setTotalAppointments(data.length);
             }
-
         } catch (e) {
             console.log(e)
         }
@@ -33,7 +32,7 @@ const AppointmentDashboard = () => {
         if (aToken) {
             getAllAppointment();
         }
-    }, [aToken])
+    }, [aToken, totalAppointments])
     return (
         <div className='flex-1 overflow-auto relative z-10'>
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>

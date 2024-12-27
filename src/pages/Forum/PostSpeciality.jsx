@@ -5,6 +5,9 @@ import * as specialityService from "../../service/SpecialityService";
 import {motion} from "framer-motion";
 import {getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
 import {useTranslation} from "react-i18next";
+import {useQuery} from "@tanstack/react-query";
+import * as articleService from "../../service/ArticleService";
+import Loader from "../../components/Loader";
 
 const PostSpeciality = () => {
     const {aToken} = useContext(AdminContext);
@@ -24,6 +27,18 @@ const PostSpeciality = () => {
         const result = await specialityService.findAll(false, aToken)
         setSpecialities(result);
     }
+
+    const {data: spec =[], isLoading, refetch: refetchSpecList} = useQuery({
+        queryKey: ['specialist'],
+        queryFn: async () => {
+            try {
+                const result = await specialityService.findAll(false, aToken)
+                setSpecialities(result)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    })
 
     const table = useReactTable({
         data: specialities,
@@ -45,7 +60,16 @@ const PostSpeciality = () => {
         if (aToken) {
             findAllSpecialities()
         }
-    }, [aToken]);
+    }, [aToken])
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
+
     return (
         <div>
             <div className='flex justify-between items-center'>

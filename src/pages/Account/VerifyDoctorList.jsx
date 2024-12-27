@@ -192,8 +192,8 @@ const VerifyDoctorList = () => {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center w-full h-screen bg-opacity-75 fixed top-0 left-0 z-50">
-                <Loader/>
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
             </div>
         );
     }

@@ -47,7 +47,7 @@ const DoctorArticleList = () => {
     const {data: articles = [], isLoading, isError, refetch} = useQuery({
         queryKey: ["articles", doctorData?.email],
         queryFn: fetchDoctorArticles,
-        enabled: !!dToken, // Run query only if dToken is available
+        enabled: !!dToken,
     });
 
     const softDeleteArticles = async () => {
@@ -157,7 +157,7 @@ const DoctorArticleList = () => {
 
                                 <div className='w-32 h-32'>
                                     <motion.img
-                                        className="w-full h-full object-cover  bg-indigo-50"
+                                        className="w-full h-full object-cover bg-indigo-50"
                                         src={item.article_image ? item.article_image : assets.user_icon}
                                         alt="Doctor"
                                         initial={{scale: 0.9}}
@@ -167,11 +167,12 @@ const DoctorArticleList = () => {
                                 </div>
 
 
-                                <div className="flex-1 gap-2 text-sm text-zinc-600">
+                                {/*<div className="flex-1 gap-2 text-sm text-zinc-600">*/}
+                                <div className="flex-1 flex flex-col gap-2 text-sm text-zinc-600">
 
 
                                     <motion.p
-                                        className="text-lg font-semibold"
+                                        className="text-lg font-bold truncate w-[50vw]"
                                         whileHover={{color: "#4A90E2"}}
                                         transition={{duration: 0.3}}
                                     >
@@ -184,17 +185,29 @@ const DoctorArticleList = () => {
                                         animate={{opacity: 1}}
                                         transition={{duration: 0.5, delay: 0.1}}
                                     >
-                                        {item.doctor_id.speciality_id.name}
+                                        {item.doctor_id.speciality_id.name ? item.doctor_id.speciality_id.name :
+                                            <span className='text-red-500'>Không thuộc chuyên khoa</span>}
                                     </motion.p>
 
-                                    <motion.p
-                                        className="mt-2 text-gray-600"
-                                        initial={{opacity: 0}}
-                                        animate={{opacity: 1}}
-                                        transition={{duration: 0.5, delay: 0.2}}
-                                    >
-                                        {t("doctor.article.date")}: <span className="text-xs">{d}</span>
-                                    </motion.p>
+                                    {/*<motion.p*/}
+                                    {/*    className="mt-2 text-gray-600"*/}
+                                    {/*    initial={{opacity: 0}}*/}
+                                    {/*    animate={{opacity: 1}}*/}
+                                    {/*    transition={{duration: 0.5, delay: 0.2}}*/}
+                                    {/*>*/}
+                                    {/*    {t("doctor.article.date")}: <span className="text-xs">{d}</span>*/}
+                                    {/*</motion.p>*/}
+
+                                    <div className="mt-auto">
+                                        <motion.p
+                                            className="text-gray-600"
+                                            initial={{opacity: 0}}
+                                            animate={{opacity: 1}}
+                                            transition={{duration: 0.5, delay: 0.2}}
+                                        >
+                                            {t("doctor.article.date")}: <span className="text-xs">{d}</span>
+                                        </motion.p>
+                                    </div>
                                 </div>
 
 
@@ -303,18 +316,21 @@ const DoctorArticleList = () => {
                     <FaRegTrashAlt size={50} className="mx-auto text-red-500 mb-4"/>
                     <h3 className="text-lg font-semibold">{t("doctor.article.confirmDelete")}</h3>
                     <p className="text-gray-600">{t("doctor.article.pCD")}</p>
-                    <div className="flex justify-around mt-6">
+
+                    <div className="flex gap-4 mt-6">
                         <motion.button
                             onClick={softDeleteArticles}
+                            className="flex-1 text-white bg-gradient-to-r from-red-500 to-red-700 py-2 rounded-md transition duration-150"
                             whileHover={{scale: 1.05}}
-                            className="text-white bg-red-600 px-6 py-2 rounded-md"
+                            whileTap={{scale: 0.95}}
                         >
                             {t("doctor.article.confirm")}
                         </motion.button>
                         <motion.button
                             onClick={() => setOpen(false)}
+                            className="flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 py-2 rounded-md transition duration-150"
                             whileHover={{scale: 1.05}}
-                            className="bg-gray-200 px-6 py-2 rounded-md"
+                            whileTap={{scale: 0.95}}
                         >
                             {t("doctor.article.cancel")}
                         </motion.button>

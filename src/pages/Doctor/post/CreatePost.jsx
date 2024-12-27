@@ -31,7 +31,8 @@ const CreatePost = () => {
                     title: t("doctor.post.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 })
             }
         } catch (e) {
@@ -92,7 +93,7 @@ const CreatePost = () => {
                     <motion.div variants={itemVariant} className="mb-6">
                         <label
                             htmlFor="health-issue"
-                            className="block text-lg font-medium text-primary mb-2"
+                            className="block text-lg font-bold"
                         >
                             {t("doctor.post.ptitle")}
                         </label>
@@ -112,7 +113,7 @@ const CreatePost = () => {
                     <motion.div variants={itemVariant} className="mb-6">
                         <label
                             htmlFor="post-content"
-                            className="block text-lg font-medium text-primary mb-2"
+                            className="block text-lg font-bold"
                         >
                             {t("doctor.post.content")}
                         </label>

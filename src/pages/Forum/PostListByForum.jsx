@@ -23,6 +23,9 @@ import {LuMapPinOff} from "react-icons/lu";
 import {MapPinPlus, Trash2} from 'lucide-react'
 import SearchInput from "../../components/SearchInput";
 import {Tooltip} from "@mui/material";
+import Loader from "../../components/Loader";
+import {useQuery} from "@tanstack/react-query";
+import * as specialityService from "../../service/SpecialityService";
 
 
 const PostListByForum = () => {
@@ -39,21 +42,41 @@ const PostListByForum = () => {
     const [data, setData] = useState([]);
     const {t} = useTranslation();
 
-    const getAllPostBySpeciality = async () => {
-        try {
-            const result = await forumService.getAllPostBySpeciality(name, aToken);
-            if (!isDelete) {
-                const filteredPosts = result.filter(post => !post.is_deleted);
-                setData(filteredPosts);
-            } else {
-                const filteredPosts = result.filter(post => post.is_deleted);
-                setData(filteredPosts);
-            }
+    // const getAllPostBySpeciality = async () => {
+    //     try {
+    //         const result = await forumService.getAllPostBySpeciality(name, aToken);
+    //         if (!isDelete) {
+    //             const filteredPosts = result.filter(post => !post.is_deleted);
+    //             setData(filteredPosts);
+    //         } else {
+    //             const filteredPosts = result.filter(post => post.is_deleted);
+    //             setData(filteredPosts);
+    //         }
+    //
+    //     } catch (error) {
+    //         console.error("Error fetching posts by speciality:", error);
+    //     }
+    // };
 
-        } catch (error) {
-            console.error("Error fetching posts by speciality:", error);
+    const {data: spec =[], isLoading, refetch: refetchPostList} = useQuery({
+        queryKey: ['postList', isDelete],
+        queryFn: async () => {
+            try {
+                const result = await forumService.getAllPostBySpeciality(name, aToken);
+                if (!isDelete) {
+                    const filteredPosts = result.filter(post => !post.is_deleted);
+                    setData(filteredPosts);
+                } else {
+                    const filteredPosts = result.filter(post => post.is_deleted);
+                    setData(filteredPosts);
+                }
+                return result
+
+            } catch (error) {
+                console.error("Error fetching posts by speciality:", error);
+            }
         }
-    };
+    })
 
 
     const openDetailPage = async (id, value) => {
@@ -109,7 +132,8 @@ const PostListByForum = () => {
         }
         try {
             await forumService.softDelete(selectedPostId, aToken);
-            await getAllPostBySpeciality();
+            // await getAllPostBySpeciality();
+            refetchPostList()
             setSelectedPostId('');
             setOpen(false);
 
@@ -137,7 +161,8 @@ const PostListByForum = () => {
         }
         try {
             await forumService.permanentDelete(selectedPostId, aToken);
-            await getAllPostBySpeciality();
+            // await getAllPostBySpeciality();
+            refetchPostList()
             setSelectedPostId('');
             setOpen(false);
 
@@ -166,7 +191,8 @@ const PostListByForum = () => {
         }
         try {
             await forumService.restorePost(selectedPostId, aToken);
-            await getAllPostBySpeciality();
+            // await getAllPostBySpeciality();
+            refetchPostList()
             setSelectedPostId('');
             setOpen(false);
 
@@ -194,10 +220,20 @@ const PostListByForum = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAllPostBySpeciality()
+            // getAllPostBySpeciality()
+            refetchPostList()
             refetchAdminDetails()
         }
     }, [aToken, isDelete, adminDetails]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
+
     return (
         <div className='mb-5 pl-5 mr-5 mt-1 w-[100vw] h-[100vh]'>
 
@@ -360,7 +396,8 @@ const PostListByForum = () => {
                                                 title={row.original.post_title}
                                                 date={formattedDate}
                                                 totalComments={totalComments}
-                                                refetch={getAllPostBySpeciality}
+                                                // refetch={getAllPostBySpeciality}
+                                                refetch={refetchPostList}
                                                 value={row.original.name}
                                             />
                                         </motion.div>

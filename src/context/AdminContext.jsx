@@ -21,15 +21,14 @@ const AdminContextProvider = (props) => {
     const [writeOnly, setWriteOnly] = useState(false);
     const [fullAccess, setFullAccess] = useState(false);
 
-    const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
-    // const backendUrl = import.meta.env?.BACKEND_URL || 'https://medibackend.azurewebsites.net';
+    // const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
+    const backendUrl = import.meta.env?.BACKEND_URL || 'https://medibackend.azurewebsites.net';
 
-    const {data: verifiedDoctor = [], isLoading, refetch: rVerifyDoctorData} = useQuery({
+    const {data: verifiedDoctor = [], isLoading: isVerifyDoctorLoading, refetch: rVerifyDoctorData} = useQuery({
         queryKey: ["verify"],
         queryFn: async () => {
             try {
-                const data = await accountService.findAll(false, false, true, aToken);
-                return data;
+                return  await accountService.findAll(false, false, true, aToken)
             } catch (e) {
                 console.error(e);
                 throw new Error("Failed to load");
@@ -150,9 +149,10 @@ const AdminContextProvider = (props) => {
 
 
     const value = {
-        backendUrl, aToken, setAToken, verifiedDoctor, isLoading, logout, rVerifyDoctorData, specialities,
+        backendUrl, aToken, setAToken, verifiedDoctor, isVerifyDoctorLoading, logout, rVerifyDoctorData, specialities,
         refetchSpec, appointmentList, refetchAList, aListLoading, aListError, adminList, refetchAdminList,
-        regionList, refetchRegionList, adminData, refectAdminData, adminDetails, refetchAdminDetails, readOnly, writeOnly, fullAccess
+        regionList, refetchRegionList, adminData, refectAdminData, adminDetails, refetchAdminDetails,
+        readOnly, writeOnly, fullAccess
     }
 
     return (

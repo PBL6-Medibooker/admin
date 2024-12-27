@@ -412,6 +412,7 @@
     },
     "list": {
       "warn": "No article selected for deletion",
+      "restoreW": "No article selected for restoration",
       "success": "Create a new article successfully!",
       "add": "Create newspaper",
       "image": "Image",
@@ -442,7 +443,8 @@
       "atitle": "Article Title",
       "content": "Article Content",
       "back": "Back",
-      "save": "Save"
+      "save": "Save",
+      "success": "Create New Article Successful"
     },
     "update": {
       "success": "Article Updated",

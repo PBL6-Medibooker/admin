@@ -84,7 +84,8 @@ const RestoreRegion = () => {
                 title: t("region.restore.ds"),
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
+                backdrop: false
             });
         } catch (error) {
             console.error(error.message);

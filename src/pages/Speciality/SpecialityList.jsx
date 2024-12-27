@@ -54,8 +54,6 @@ const SpecialityList = () => {
         setSpecialities(result);
     }
 
-
-
     const columns = [
         columnHelper.accessor("_id", {
             id: "_id",

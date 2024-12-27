@@ -11,8 +11,8 @@ import Swal from "sweetalert2";
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
-    const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
-    // const backendUrl = import.meta.env?.BACKEND_URL || 'https://medibackend.azurewebsites.net';
+    // const backendUrl = import.meta.env?.BACKEND_URL || 'http://localhost:4000';
+    const backendUrl = import.meta.env?.BACKEND_URL || 'https://medibackend.azurewebsites.net';
 
     const [dToken, setDToken] = useState(localStorage.getItem('dToken') ? localStorage.getItem('dToken') : '')
 
@@ -56,6 +56,7 @@ const DoctorContextProvider = (props) => {
                     setDocId(result.profileData._id);
                     setDocEmail(result.profileData.email);
                 }
+                return result
             } catch (error) {
 
                 if (error.response.data.error === "Request not authorized") {

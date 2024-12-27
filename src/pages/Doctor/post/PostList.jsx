@@ -26,37 +26,20 @@ const PostList = () => {
     const navigate = useNavigate();
     const [selectedPostId, setSelectedPostId] = useState('');
 
-    const fetchPostsByEmail = async () => {
-        try {
-            const response = await forumService.getAllPostByEmail(docEmail, dToken);
-            return response.filter(post => post.is_deleted === false);
-        } catch (error) {
-            console.error("Error fetching posts:", error);
-            throw new Error("Failed to fetch posts");
-        }
-    };
 
 
     const {data: postList = [], isLoading, isError, refetch} = useQuery({
         queryKey: ["postsByEmail", docEmail],
-        queryFn: fetchPostsByEmail,
-        // onError: (error) => {
-        //     if (error.response?.status === 401 && error.response?.data?.logout) {
-        //
-        //         Swal.fire({
-        //             icon: "warning",
-        //             title: "Session expired",
-        //             text: "You will be logged out.",
-        //             timer: 2000,
-        //             showConfirmButton: false,
-        //         }).then(() => {
-        //             logout();
-        //             navigate('/');
-        //         });
-        //     } else {
-        //         console.error("Error fetching posts:", error.response?.data?.error || error.message);
-        //     }
-        // },
+        queryFn: async () => {
+            try {
+                const response = await forumService.getAllPostByEmail(docEmail, dToken);
+                return response.filter(post => post.is_deleted === false);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+                throw new Error("Failed to fetch posts");
+            }
+        },
+
     });
 
 
@@ -192,23 +175,28 @@ const PostList = () => {
                             );
                         })
                     ) : (
-                        <AnimatePresence>
-                            <motion.p
-                                className="text-center h-32 text-blue-400 flex items-center justify-center col-span-full"
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                exit={{opacity: 0}}
-                                transition={{duration: 0.5}}
-                            >
-                                {t("forum.list.noData")}
-                            </motion.p>
-                        </AnimatePresence>
+                        <motion.div
+                            className="flex justify-center items-cente ml-80  w-full h-full py-12"
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.5}}
+                        >
+                            <div className="text-center">
+                                <motion.p
+                                    className="text-lg font-semibold text-gray-600"
+                                    initial={{scale: 0.8}}
+                                    animate={{scale: 1}}
+                                    transition={{duration: 0.3}}
+                                >
+                                    {t("account.dvd.nodata")}
+                                </motion.p>
+                            </div>
+                        </motion.div>
                     )
                     }
                 </motion.div>
             </div>
 
-            {/* Pagination */}
             {paginatedData.length > 0 && (
                 <div className="flex items-center justify-end gap-2 mt-4">
                     <motion.button

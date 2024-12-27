@@ -12,6 +12,8 @@ import {FaArrowCircleRight} from "react-icons/fa";
 import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import {DoctorContext} from "../../context/DoctorContext";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
 
 
 const AddAppointment = () => {
@@ -32,7 +34,7 @@ const AddAppointment = () => {
     const [type_service, setTypeService] = useState('appointment');
     const [error, setError] = useState('');
     const [users, setUsers] = useState([]);
-    const [doctors, setDoctors] = useState([]);
+    // const [doctors, setDoctors] = useState([]);
     const [doctor, setDoctor] = useState(null);
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
     const [specialities, setSpecialities] = useState([]);
@@ -68,14 +70,25 @@ const AddAppointment = () => {
         }
     };
 
-    const getDoctorAccountList = async () => {
-        try {
-            const result = await accountService.findAll(false, false, true, aToken);
-            setDoctors(result);
-        } catch (e) {
-            console.log(e.error);
+    // const getDoctorAccountList = async () => {
+    //     try {
+    //         const result = await accountService.findAll(false, false, true, aToken);
+    //         // setDoctors(result);
+    //     } catch (e) {
+    //         console.log(e.error);
+    //     }
+    // };
+
+    const {data: doctors =[], isLoading, refetch: refetchDoctors} = useQuery({
+        queryKey: ['doc'],
+        queryFn: async () => {
+            try {
+                return await accountService.findAll(false, false, true, aToken);
+            } catch (e) {
+                console.log(e.error);
+            }
         }
-    };
+    })
 
 
     const getActiveHourList = async () => {
@@ -206,11 +219,19 @@ const AddAppointment = () => {
         if (aToken || dToken) {
             findAllSpecialities()
             getAccountList()
-            getDoctorAccountList()
+            // getDoctorAccountList()
             getDoctorActiveHour()
+            refetchDoctors()
         }
     }, [aToken, dToken]);
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>

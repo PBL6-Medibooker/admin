@@ -20,6 +20,9 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {Trash} from "lucide-react";
 import {Tooltip} from "@mui/material";
+import Loader from "../../components/Loader";
+import {useQuery} from "@tanstack/react-query";
+import * as appointmentService from "../../service/AppointmentService";
 
 const ArticleList = () => {
 
@@ -34,17 +37,35 @@ const ArticleList = () => {
     const {t} = useTranslation();
 
 
-    const getAllArticle = async () => {
-        try {
-            const data = await articleService.findAll(false,aToken)
-            if (data) {
-                setData(data);
-                console.log(data)
+    // const getAllArticle = async () => {
+    //     try {
+    //         const data = await articleService.findAll(false,aToken)
+    //         if (data) {
+    //             setData(data);
+    //             console.log(data)
+    //         }
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
+
+    const {data: article =[], isLoading, refetch: refetchArticleList} = useQuery({
+        queryKey: ['articleList'],
+        queryFn: async () => {
+            try {
+                const data = await articleService.findAll(false,aToken)
+                if (data) {
+                    setData(data)
+                }
+
+            } catch (e) {
+                console.log(e)
             }
-        } catch (e) {
-            console.log(e)
-        }
-    }
+        },
+        enabled: !!aToken
+    })
+
 
     const openDeleteModal = async () => {
         if (selectedAccountIds?.length === 0) {
@@ -69,7 +90,8 @@ const ArticleList = () => {
         }
         try {
             await articleService.softDeleteArticle(selectedAccountIds, aToken);
-            await getAllArticle();
+            // await getAllArticle();
+            refetchArticleList()
             // toast.success(response.message);
             setSelectedAccountIds([]);
             setOpen(false);
@@ -128,11 +150,19 @@ const ArticleList = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAllArticle()
+            // getAllArticle()
+            refetchArticleList()
             refetchAdminDetails()
         }
     }, [aToken, adminDetails])
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <motion.div

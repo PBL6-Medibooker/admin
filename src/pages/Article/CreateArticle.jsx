@@ -140,7 +140,6 @@ const CreateArticle = () => {
                                 type="file"
                                 id="image"
                                 hidden
-                                accept="image/jpg"
                             />
                         </label>
 
@@ -174,7 +173,7 @@ const CreateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                        <label htmlFor="health-issue" className="block text-lg font-bold">
                             {t("article.add.atitle")}
                         </label>
                         <input
@@ -195,7 +194,7 @@ const CreateArticle = () => {
                         transition={{delay: 0.6, duration: 0.5}}
                         className="mb-6"
                     >
-                        <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                        <label htmlFor="health-issue" className="block text-lg font-bold">
                             {t("article.add.content")}
                         </label>
                         <textarea

@@ -120,6 +120,7 @@ const AddDoctorAccount = () => {
                                     type="email"
                                     placeholder="bevis@gmail.com"
                                     required
+                                    autoFocus
                                 />
                             </div>
 
@@ -144,7 +145,6 @@ const AddDoctorAccount = () => {
                                     type="text"
                                     placeholder="bevis"
                                     required
-                                    autoFocus
                                 />
                             </div>
 

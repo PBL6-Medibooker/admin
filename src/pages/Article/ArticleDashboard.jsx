@@ -17,11 +17,9 @@ const ArticleDashboard = () => {
 
     const getAllArticle = async () => {
         try {
-
             const data = await articleService.findAll(true, aToken)
             if(data){
                 setArticles(data);
-                console.log(data)
                 setTotalArticles(data.length);
             }
 

@@ -14,12 +14,15 @@ import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {ArrowBigLeftDash, CalendarDays} from "lucide-react";
 import {Tooltip} from "@mui/material";
+import {useQuery} from "@tanstack/react-query";
+import * as accountService from "../../service/AccountService";
+import Loader from "../../components/Loader";
 
 const AppointmentList = () => {
     const navigate = useNavigate();
     const {aToken, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {calculateAge, separateDayAndDate, dateFormat} = useContext(AppContext);
-    const [appointments, setAppointments] = useState([]);
+    // const [appointments, setAppointments] = useState([]);
     const [open, setOpen] = useState(false)
     const [id, setId] = useState('')
     const {t} = useTranslation()
@@ -29,7 +32,8 @@ const AppointmentList = () => {
             const data = await appointmentService.softDeleteAppointment(id, aToken);
             if (data) {
                 // toast.success('The Appointment has been cancelled');
-                await getAllAppointment();
+                // await getAllAppointment();
+                refetchApList()
                 setOpen(false);
                 await Swal.fire({
                     position: "top-end",
@@ -47,17 +51,18 @@ const AppointmentList = () => {
     }
 
 
-    const getAllAppointment = async () => {
-        try {
-            const data = await appointmentService.findAll(false, aToken);
-            if (data) {
-                setAppointments(data.reverse());
-                console.log(data)
+    const {data: appointments =[], isLoading, refetch: refetchApList} = useQuery({
+        queryKey: ['apList'],
+        queryFn: async () => {
+            try {
+                const data = await appointmentService.findAll(false, aToken)
+                return data.reverse()
+            } catch (e) {
+                console.log(e.error);
             }
-        } catch (e) {
-            console.log(e);
         }
-    };
+    })
+
 
     const columns = [
         {
@@ -99,7 +104,7 @@ const AppointmentList = () => {
                         <div className="flex w-8 h-8 items-center gap-2">
                             <img
                                 className="w-full h-full object-cover rounded-full"
-                                src={appointments[dataIndex]?.user_id?.profile_image ? appointments[dataIndex]?.user_id?.profile_image : assets.user_icon}
+                                src={appointments[dataIndex]?.user_id?.profile_image ? appointments[dataIndex]?.user_id?.profile_image : assets.patients_icon}
                                 alt=""
                             />
                             <p className='whitespace-nowrap overflow-ellipsis'>{appointments[dataIndex]?.user_id?.username}</p>
@@ -191,11 +196,24 @@ const AppointmentList = () => {
                     </span>
                     ),
                     customBodyRenderLite: (dataIndex) => {
+                        // const appointment = appointments[dataIndex];
+                        // const now = new Date();
+                        // const appointmentDate = new Date(appointment.appointment_day);
+                        // const isCompleted = appointmentDate < now;
+
                         const appointment = appointments[dataIndex];
                         const now = new Date();
-                        const appointmentDate = new Date(appointment.appointment_day);
-                        const isCompleted = appointmentDate < now;
 
+                        // Remove day of the week from appointment_day
+                        const sanitizedDate = appointment.appointment_day.split(" ")[1]; // Extract "2025-01-08"
+
+                        // Combine the sanitized date with the time
+                        const appointmentEndTime = new Date(`${sanitizedDate}T${appointment.appointment_time_end}:00`);
+
+                        console.log("Sanitized Date:", sanitizedDate);
+                        console.log("Appointment End Time:", appointmentEndTime);
+
+                        const isCompleted = now > appointmentEndTime;
 
                         return (
                             <motion.div
@@ -274,10 +292,20 @@ const AppointmentList = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAllAppointment()
+            // getAllAppointment()
+            refetchApList()
             refetchAdminDetails()
         }
     }, [aToken, adminDetails]);
+
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <motion.div

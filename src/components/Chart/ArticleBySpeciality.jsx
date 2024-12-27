@@ -39,26 +39,26 @@ const ArticleBySpeciality = () => {
         }
     }, [aToken]);
 
-    const renderLegend = () => {
-
-        return (
-            <div className="flex justify-center space-x-6">
-                {articleData.map((entry, index) => (
-                    <div key={`legend-${index}`} className="flex items-center space-x-2">
-                        <div
-                            style={{
-                                backgroundColor: COLORS[index % COLORS.length],
-                                width: 12,
-                                height: 12,
-                                borderRadius: "50%",
-                            }}
-                        />
-                        <span className="text-gray-800">{entry.specialityName}</span>
-                    </div>
-                ))}
-            </div>
-        );
-    };
+    // const renderLegend = () => {
+    //
+    //     return (
+    //         <div className="flex justify-center space-x-6">
+    //             {articleData.map((entry, index) => (
+    //                 <div key={`legend-${index}`} className="flex items-center space-x-2">
+    //                     <div
+    //                         style={{
+    //                             backgroundColor: COLORS[index % COLORS.length],
+    //                             width: 12,
+    //                             height: 12,
+    //                             borderRadius: "50%",
+    //                         }}
+    //                     />
+    //                     <span className="text-gray-800">{entry.specialityName}</span>
+    //                 </div>
+    //             ))}
+    //         </div>
+    //     );
+    // };
 
     const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
@@ -120,7 +120,7 @@ const ArticleBySpeciality = () => {
                             </Pie>
                             <Tooltip content={<CustomTooltip />} />
 
-                            <Legend content={renderLegend} />
+                            {/*<Legend content={renderLegend} />*/}
                         </PieChart>
                     ) : (
                         <p className="text-center text-gray-500">{t("article.dashboard.nodata")}</p>

@@ -12,6 +12,9 @@ import Button from "../../components/button/Button";
 import GrantAdminModel from "./GrantAdminModel";
 import {RefreshCcwDot, CalendarFold, ArchiveRestore} from 'lucide-react'
 import {Tooltip} from "@mui/material";
+import {useQuery} from "@tanstack/react-query";
+import * as appointmentService from "../../service/AppointmentService";
+import Loader from "../../components/Loader";
 
 
 const AccountDetails = () => {
@@ -42,20 +45,37 @@ const AccountDetails = () => {
         setImage(file);
     };
 
-    const fetchAccountDetails = async () => {
-        try {
-            const response = await accountService.getAccDetails(email, aToken);
-            console.log(response)
-            setAccount(response);
-            setUserId(response._id)
-            setUserName(response.username)
-            if(readOnly && !writeOnly && !fullAccess){
-                setRead(true)
+    // const fetchAccountDetails = async () => {
+    //     try {
+    //         const response = await accountService.getAccDetails(email, aToken);
+    //         setAccount(response);
+    //         setUserId(response._id)
+    //         setUserName(response.username)
+    //         if(readOnly && !writeOnly && !fullAccess){
+    //             setRead(true)
+    //         }
+    //     } catch (err) {
+    //         console.log(err.message);
+    //     }
+    // };
+
+    const {data=  {}, isLoading, refetch: refetchAcc} = useQuery({
+        queryKey: ['acc'],
+        queryFn: async () => {
+            try {
+                const response = await accountService.getAccDetails(email, aToken);
+                setAccount(response);
+                setUserId(response._id)
+                setUserName(response.username)
+                if(readOnly && !writeOnly && !fullAccess){
+                    setRead(true)
+                }
+                return response
+            } catch (err) {
+                console.log(err.message);
             }
-        } catch (err) {
-            console.log(err.message);
         }
-    };
+    })
 
     const openAccess = async () => {
         try {
@@ -130,11 +150,19 @@ const AccountDetails = () => {
         };
 
     useEffect(() => {
-
         if (aToken) {
-            fetchAccountDetails();
+            // fetchAccountDetails();
+            refetchAcc()
         }
     }, [aToken, email]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>

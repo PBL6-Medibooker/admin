@@ -414,6 +414,7 @@
     },
     "list": {
       "warn": "Chưa chọn bài báo để xoá",
+      "restoreW": "Chưa chọn bài báo để khôi phục",
       "add": "Thêm bài báo",
       "success": "Tạo bài báo mới thành công!",
       "image": "Ảnh bìa",
@@ -444,7 +445,9 @@
       "atitle": "Tiêu đề",
       "content": "Nội dung",
       "back": "Trở về",
-      "save": "Hoàn tất"
+      "save": "Hoàn tất",
+      "success": "Thêm bài báo mới thành công ! "
+
     },
     "update": {
       "success": "Cập nhật bài báo thành công",
