@@ -7,6 +7,8 @@ import {AdminContext} from "../../context/AdminContext";
 import TopDoctorChart from "../../components/Chart/TopDoctorChart";
 import {useTranslation} from "react-i18next";
 import TopUsers from "../../components/Chart/TopUsers";
+import Loader from "../../components/Loader";
+import {useQuery} from "@tanstack/react-query";
 
 const AccountDashboard = () => {
     const {aToken,  adminList, refetchAdminList} = useContext(AdminContext);
@@ -36,17 +38,19 @@ const AccountDashboard = () => {
     //     }
     // }, [aToken]);
 
+    const {data: user = [], isLoading: isCustomerLoading, refetch: refetchCustomerList} = useQuery({
+        queryKey: ['cList'],
+        queryFn: async () => {
+            try {
+                const result = await accountService.findAll(true, false, false, aToken);
+                return await result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+                // setTotalUser(filter.length)
 
-    const getAccountList = async () => {
-        try {
-            const result = await accountService.findAll(true, false, false, aToken);
-            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
-            setTotalUser(filter.length);
-        } catch (e) {
-            console.log(e.error)
+            } catch (e) {
+                console.log(e.error)
+            }
         }
-
-    }
+    })
 
     const getAdminAccountList = async () => {
         try {
@@ -60,11 +64,18 @@ const AccountDashboard = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAccountList()
+            refetchCustomerList()
             getAdminAccountList()
         }
     }, [aToken, totalAdmin, adminList, totalUser]);
 
+    if (isCustomerLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>
@@ -77,7 +88,7 @@ const AccountDashboard = () => {
                     transition={{duration: 1}}
                 >
                     <StatCard name={t('account.adashboard.userAccount')}
-                              to={'/account'} icon={User} value={totalUser}
+                              to={'/account'} icon={User} value={user.length}
                               color='#6366F1'/>
 
                     <StatCard name={t('account.adashboard.admin')}

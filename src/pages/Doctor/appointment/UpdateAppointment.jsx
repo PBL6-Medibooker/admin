@@ -153,11 +153,10 @@ const UpdateAppointment = () => {
     //     }
     // };
     const {data: hour =[], isLoading: isHourLoading, refetch: refetchHour} = useQuery({
-        queryKey: ['insurance'],
+        queryKey: ['hourD'],
         queryFn: async () => {
             try {
                 if (doctorId) {
-                    // const response = await accountService.getAccountActiveHourList(doctorId, dToken);
                     const response = await doctorService.getAccountActiveHourList(doctorId, dToken);
                     console.log(response);
                     const {active_hours, fully_booked} = response;

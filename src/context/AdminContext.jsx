@@ -148,6 +148,8 @@ const AdminContextProvider = (props) => {
     })
 
 
+
+
     const value = {
         backendUrl, aToken, setAToken, verifiedDoctor, isVerifyDoctorLoading, logout, rVerifyDoctorData, specialities,
         refetchSpec, appointmentList, refetchAList, aListLoading, aListError, adminList, refetchAdminList,

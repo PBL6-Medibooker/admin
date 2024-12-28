@@ -37,12 +37,14 @@ const ADoctorDashboard = () => {
         setTotalDoctors(verifiedDoctor.length)
     }, [verifiedDoctor]);
 
+
+
     if (isVerifyDoctorLoading) {
         return (
             <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
                 <Loader />
             </div>
-        );
+        )
     }
 
     return (

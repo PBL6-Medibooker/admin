@@ -43,13 +43,13 @@ const DoctorEachRegion = () => {
         },
     });
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center w-full h-screen bg-white fixed top-0 left-0 z-50">
-                <Loader />
-            </div>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <div className="flex justify-center items-center w-full h-screen bg-white fixed top-0 left-0 z-50">
+    //             <Loader />
+    //         </div>
+    //     );
+    // }
 
     return (
         <motion.div

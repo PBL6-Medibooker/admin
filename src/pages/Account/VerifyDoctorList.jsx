@@ -28,7 +28,7 @@ const VerifyDoctorList = () => {
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
     const [open, setOpen] = useState(false);
-    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec,
+    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec, isVerifyDoctorLoading,
      regionList, refetchRegionList, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {t} = useTranslation();
     const [specialityFilterValue, setSpecialityFilterValue] = useState("");
@@ -190,12 +190,12 @@ const VerifyDoctorList = () => {
     }, [aToken, verifiedDoctor, adminDetails]);
 
 
-    if (isLoading) {
+    if (isLoading || isVerifyDoctorLoading) {
         return (
             <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
                 <Loader />
             </div>
-        );
+        )
     }
 
     return (

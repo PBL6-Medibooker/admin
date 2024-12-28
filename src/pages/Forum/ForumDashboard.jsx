@@ -7,31 +7,41 @@ import {EthernetPort} from "lucide-react";
 import {useTranslation} from "react-i18next";
 import PostMostComment from "../../components/Chart/PostMostComment";
 import PostByMonth from "../../components/Chart/PostByMonth";
+import Loader from "../../components/Loader";
+import {useQuery} from "@tanstack/react-query";
+import * as articleService from "../../service/ArticleService";
 
 const ForumDashboard = () => {
 
     const {aToken} = useContext(AdminContext);
-    const [data, setData] = useState([])
-    const [totalPost, setTotalPost] = useState(0)
     const {t} = useTranslation()
 
 
-    const getPostList = async () => {
-        try {
-            const result = await forumService.findAll(aToken);
-            const filterData = result.filter(post => post.is_deleted === false)
-            setTotalPost(filterData.length)
-            setData(filterData);
-        } catch (e) {
-            console.log(e.error);
+    const {data: posts = [], isLoading, refetch} = useQuery({
+        queryKey: ["post"],
+        queryFn: async () => {
+            try {
+                const result = await forumService.findAll(aToken);
+                return await result.filter(post => post.is_deleted === false)
+            } catch (e) {
+                console.log(e)
+            }
         }
-    };
+    });
 
     useEffect(() => {
         if (aToken) {
-            getPostList();
+            refetch()
         }
-    }, [aToken]);
+    }, [aToken])
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
     return (
         <div className='flex-1 overflow-auto relative z-10'>
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
@@ -42,7 +52,7 @@ const ForumDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name={t("forum.dashboard.title")} to={'/spec-forum'} icon={EthernetPort} value={totalPost}
+                    <StatCard name={t("forum.dashboard.title")} to={'/spec-forum'} icon={EthernetPort} value={posts.length}
                               color='#6366F1'/>
                 </motion.div>
 

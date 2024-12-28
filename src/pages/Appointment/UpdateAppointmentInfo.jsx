@@ -12,6 +12,8 @@ import {useTranslation} from "react-i18next";
 import Swal from "sweetalert2";
 import CustomButton from "../../components/button/CustomButton";
 import {Shield} from "lucide-react";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../components/Loader";
 
 const UpdateAppointmentInfo = () => {
 
@@ -76,69 +78,99 @@ const UpdateAppointmentInfo = () => {
         }
     }
 
-    const getAppointmentInfo = async () => {
-        try {
-            const response = await appointmentService.getAppointmentInfo(id, aToken);
 
-            if (response.success) {
-                setDoctorId(response.appointmentData.doctor_id);
-                console.log(doctorId)
+    const {data: info =[], isLoading, refetch: refetchAppointmentInfo} = useQuery({
+        queryKey: ['appointmentInfoAdmin'],
+        queryFn: async () => {
+            try {
+                const response = await appointmentService.getAppointmentInfo(id, aToken);
 
-
-                const start_time = response.appointmentData.appointment_time_start;
-                const end_time = response.appointmentData.appointment_time_end;
-
-                const timeRange = `${start_time} - ${end_time}`;
-
-                console.log(response)
-                setAppointmentData(response.appointmentData);
+                if (response.success) {
+                    setDoctorId(response.appointmentData.doctor_id);
+                    console.log(doctorId)
 
 
-                setDatePicker({
-                    dayOfWeek: response.appointmentData.appointment_day.split(' ')[0],
-                    date: response.appointmentData.appointment_day.split(' ')[1],
-                    // time: {
-                    //     label: timeRange,
-                    // },
-                    time: {
-                        timeRange,
-                    }
-                });
-                const now = new Date();
-                const appointmentDate = new Date(appointmentData.appointment_day);
-                const isCompleted = appointmentDate < now;
-                setIsCompleted(isCompleted)
-                await getActiveHourList();
+                    const start_time = response.appointmentData.appointment_time_start;
+                    const end_time = response.appointmentData.appointment_time_end;
 
+                    const timeRange = `${start_time} - ${end_time}`;
+
+                    console.log(response)
+                    setAppointmentData(response.appointmentData);
+
+
+                    setDatePicker({
+                        dayOfWeek: response.appointmentData.appointment_day.split(' ')[0],
+                        date: response.appointmentData.appointment_day.split(' ')[1],
+                        // time: {
+                        //     label: timeRange,
+                        // },
+                        time: {
+                            timeRange,
+                        }
+                    });
+                    const now = new Date();
+                    const appointmentDate = new Date(appointmentData.appointment_day);
+                    const isCompleted = appointmentDate < now;
+                    setIsCompleted(isCompleted)
+                    // await getActiveHourList();
+                    refetchHour()
+
+                }
+                return response
+            } catch (e) {
+                console.error(e);
             }
-        } catch (e) {
-            console.error(e);
         }
-    };
+    })
 
+    const {data: hour =[], isLoading: isHourLoading, refetch: refetchHour} = useQuery({
+        queryKey: ['hourA'],
+        queryFn: async () => {
+            try {
+                if (doctorId) {
+                    const response = await doctorService.getAccountActiveHourList(doctorId, aToken);
+                    console.log(response);
+                    const {active_hours, fully_booked} = response;
 
-    const getActiveHourList = async () => {
-        try {
-            if (doctorId) {
-                // const response = await accountService.getAccountActiveHourList(doctorId, aToken);
-                const response = await doctorService.getAccountActiveHourList(doctorId, aToken);
-                console.log(response);
-                const {active_hours, fully_booked} = response;
+                    const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
 
-                const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
+                    const filteredActiveHours = active_hours?.filter(
+                        (hour) => hour.day === appointmentDay
+                    );
+                    console.log(filteredActiveHours);
 
-                const filteredActiveHours = active_hours?.filter(
-                    (hour) => hour.day === appointmentDay
-                );
-                console.log(filteredActiveHours);
-
-                setDoctorActiveHours(filteredActiveHours || []);
-                setFullyBookedHours(fully_booked);
+                    setDoctorActiveHours(filteredActiveHours || []);
+                    setFullyBookedHours(fully_booked);
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
         }
-    };
+    })
+
+    // const getActiveHourList = async () => {
+    //     try {
+    //         if (doctorId) {
+    //             // const response = await accountService.getAccountActiveHourList(doctorId, aToken);
+    //             const response = await doctorService.getAccountActiveHourList(doctorId, aToken);
+    //             console.log(response);
+    //             const {active_hours, fully_booked} = response;
+    //
+    //             const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
+    //
+    //             const filteredActiveHours = active_hours?.filter(
+    //                 (hour) => hour.day === appointmentDay
+    //             );
+    //             console.log(filteredActiveHours);
+    //
+    //             setDoctorActiveHours(filteredActiveHours || []);
+    //             setFullyBookedHours(fully_booked);
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
 
     const updateAppointmentInfo = async () => {
@@ -202,7 +234,8 @@ const UpdateAppointmentInfo = () => {
 
     useEffect(() => {
         if (aToken) {
-            getAppointmentInfo();
+            // getAppointmentInfo();
+            refetchAppointmentInfo()
         }
     }, [aToken, doctorId])
 
@@ -210,6 +243,13 @@ const UpdateAppointmentInfo = () => {
         getName()
     }, [users, appointmentData.user_id]);
 
+    if (isLoading || isHourLoading ) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div className='m-5 w-[90vw] h-[100vh]'>

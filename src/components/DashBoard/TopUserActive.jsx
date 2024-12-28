@@ -85,7 +85,7 @@ const TopUserActive = () => {
                         <div className="flex flex-col items-center justify-center">
                             <div className="relative w-32 h-32">
                                 <motion.img
-                                    src={data?.data[0]?.userDetails?.profile_image}
+                                    src={data?.data[0]?.userDetails?.profile_image ? data?.data[0]?.userDetails?.profile_image : assets.patients_icon}
                                     alt="top1"
                                     className='[background:linear-gradient(45deg,#e0e7ff,#d1d5db_50%,#e0e7ff)_padding-box,conic-gradient(from_var(--border-angle),theme(colors.slate.300/.48)_80%,_theme(colors.red.400)_86%,_theme(colors.blue.300)_90%,_theme(colors.blue.400)_94%,_theme(colors.slate.300/.48))_border-box]
                                     border-[5px] w-full h-full object-cover rounded-full border-transparent animate-border'

@@ -7,30 +7,23 @@ import {Newspaper} from "lucide-react";
 import ArticleByMonth from "../../components/Chart/ArticleByMonth";
 import ArticleBySpeciality from "../../components/Chart/ArticleBySpeciality";
 import {useTranslation} from "react-i18next";
+import Loader from "../../components/Loader";
+import {useQuery} from "@tanstack/react-query";
 
 const ArticleDashboard = () => {
     const {aToken} = useContext(AdminContext);
-    const [articles, setArticles] = useState([]);
-    const [totalArticles, setTotalArticles] = useState(0);
     const {t} = useTranslation();
 
-    const getAllArticle = async () => {
-        try {
-            const data = await articleService.findAll(true, aToken);
-            if (data) {
-                setArticles(data);
-                setTotalArticles(data.length);
+    const {data: articles = [], isLoading, refetch} = useQuery({
+        queryKey: ["ar"],
+        queryFn: async () => {
+            try {
+                return await articleService.findAll(true, aToken)
+            } catch (e) {
+                console.log(e)
             }
-        } catch (e) {
-            console.log(e);
         }
-    };
-
-    useEffect(() => {
-        if (aToken) {
-            getAllArticle();
-        }
-    }, [aToken]);
+    });
 
     const statsContainerVariants = {
         hidden: {opacity: 0, y: 50},
@@ -39,6 +32,7 @@ const ArticleDashboard = () => {
             y: 0,
             transition: {
                 staggerChildren: 0.2,
+                duration: 0.6
             },
         },
     };
@@ -53,6 +47,19 @@ const ArticleDashboard = () => {
         visible: {opacity: 1, scale: 1, transition: {duration: 0.8}},
     };
 
+    useEffect(() => {
+        if (aToken) {
+            refetch()
+        }
+    }, [aToken]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
     return (
         <div className='flex-1 overflow-auto relative z-10'>
             <main className='max-w-7xl mx-auto py-6 px-4 lg:px-8'>
@@ -68,7 +75,7 @@ const ArticleDashboard = () => {
                             name={t("article.dashboard.title")}
                             to={'/article'}
                             icon={Newspaper}
-                            value={totalArticles}
+                            value={articles.length}
                             color='#6366F1'
                         />
                     </motion.div>

@@ -6,30 +6,40 @@ import {AdminContext} from "../../context/AdminContext";
 import * as regionService from "../../service/RegionService";
 import {useTranslation} from "react-i18next";
 import DoctorEachRegion from "../../components/Chart/DoctorEachRegion";
+import {useQuery} from "@tanstack/react-query";
+import * as articleService from "../../service/ArticleService";
+import Loader from "../../components/Loader";
 
 const RegionDashboard = () => {
 
     const {aToken} = useContext(AdminContext);
-    const [data, setData] = useState([]);
-    const [totalRegion, setTotalRegion] = useState(0)
     const {t} = useTranslation();
 
 
-    const getRegionList = async () => {
-        try {
-            const result = await regionService.findAll(false, aToken);
-            setTotalRegion(result.length)
-            setData(result);
-        } catch (e) {
-            console.log(e.error);
+    const {data: regions = [], isLoading, refetch} = useQuery({
+        queryKey: ["regions"],
+        queryFn: async () => {
+            try {
+                return await regionService.findAll(false, aToken)
+            } catch (e) {
+                console.log(e)
+            }
         }
-    };
+    });
 
     useEffect(() => {
         if (aToken) {
-            getRegionList();
+            refetch();
         }
     }, [aToken]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>
@@ -41,7 +51,7 @@ const RegionDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name={t("region.dashboard.total")} to={'/region'} icon={MapPin} value={totalRegion}
+                    <StatCard name={t("region.dashboard.total")} to={'/region'} icon={MapPin} value={regions.length}
                               color='#6366F1'/>
                 </motion.div>
 
