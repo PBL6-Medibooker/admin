@@ -16,39 +16,38 @@ const AccountDashboard = () => {
 
     const {t} = useTranslation();
 
-    const getAccounts = async () => {
-        try {
-            const [userResult, adminResult] = await Promise.all([
-                accountService.findAll(true, false, false, aToken),
-                getAdminAccountList()
-            ]);
-            const filteredUsers = userResult.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id));
-            setTotalUser(filteredUsers.length);
-            setTotalAdmin(adminResult.length);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        if (aToken) {
-            getAccounts();
-        }
-    }, [aToken]);
-
-
-    // const getAccountList = async () => {
+    // const getAccounts = async () => {
     //     try {
-    //         const result = await accountService.findAll(true, false, false, aToken);
-    //         console.log(result)
-    //         const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
-    //         setTotalUser(filter.length);
-    //     } catch (e) {
-    //         console.log(e.error)
+    //         const [userResult, adminResult] = await Promise.all([
+    //             accountService.findAll(true, false, false, aToken),
+    //             getAdminAccountList()
+    //         ]);
+    //         const filteredUsers = userResult.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id));
+    //         setTotalUser(filteredUsers.length);
+    //         setTotalAdmin(adminResult.length);
+    //     } catch (error) {
+    //         console.error(error);
     //     }
+    // };
     //
-    // }
-    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getAccounts();
+    //     }
+    // }, [aToken]);
+
+
+    const getAccountList = async () => {
+        try {
+            const result = await accountService.findAll(true, false, false, aToken);
+            const filter = result.filter(acc => !adminList.some(admin => admin.user_id?._id === acc._id))
+            setTotalUser(filter.length);
+        } catch (e) {
+            console.log(e.error)
+        }
+
+    }
+
     const getAdminAccountList = async () => {
         try {
             refetchAdminList()
@@ -59,12 +58,12 @@ const AccountDashboard = () => {
 
     }
 
-    // useEffect(() => {
-    //     if (aToken) {
-    //         getAccountList()
-    //         getAdminAccountList()
-    //     }
-    // }, [aToken, totalAdmin, adminList, totalUser]);
+    useEffect(() => {
+        if (aToken) {
+            getAccountList()
+            getAdminAccountList()
+        }
+    }, [aToken, totalAdmin, adminList, totalUser]);
 
 
     return (

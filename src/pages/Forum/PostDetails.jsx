@@ -140,7 +140,7 @@ const PostDetails = () => {
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col gap-2">
                                     <label
-                                        className="text-lg text-primary font-medium">{t("forum.update.ptitle")}</label>
+                                        className="text-lg font-bold">{t("forum.update.ptitle")}</label>
                                     <motion.input
                                         onChange={(e) => setPostData(prev => ({ ...prev, post_title: e.target.value }))}
                                         value={postData?.post_title}
@@ -156,7 +156,7 @@ const PostDetails = () => {
 
                                 <div className="flex flex-col gap-2">
                                     <label
-                                        className="text-lg text-primary font-medium">{t("forum.update.content")}</label>
+                                        className="text-lg font-bold">{t("forum.update.content")}</label>
                                     <motion.textarea
                                         onChange={(e) => setPostData(prev => ({...prev, post_content: e.target.value}))}
                                         value={postData?.post_content}

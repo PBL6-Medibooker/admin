@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import {toast} from "react-toastify";
 import ModalInsuranceMedium from "../../../components/Modal/ModalInsuranceMedium";
 import {DoctorContext} from "../../../context/DoctorContext";
+import {useQuery} from "@tanstack/react-query";
+import Loader from "../../../components/Loader";
 
 const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
     const { dToken } = useContext(DoctorContext);
@@ -17,23 +19,47 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
         exp_date: "",
     });
 
-    const getInsuranceInfo = async () => {
-        try {
-            const data = await appointmentService.getInsuranceInfo(id, dToken);
-            console.log('detail', data)
-            if (data && data[0]) {
-                setInsuranceData({
-                    id: data[0]._id || "",
-                    name: data[0].name || "",
-                    number: data[0].number || "",
-                    location: data[0].location || "",
-                    exp_date: data[0].exp_date || "",
-                });
+    // const getInsuranceInfo = async () => {
+    //     try {
+    //         const data = await appointmentService.getInsuranceInfo(id, dToken);
+    //         console.log('detail', data)
+    //         if (data && data[0]) {
+    //             setInsuranceData({
+    //                 id: data[0]._id || "",
+    //                 name: data[0].name || "",
+    //                 number: data[0].number || "",
+    //                 location: data[0].location || "",
+    //                 exp_date: data[0].exp_date || "",
+    //             });
+    //         }
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // };
+
+    const {data: insurance =[], isLoading, refetch: refetchInsurance} = useQuery({
+        queryKey: ['insurance'],
+        queryFn: async () => {
+            try {
+                const data = await appointmentService.getInsuranceInfo(id, dToken);
+                console.log('detail', data)
+                if (data && data[0]) {
+                    setInsuranceData({
+                        id: data[0]._id || "",
+                        name: data[0].name || "",
+                        number: data[0].number || "",
+                        location: data[0].location || "",
+                        exp_date: data[0].exp_date || "",
+                    });
+                }
+                return data
+            } catch (e) {
+                console.error(e);
             }
-        } catch (e) {
-            console.error(e);
         }
-    };
+    })
+
+
 
     const addInsurance = async () => {
         try {
@@ -112,9 +138,18 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
 
     useEffect(() => {
         if (dToken && open) {
-            getInsuranceInfo()
+            // getInsuranceInfo()
+            refetchInsurance()
         }
     }, [dToken, open]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div>
@@ -190,13 +225,13 @@ const AddAndUpdateInsuranceByDoctor = ({ open, id, cancel, onClose, name }) => {
                             <button
                                 type="button"
                                 onClick={cancel}
-                                className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 transition"
+                                className="bg-gray-300 text-gray-700 p-2 w-32 rounded-lg hover:bg-gray-400 hover:text-white transition"
                             >
                                 {t("appointment.update.back")}
                             </button>
                             <button
                                 type="submit"
-                                className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-green-600 transition"
+                                className="bg-primary text-white w-32 p-2 rounded-lg hover:bg-primary/80 transition"
                             >
                                 {t("appointment.update.save")}
                             </button>

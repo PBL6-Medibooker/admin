@@ -119,7 +119,6 @@ const UpdateArticle = () => {
                                 type="file"
                                 id="image"
                                 hidden
-                                accept="image/jpg"
                                 disabled={readOnly && !writeOnly && !fullAccess && aToken}
                             />
                         </label>

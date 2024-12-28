@@ -300,7 +300,7 @@ const UpdateAppointmentInfo = () => {
                         >
                             <div className="mb-6">
                                 <div className="mb-6">
-                                    <p className="text-lg font-medium text-gray-700 mb-2">
+                                    <p className="text-lg font-bold">
                                         {t("appointment.update.select")}
                                     </p>
                                     <div className="flex flex-wrap gap-4">
@@ -346,7 +346,7 @@ const UpdateAppointmentInfo = () => {
                             transition={{delay: 0.6, duration: 0.5}}
                             className="mb-6"
                         >
-                            <label htmlFor="health-issue" className="block text-lg font-medium text-primary mb-2">
+                            <label htmlFor="health-issue" className="block text-lg font-bold">
                                 {t("appointment.update.hi")}
                             </label>
                             <textarea

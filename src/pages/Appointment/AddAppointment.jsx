@@ -378,7 +378,7 @@ const AddAppointment = () => {
                         className="mb-6"
                     >
                         <label htmlFor="health-issue"
-                               className="block text-lg font-medium text-primary mb-2">
+                               className="block text-lg font-bold">
                             {t("appointment.add.describe")}
                         </label>
                         <textarea

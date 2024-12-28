@@ -64,7 +64,8 @@ const CreateArticle = () => {
                     title: t("article.add.success"),
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    backdrop: false
                 });
             } else {
                 toast.error('Error')
