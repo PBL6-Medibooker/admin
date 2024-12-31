@@ -51,8 +51,7 @@ const DoctorTrash = () => {
 
     useEffect(() => {
         if(dToken){
-            setTotal(dArticles.length)
-            setTotalPost(postList.length)
+            refetch()
         }
     }, [dToken, dArticles, postList, totalPost]);
 
@@ -85,7 +84,7 @@ const DoctorTrash = () => {
                         name={t('doctor.dashboard.da')}
                         to={'/doctor-atrash'}
                         icon={Newspaper}
-                        value={total}
+                        value={dArticles.length}
                         color='red'
                     />
 
@@ -93,7 +92,7 @@ const DoctorTrash = () => {
                         name={t('doctor.dashboard.dp')}
                         to={'/doctor-ptrash'}
                         icon={MessageSquareX}
-                        value={totalPost}
+                        value={postList.length}
                         color='red'
                     />
                 </motion.div>

@@ -142,7 +142,7 @@ const PostList = () => {
                         visible: {opacity: 1, transition: {staggerChildren: 0.1}},
                     }}
                 >
-                    {table.getRowModel().rows.length ? (
+                    {postList.length > 0 ? (
                         table.getRowModel().rows.map((row, i) => {
                             const date = new Date(row.original.createdAt);
                             const formattedDate = date.toLocaleDateString('en-GB');

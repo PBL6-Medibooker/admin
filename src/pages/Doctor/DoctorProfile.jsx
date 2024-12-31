@@ -286,7 +286,6 @@ const DoctorProfile = () => {
     useEffect(() => {
         if (dToken) {
             // getDoctorData();
-            console.log(regionData)
             refetch()
         }
     }, [dToken]);

@@ -20,6 +20,7 @@ import {ArchiveRestore, Plus} from "lucide-react"
 import * as adminService from "../../service/AdminService";
 import Error from "../../components/Error";
 import {Tooltip} from '@mui/material';
+import Loader from "../../components/Loader";
 
 
 const SpecialityList = () => {
@@ -49,11 +50,14 @@ const SpecialityList = () => {
     const {t} = useTranslation();
 
 
-    const findAllSpecialities = async () => {
-        const result = await specialityService.findAll(hiddenState, aToken)
-        setSpecialities(result);
-    }
-
+    const {data: spec = [],isLoading, refetch} = useQuery({
+        queryKey:["specialist"],
+        queryFn: async () =>{
+            const result = await specialityService.findAll(hiddenState, aToken)
+            setSpecialities(result);
+            return result;
+        }
+    })
     const columns = [
         columnHelper.accessor("_id", {
             id: "_id",
@@ -115,7 +119,8 @@ const SpecialityList = () => {
         }
         try {
             await specialityService.deleteSoftSpeciality(selectedSpecialityIds, aToken)
-            await findAllSpecialities()
+            // await findAllSpecialities()
+            refetch()
             setSelectedSpecialityIds([]);
             setOpen(false)
             await Swal.fire({
@@ -147,18 +152,27 @@ const SpecialityList = () => {
 
     useEffect(() => {
         if (aToken) {
+            refetch()
             refectAdminData()
-            findAllSpecialities()
+            // findAllSpecialities()
             refetchAdminDetails()
         }
 
-    }, [aToken, hiddenState, adminDetails, adminData, readOnly]);
+    }, [aToken, adminDetails, adminData, readOnly]);
 
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
 
     return (
         <div className='m-5 h-full w-[90vw] overflow-y-scroll'>
             <div className="flex justify-between items-center">
-                <h1 className="text-lg text-primary lg:text-3xl font-medium">
+                <h1 className="text-lg text-primary lg:text-3xl font-bold">
                     {t("speciality.list.title")}
                 </h1>
                 <div className="flex gap-4 mr-2">
@@ -265,7 +279,7 @@ const SpecialityList = () => {
                 }}
             >
                 <AnimatePresence>
-                    {paginatedData.length > 0 ? (
+                    {specialities.length > 0 ? (
 
                             paginatedData?.map((item, index) => (
 

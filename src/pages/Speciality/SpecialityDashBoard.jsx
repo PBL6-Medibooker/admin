@@ -16,25 +16,10 @@ const SpecialityDashBoard = () => {
     const {t} = useTranslation();
 
 
-    // const getAllSpeciality = async () => {
-    //     try {
-    //         const data = await specialityService.findAll('false', aToken);
-    //         if (data) {
-    //             setTotalSpecialities(data.length);
-    //         }
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // };
-
-    const { refetch, isLoading} = useQuery({
+    const { data = [],refetch, isLoading} = useQuery({
         queryKey:['specLength'],
         queryFn: async () => {
-            const data = await specialityService.findAll('false', aToken);
-            if (data) {
-                setTotalSpecialities(data.length);
-            }
-            return data
+            return  await specialityService.findAll('false', aToken);
         }
     })
 
@@ -66,7 +51,7 @@ const SpecialityDashBoard = () => {
                         name={t("speciality.dashboard.title")}
                         to={'/speciality'}
                         icon={ClipboardList}
-                        value={totalSpecialities}
+                        value={data.length}
                         color='#6366F1'
                     />
                 </motion.div>

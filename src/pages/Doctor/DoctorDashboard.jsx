@@ -10,11 +10,10 @@ import * as articleService from "../../service/ArticleService";
 import {useQuery} from "@tanstack/react-query";
 import * as forumService from "../../service/ForumService";
 import StatDoctor from "../../components/Chart/StatDoctor";
+import Loader from "../../components/Loader";
 
 const DoctorDashboard = () => {
     const {dToken, docId, getDoctorData, doctorData, docEmail} = useContext(DoctorContext);
-    const [appointments, setAppointments] = useState(0);
-    const [articles, setArticles] = useState(0);
     const [posts, setPosts] = useState(0);
     const {t} = useTranslation();
 
@@ -34,16 +33,15 @@ const DoctorDashboard = () => {
     });
 
 
-    const getDoctorAppointments = async () => {
-        try {
-            const data = await appointmentService.getAppointmentByDoctor(false, docId, dToken)
-            if (data) {
-                setAppointments(data.length)
-            }
-        } catch (e) {
-            console.log(e)
-        }
-    }
+
+    const {data: aList = [], isLoading: isAListLoading, refetch} = useQuery({
+        queryKey: ["aL"],
+        queryFn: async () => {
+            return await appointmentService.getAppointmentByDoctor(false, docId, dToken)
+        },
+        enabled: !!dToken,
+    });
+
 
     const fetchPostsByEmail = async () => {
         try {
@@ -65,16 +63,25 @@ const DoctorDashboard = () => {
     useEffect(() => {
         if (dToken) {
             getDoctorData()
-            getDoctorAppointments()
+            refetch()
         }
     }, [dToken, docId]);
 
     useEffect(() => {
         if (!isLoading && !isPostLoading) {
-            setArticles(dArticles.length)
             setPosts(postList.length)
         }
     }, [dArticles, isLoading, isPostLoading]);
+
+
+    if (isLoading || isAListLoading) {
+        return (
+            <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
+                <Loader />
+            </div>
+        )
+    }
+
 
     return (
         <div className='flex-1 overflow-auto relative z-10'>
@@ -86,9 +93,9 @@ const DoctorDashboard = () => {
                     transition={{duration: 1}}
                 >
                     <StatCard name={t("doctor.dashboard.tap")} to={'/doctor-appointments'} icon={CalendarDays}
-                              value={appointments}
+                              value={aList.length}
                               color='#6366F1'/>
-                    <StatCard name={t("doctor.dashboard.ta")} to={'/doctor-article'} icon={Newspaper} value={articles}
+                    <StatCard name={t("doctor.dashboard.ta")} to={'/doctor-article'} icon={Newspaper} value={dArticles.length}
                               color='#FACC15'/>
 
                     <StatCard name={t("doctor.dashboard.tp")} to={'/doctor-post'} icon={MessageSquareText} value={posts}
