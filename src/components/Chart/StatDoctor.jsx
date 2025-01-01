@@ -21,7 +21,7 @@ const StatDoctor = () => {
     const { t } = useTranslation();
     const { dToken, docId } = useContext(DoctorContext);
     const [yearOption] = useState(['2024', '2025']);
-    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedYear, setSelectedYear] = useState('2024');
 
     const { data = [], isLoading } = useQuery({
         queryKey: ["doctorstat", selectedYear],
