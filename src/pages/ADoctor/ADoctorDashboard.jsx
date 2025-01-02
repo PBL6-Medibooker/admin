@@ -32,7 +32,6 @@ const ADoctorDashboard = () => {
         }
     };
 
-    // Fetch unverified doctors and verify doctor data
     useEffect(() => {
         if (aToken) {
             getUnverifiedDoctors();
@@ -40,7 +39,6 @@ const ADoctorDashboard = () => {
         }
     }, [aToken]);
 
-    // Recalculate totalDoctors whenever verifiedDoctor changes
     useEffect(() => {
         calculateVerifiedDoctors();
     }, [verifiedDoctor]);

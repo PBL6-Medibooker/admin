@@ -9,6 +9,8 @@ import {
 import {AdminContext} from "../../context/AdminContext";
 import {assets} from "../../assets/assets";
 import * as accountService from "../../service/AccountService";
+import * as doctorService from "../../service/DoctorService";
+
 import {toast} from "react-toastify";
 import {FaRegTrashAlt} from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";

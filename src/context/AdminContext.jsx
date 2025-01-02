@@ -36,6 +36,7 @@ const AdminContextProvider = (props) => {
             }
         },
         enabled: !!aToken,
+        refetchInterval: 5000,
 
     });
 
