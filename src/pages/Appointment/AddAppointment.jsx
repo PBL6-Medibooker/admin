@@ -119,7 +119,7 @@ const AddAppointment = () => {
     const handleSpecialitySelect = (e) => {
         const selectedSpecialityId = e.target.value;
         setSpecId(selectedSpecialityId);
-        const filteredDoctors = doctors.filter(
+        const filteredDoctors = verifiedDoctor.filter(
             (doctor) => doctor.speciality_id?._id === selectedSpecialityId
         );
         setFilteredDoctors(filteredDoctors);
