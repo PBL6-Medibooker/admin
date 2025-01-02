@@ -93,7 +93,8 @@ const VerifyDoctorList = () => {
     const getAccountList = async () => {
         try {
             rVerifyDoctorData()
-            setFilteredDoctors(verifiedDoctor)
+            const activeDoctors = verifiedDoctor.filter(doctor => !doctor.is_deleted);
+            setFilteredDoctors(activeDoctors)
         } catch (e) {
             console.log(e.error);
         }
@@ -166,6 +167,7 @@ const VerifyDoctorList = () => {
         try {
             await accountService.deleteSoftAccount(selectedAccountIds, aToken);
             await getAccountList();
+            rVerifyDoctorData()
             // toast.success(response.message);
             setSelectedAccountIds([]);
             setOpen(false);
@@ -202,7 +204,7 @@ const VerifyDoctorList = () => {
             refetchRegionList()
             refetchAdminDetails()
         }
-    }, [aToken, filteredDoctors,adminDetails]);
+    }, [aToken,adminDetails]);
 
 
 

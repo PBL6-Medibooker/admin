@@ -29,7 +29,7 @@ const AdminContextProvider = (props) => {
         queryKey: ["verify"],
         queryFn: async () => {
             try {
-                return  await doctorService.findAll(false, false, true, aToken)
+                return  await doctorService.findAll(true, aToken)
             } catch (e) {
                 console.error(e);
                 throw new Error("Failed to load");

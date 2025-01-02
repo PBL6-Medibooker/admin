@@ -25,24 +25,32 @@ const ADoctorDashboard = () => {
         }
     };
 
+    const calculateVerifiedDoctors = () => {
+        if (verifiedDoctor) {
+            const activeDoctors = verifiedDoctor.filter(doctor => !doctor.is_deleted);
+            setTotalDoctors(activeDoctors.length);
+        }
+    };
 
+    // Fetch unverified doctors and verify doctor data
     useEffect(() => {
         if (aToken) {
-            getUnverifiedDoctors()
-            rVerifyDoctorData()
+            getUnverifiedDoctors();
+            rVerifyDoctorData();
         }
     }, [aToken]);
 
-
-
-
+    // Recalculate totalDoctors whenever verifiedDoctor changes
+    useEffect(() => {
+        calculateVerifiedDoctors();
+    }, [verifiedDoctor]);
 
     if (isVerifyDoctorLoading) {
         return (
             <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
                 <Loader />
             </div>
-        )
+        );
     }
 
     return (
@@ -55,17 +63,14 @@ const ADoctorDashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-
                     <StatCard name={t('account.adashboard.verifiedDoctor')}
-                              to={'/verified-doc-account'} icon={BadgeCheck} value={verifiedDoctor.length}
+                              to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
                               color='#10B981'/>
 
                     <StatCard name={t('account.adashboard.unverifiedDoctor')}
                               to={'/doc-account'} icon={UserRoundSearch} value={totalUnDoctors}
                               color='#FACC15'/>
-
                 </motion.div>
-
 
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mt-2'>
                     <TopDoctorChart/>

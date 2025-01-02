@@ -219,9 +219,7 @@ const AddAppointment = () => {
         if (aToken || dToken) {
             findAllSpecialities()
             getAccountList()
-            // getDoctorAccountList()
             getDoctorActiveHour()
-            // refetchDoctors()
             rVerifyDoctorData()
         }
     }, [aToken, dToken]);

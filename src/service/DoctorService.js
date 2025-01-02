@@ -5,7 +5,7 @@ import axios from "axios";
 const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/doc";
 
 
-export const findAll = async (user, hidden_state, verified, aToken) => {
+export const findAll = async (verified, aToken) => {
     try {
         const result = await axios.post(REST_API_BASE_URL + "/filter-doctor-list-main", {
             verified
