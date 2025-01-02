@@ -17,7 +17,7 @@ import Loader from "../../components/Loader";
 
 
 const AddAppointment = () => {
-    const {aToken, adminData} = useContext(AdminContext);
+    const {aToken, adminData,  verifiedDoctor, isVerifyDoctorLoading, rVerifyDoctorData} = useContext(AdminContext);
     const {dToken, docId} = useContext(DoctorContext);
 
     const [datePicker, setDatePicker] = useState({
@@ -34,7 +34,7 @@ const AddAppointment = () => {
     const [type_service, setTypeService] = useState('appointment');
     const [error, setError] = useState('');
     const [users, setUsers] = useState([]);
-    // const [doctors, setDoctors] = useState([]);
+    const [doctors, setDoctors] = useState([]);
     const [doctor, setDoctor] = useState(null);
     const [doctorActiveHours, setDoctorActiveHours] = useState([]);
     const [specialities, setSpecialities] = useState([]);
@@ -72,22 +72,23 @@ const AddAppointment = () => {
     // const getDoctorAccountList = async () => {
     //     try {
     //         const result = await accountService.findAll(false, false, true, aToken);
-    //         // setDoctors(result);
+    //         setDoctors(result);
     //     } catch (e) {
     //         console.log(e.error);
     //     }
     // };
 
-    const {data: doctors =[], isLoading, refetch: refetchDoctors} = useQuery({
-        queryKey: ['doc'],
-        queryFn: async () => {
-            try {
-                return await accountService.findAll(false, false, true, aToken);
-            } catch (e) {
-                console.log(e.error);
-            }
-        }
-    })
+    // const {data: doctors =[], isLoading, refetch: refetchDoctors} = useQuery({
+    //     queryKey: ['doc'],
+    //     queryFn: async () => {
+    //         try {
+    //             return await accountService.findAll(false, false, true, aToken);
+    //         } catch (e) {
+    //             console.log(e.error);
+    //         }
+    //     },
+    //     enabled: !!aToken
+    // })
 
 
     const getActiveHourList = async () => {
@@ -220,11 +221,12 @@ const AddAppointment = () => {
             getAccountList()
             // getDoctorAccountList()
             getDoctorActiveHour()
-            refetchDoctors()
+            // refetchDoctors()
+            rVerifyDoctorData()
         }
     }, [aToken, dToken]);
 
-    if (isLoading) {
+    if (isVerifyDoctorLoading) {
         return (
             <div className="flex justify-center items-center bg-opacity-75 fixed top-[52%] left-[52%] z-50">
                 <Loader />

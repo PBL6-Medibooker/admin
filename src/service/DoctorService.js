@@ -4,6 +4,19 @@ import axios from "axios";
 // const REST_API_BASE_URL = "http://localhost:4000/doc";
 const REST_API_BASE_URL = "https://medibackend.azurewebsites.net/doc";
 
+
+export const findAll = async (user, hidden_state, verified, aToken) => {
+    try {
+        const result = await axios.post(REST_API_BASE_URL + "/filter-doctor-list-main", {
+            verified
+        }, {headers: {aToken}})
+        return result.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
 export const updateDocInfoAcc = async (formData, id, aToken) => {
     try {
         const result = await axios.post(REST_API_BASE_URL + `/update-doc-info/${id}`, formData, {headers: {aToken}})

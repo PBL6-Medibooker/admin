@@ -17,21 +17,21 @@ const Dashboard = () => {
     const [totalDoctors, setTotalDoctors] = useState(0)
 
 
-    const getTotalAppointment = async () => {
-        refetchAList()
-        setTotalAppointments(appointmentList?.length)
-    }
-    const getTotalDoctor = async () =>{
-        rVerifyDoctorData()
-        setTotalDoctors(verifiedDoctor.length)
-    }
-
-    useEffect(() => {
-        if (aToken) {
-            getTotalAppointment()
-            getTotalDoctor()
-        }
-    }, [aToken, appointmentList, verifiedDoctor]);
+    // const getTotalAppointment = async () => {
+    //     refetchAList()
+    //     setTotalAppointments(appointmentList?.length)
+    // }
+    // const getTotalDoctor = async () =>{
+    //     rVerifyDoctorData()
+    //     setTotalDoctors(verifiedDoctor.length)
+    // }
+    //
+    // useEffect(() => {
+    //     if (aToken) {
+    //         getTotalAppointment()
+    //         getTotalDoctor()
+    //     }
+    // }, [aToken, appointmentList, verifiedDoctor]);
 
     if (aListLoading) {
         return (
@@ -60,13 +60,13 @@ const Dashboard = () => {
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 1}}
                 >
-                    <StatCard name={t("appointment.dashboard.title")} to={'/all-appointment'} icon={ClipboardList}
-                              value={totalAppointments} color='#6366F1'/>
+                    {/*<StatCard name={t("appointment.dashboard.title")} to={'/all-appointment'} icon={ClipboardList}*/}
+                    {/*          value={totalAppointments} color='#6366F1'/>*/}
 
 
-                    <StatCard name={t('account.adashboard.verifiedDoctor')}
-                              to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
-                              color='#10B981'/>
+                    {/*<StatCard name={t('account.adashboard.verifiedDoctor')}*/}
+                    {/*          to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}*/}
+                    {/*          color='#10B981'/>*/}
 
                 </motion.div>
 

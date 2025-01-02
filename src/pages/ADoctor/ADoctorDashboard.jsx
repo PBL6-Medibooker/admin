@@ -33,9 +33,7 @@ const ADoctorDashboard = () => {
         }
     }, [aToken]);
 
-    useEffect(() => {
-        setTotalDoctors(verifiedDoctor.length)
-    }, [verifiedDoctor]);
+
 
 
 
@@ -59,7 +57,7 @@ const ADoctorDashboard = () => {
                 >
 
                     <StatCard name={t('account.adashboard.verifiedDoctor')}
-                              to={'/verified-doc-account'} icon={BadgeCheck} value={totalDoctors}
+                              to={'/verified-doc-account'} icon={BadgeCheck} value={verifiedDoctor.length}
                               color='#10B981'/>
 
                     <StatCard name={t('account.adashboard.unverifiedDoctor')}

@@ -8,7 +8,7 @@ import {
     getFilteredRowModel, getPaginationRowModel,
     useReactTable
 } from "@tanstack/react-table";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {AdminContext} from "../../context/AdminContext";
 import {assets} from "../../assets/assets";
 import * as accountService from "../../service/AccountService";
@@ -20,6 +20,8 @@ import Pagination from "../../components/Pagination";
 import SearchInput from "../../components/SearchInput";
 import {Tooltip} from "@mui/material";
 import {ArchiveRestore} from "lucide-react";
+import {useQuery} from "@tanstack/react-query";
+import Error from "../../components/Error";
 
 const VerifyDoctorList = () => {
 
@@ -28,12 +30,13 @@ const VerifyDoctorList = () => {
     const navigate = useNavigate();
     const [globalFilter, setGlobalFilter] = useState("");
     const [open, setOpen] = useState(false);
-    const {aToken, isLoading, verifiedDoctor,rVerifyDoctorData, specialities, refetchSpec, isVerifyDoctorLoading,
+    const {aToken, isLoading, specialities, refetchSpec, verifiedDoctor, isVerifyDoctorLoading, rVerifyDoctorData,
      regionList, refetchRegionList, refetchAdminDetails, adminDetails, readOnly, writeOnly, fullAccess} = useContext(AdminContext);
     const {t} = useTranslation();
     const [specialityFilterValue, setSpecialityFilterValue] = useState("");
     const [regionFilterValue, setRegionFilterValue] = useState("");
     const [filteredDoctors, setFilteredDoctors] = useState([]);
+
 
     const columns = [
         columnHelper.accessor("_id", {id: "_id", cell: (info) => <span>{info.row.index + 1}</span>, header: "S.No"}),
@@ -72,10 +75,24 @@ const VerifyDoctorList = () => {
         );
     };
 
+    // const {data: verifiedDoctor = [], isLoading: isVerifyDoctorLoading, refetch} = useQuery({
+    //     queryKey: ["verifyDoc"],
+    //     queryFn: async () => {
+    //         try {
+    //             return  await accountService.findAll(false, false, true, aToken);
+    //         } catch (e) {
+    //             console.error(e);
+    //             throw new Error("Failed to load");
+    //         }
+    //     },
+    //     // refetchOnWindowFocus: true, // Ensures data refetch on focus
+    //     // staleTime: 0,
+    //     // keepPreviousData: true,
+    // });
+
     const getAccountList = async () => {
         try {
             rVerifyDoctorData()
-            console.log(verifiedDoctor)
             setFilteredDoctors(verifiedDoctor)
         } catch (e) {
             console.log(e.error);
@@ -148,8 +165,7 @@ const VerifyDoctorList = () => {
         }
         try {
             await accountService.deleteSoftAccount(selectedAccountIds, aToken);
-            // getAccountList();
-            rVerifyDoctorData()
+            await getAccountList();
             // toast.success(response.message);
             setSelectedAccountIds([]);
             setOpen(false);
@@ -182,12 +198,12 @@ const VerifyDoctorList = () => {
     useEffect(() => {
         if(aToken){
             getAccountList()
-            rVerifyDoctorData()
             refetchSpec()
             refetchRegionList()
             refetchAdminDetails()
         }
-    }, [aToken, verifiedDoctor, adminDetails]);
+    }, [aToken, filteredDoctors,adminDetails]);
+
 
 
     if (isLoading || isVerifyDoctorLoading) {

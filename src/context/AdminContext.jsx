@@ -6,6 +6,7 @@ import * as accountService from "../service/AccountService";
 import * as specialityService from "../service/SpecialityService";
 import * as appointmentService from "../service/AppointmentService";
 import * as adminService from "../service/AdminService";
+import * as doctorService from "../service/DoctorService";
 import {findAll} from "../service/AdminService";
 import * as regionService from "../service/RegionService";
 import Swal from "sweetalert2";
@@ -28,12 +29,14 @@ const AdminContextProvider = (props) => {
         queryKey: ["verify"],
         queryFn: async () => {
             try {
-                return  await accountService.findAll(false, false, true, aToken)
+                return  await doctorService.findAll(false, false, true, aToken)
             } catch (e) {
                 console.error(e);
                 throw new Error("Failed to load");
             }
-        }
+        },
+        enabled: !!aToken,
+
     });
 
     const logout = () => {
