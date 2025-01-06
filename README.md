@@ -12,16 +12,17 @@ Doctor account: destielisdestiny1111@gmail.com - 12345Viet@
 ### Technologies Used
 ### Programs and Tools
 
-Webstorm - the code editor being used to build the project.
-Github - Github is used to store project's code remotely.
-Lucide React - implement icons.
-MongoDB - the database being used to store application data and query.
-Render - platform being used to deploy the application.
++ Webstorm - the code editor being used to build the project.
++ Github - Github is used to store project's code remotely.
++ Lucide React - implement icons.
++ MongoDB - the database being used to store application data and query.
++ Render - platform being used to deploy the application.
 
 
 ### Frameworks and Libraries
-ReactJS - for building the user interface.
-TanStack - for efficient data fetching, caching, and server state management.
+
++ ReactJS - for building the user interface.
++ TanStack - for efficient data fetching, caching, and server state management.
 
 ### Screen
 
