@@ -9,7 +9,7 @@ Link website: <a href="https://admin-xb5z.onrender.com/" target="_blank" rel="no
 Admin account (full access): lethanhviet1111235@gmail.com - 12345Viet@
 Doctor account: destielisdestiny1111@gmail.com - 12345Viet@
 
-### Technologies Used
+## Technologies Used
 ### Programs and Tools
 
 + Webstorm - the code editor being used to build the project.
@@ -24,7 +24,13 @@ Doctor account: destielisdestiny1111@gmail.com - 12345Viet@
 + ReactJS - for building the user interface.
 + TanStack - for efficient data fetching, caching, and server state management.
 
-### Screen
+## Screen
+
+### I. Admin site
+#### 1. Admin/Doctor Login
+
+<img width="454" alt="image" src="https://github.com/user-attachments/assets/d7414ad3-7b7b-4e66-9750-b40469dc210e" />
+
 
 
 
