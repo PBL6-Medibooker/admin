@@ -1,8 +1,8 @@
-# Website for admin and doctor of ModiBooker
+# Website for admin and doctor of MediBooker
 
-Link website: https://admin-xb5z.onrender.com/
+Link website: <a href="https://admin-xb5z.onrender.com/" target="_blank" rel="noopener noreferrer">MediBooker Admin</a>
 
-<a href="https://admin-xb5z.onrender.com/" target="_blank" rel="noopener noreferrer">ModiBooker Admin Portal</a>
+
 
 ## Available Scripts
 
