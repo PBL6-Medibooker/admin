@@ -29,10 +29,21 @@ Doctor account: destielisdestiny1111@gmail.com - 12345Viet@
 ### I. Admin site
 #### 1. Admin/Doctor Login
 
-<img width="454" alt="image" src="https://github.com/user-attachments/assets/d7414ad3-7b7b-4e66-9750-b40469dc210e" />
+<img width="1081" alt="Screenshot 2025-01-06 at 23 20 31" src="https://github.com/user-attachments/assets/d376f369-58f5-4d60-b48d-41f7db6caeaa" />
 
+#### 2. Forgot password
 
+<img width="1081" alt="Screenshot 2025-01-06 at 23 22 23" src="https://github.com/user-attachments/assets/35c6c0fa-2eee-4167-b7ef-cfe44bc99178" />
 
+#### 3. Homepage
 
+<img width="1512" alt="Screenshot 2025-01-06 at 23 26 47" src="https://github.com/user-attachments/assets/50e80e54-91f8-4e84-b8e3-42c8f1828178" />
 
+#### 3. Account dashboard
+
+<img width="1479" alt="Screenshot 2025-01-06 at 23 28 32" src="https://github.com/user-attachments/assets/0d9de7f5-704a-495c-ab1d-7bb6ced30bfe" />
+
+#### 3.1 Account list 
+
+<img width="1509" alt="Screenshot 2025-01-06 at 23 33 16" src="https://github.com/user-attachments/assets/162246af-deb0-4e1b-b71f-7a4ae3c09a7d" />
 
