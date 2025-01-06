@@ -1,6 +1,8 @@
 # Website for admin and doctor of ModiBooker
 
 Link website: https://admin-xb5z.onrender.com/
+<a href="https://admin-xb5z.onrender.com/" target="_blank">ModiBooker Admin Portal</a>
+
 ## Available Scripts
 
 In the project directory, you can run:
