@@ -149,29 +149,6 @@ const UpdateAppointmentInfo = () => {
         }
     })
 
-    // const getActiveHourList = async () => {
-    //     try {
-    //         if (doctorId) {
-    //             // const response = await accountService.getAccountActiveHourList(doctorId, aToken);
-    //             const response = await doctorService.getAccountActiveHourList(doctorId, aToken);
-    //             console.log(response);
-    //             const {active_hours, fully_booked} = response;
-    //
-    //             const appointmentDay = appointmentData.appointment_day?.split(' ')[0];
-    //
-    //             const filteredActiveHours = active_hours?.filter(
-    //                 (hour) => hour.day === appointmentDay
-    //             );
-    //             console.log(filteredActiveHours);
-    //
-    //             setDoctorActiveHours(filteredActiveHours || []);
-    //             setFullyBookedHours(fully_booked);
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
 
     const updateAppointmentInfo = async () => {
         try {
@@ -211,7 +188,7 @@ const UpdateAppointmentInfo = () => {
 
     const getDoctorAccountList = async () => {
         try {
-            const result = await accountService.findAll(false, false, true, aToken);
+            const result = await doctorService.findAll( true, aToken);
             setDoctors(result);
         } catch (e) {
             console.log(e.error);
