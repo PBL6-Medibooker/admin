@@ -130,48 +130,92 @@ Doctor account: destielisdestiny1111@gmail.com - 12345Viet@
 
 #### 7. Appointment dashboard
 
+<img width="1484" alt="Screenshot 2025-01-08 at 11 02 16" src="https://github.com/user-attachments/assets/a7dc5763-adf3-42a9-8bcb-4a61e5d097a7" />
+
 
 #### 7.1 Appointment list
 
+<img width="1500" alt="Screenshot 2025-01-08 at 11 05 13" src="https://github.com/user-attachments/assets/8df4f9b5-9750-4fa3-aa0c-939c32c9b1c4" />
+
 #### 7.2 Add appointment
+
+<img width="1493" alt="Screenshot 2025-01-08 at 11 06 04" src="https://github.com/user-attachments/assets/7f70681f-e276-46a3-9716-46763b516871" />
 
 #### 7.3 Update appointment info
 
+<img width="1472" alt="Screenshot 2025-01-08 at 11 11 19" src="https://github.com/user-attachments/assets/26ca10be-4232-4709-99c2-ff536cdda4b1" />
+
 #### 8. Article dashboard
+
+<img width="1478" alt="Screenshot 2025-01-08 at 11 19 54" src="https://github.com/user-attachments/assets/ce504105-b5e5-4960-bcfe-216362137924" />
+
 
 #### 8.1 Article list
 
+<img width="1487" alt="Screenshot 2025-01-08 at 11 20 18" src="https://github.com/user-attachments/assets/0f39d80c-5904-412b-bbad-2e5ba3439cc1" />
+
+
 #### 8.2 Add article
+
+<img width="1484" alt="Screenshot 2025-01-08 at 11 20 36" src="https://github.com/user-attachments/assets/33079d82-cb82-49c4-a29f-1d8a78da3694" />
 
 #### 8.3 Update article
 
+<img width="1486" alt="Screenshot 2025-01-08 at 11 21 18" src="https://github.com/user-attachments/assets/1635e6d1-6b53-4985-855c-c005338b1d9a" />
+
+
 #### 8.4 Deleted article
+
+<img width="1489" alt="Screenshot 2025-01-08 at 11 21 42" src="https://github.com/user-attachments/assets/3141df50-9018-4217-8dca-969eddd73179" />
 
 #### 9. Post dashboard
 
+<img width="1495" alt="Screenshot 2025-01-08 at 11 22 26" src="https://github.com/user-attachments/assets/f05ad159-d409-4668-aece-61aadf281d7c" />
+
 #### 9.1 Post list
 
-#### 9.2 Add new post
+<img width="1497" alt="Screenshot 2025-01-08 at 11 23 00" src="https://github.com/user-attachments/assets/3058b1a6-0de3-4f1e-b1d3-607a9882bd26" />
 
-#### 9.3 Update post
 
-#### 9.4 Comment section
+#### 9.2 Update post
 
-#### 9.5 Deleted post
+<img width="1472" alt="Screenshot 2025-01-08 at 11 24 22" src="https://github.com/user-attachments/assets/330849c3-cf62-42a3-afd9-5bf8d99af1e6" />
+
+#### 9.3 Comment section
+
+<img width="1496" alt="Screenshot 2025-01-08 at 11 25 05" src="https://github.com/user-attachments/assets/cc6011c8-104d-4cac-ace3-49f55e4718e9" />
+
+#### 9.4 Deleted post
+
+<img width="1492" alt="Screenshot 2025-01-08 at 11 25 54" src="https://github.com/user-attachments/assets/57e7c27a-6905-4bea-92ee-19b7b2defe5e" />
 
 #### 10. Admin profile
+
+<img width="1486" alt="Screenshot 2025-01-08 at 11 26 11" src="https://github.com/user-attachments/assets/bee1f91f-4662-4188-baa3-c94ec1618cdc" />
 
 ### II. Doctor site
 
 #### 1. Doctor dashboard
 
+<img width="1486" alt="Screenshot 2025-01-08 at 11 28 49" src="https://github.com/user-attachments/assets/d6a53c4f-10c0-4897-a0f5-c76ba3f6a16f" />
+
 #### 2. Doctor appointment
+
+<img width="1496" alt="Screenshot 2025-01-08 at 11 29 12" src="https://github.com/user-attachments/assets/4e401e90-9f48-4425-99dd-1fb001ef849d" />
+
 
 #### 3. Article list
 
+<img width="1471" alt="Screenshot 2025-01-08 at 11 29 42" src="https://github.com/user-attachments/assets/3082571b-1a7b-44cc-9e4a-0b29890668f0" />
+
+
 #### 4. Post list
 
+<img width="1478" alt="Screenshot 2025-01-08 at 11 30 30" src="https://github.com/user-attachments/assets/783aff42-b44a-41b9-9ba6-c52189abbcf1" />
+
 #### 5. Doctor profile
+
+<img width="1501" alt="Screenshot 2025-01-08 at 11 31 01" src="https://github.com/user-attachments/assets/7c78643d-c023-41ba-b5ec-1115833ab8f0" />
 
 
 
